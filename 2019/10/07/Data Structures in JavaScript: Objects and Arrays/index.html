@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Data Structures in JavaScript: Objects and Arrays |  Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-Data Structures in JavaScript: Objects and Arrays" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Data Structures in JavaScript: Objects and Arrays
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/" class="article-date">
+  <time datetime="2019-10-07T15:30:00.000Z" itemprop="datePublished">2019-10-07</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字數統計:</span>
+            <span class="post-count">4.1k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 閱讀時長≈</span>
+            <span class="post-count">17分鐘</span>
+        </span>
+    </span>
+</div>
+
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <blockquote>
+<p>Reference Website:</p>
+<ol>
+<li><a href="http://eloquentjavascript.net/" target="_blank" rel="noopener">Eloquent Javascript</a></li>
+<li><a href="https://eloquentjavascript.net/code" target="_blank" rel="noopener">Online coding sandbox</a></li>
+<li><a href="https://pjchender.blogspot.com/2016/01/javascriptobject.html" target="_blank" rel="noopener">[筆記] 物件是什麼？method 是什麼？談談 JavaScript 中的物件建立(Object) - Part 1 </a></li>
+<li><a href="https://pjchender.blogspot.com/2016/04/javascriptparameterargumentsspread.html" target="_blank" rel="noopener">[筆記] 談談JavaScript中函式的參數(parameter),arguments和展開運算子(spread)</a></li>
+</ol>
+</blockquote>
+<hr>
+<ul>
+<li><code>Number</code>、<code>Boolean</code>、<code>String</code>皆為資料結構的元素之一
+<ul>
+<li>許多型別資訊需要不只單一的因素</li>
+</ul>
+</li>
+<li><code>Object</code> =&gt; 允許包含複數數值 (包括其他Object)</li>
+<li>Javascript程式寫到目前可以發現到大多運算都是簡單的資料類型，故於此會簡單介紹資料結構。</li>
+</ul>
+<a id="more"></a>
+<div class="success">
+<h4 id="u-The-Weresquirrel-u"><a class="header-anchor" href="#u-The-Weresquirrel-u"></a><u>The Weresquirrel</u></h4>
+<p style="background-color: #99FF99">
+在大約晚上八點到十點之間，Jacques發現他會變形成一隻有著毛茸茸尾巴的囓齒動物，也就是松鼠。
+一方面來說，Jacques很慶幸自己不如傳統的變形者，比起變成狼，變成松鼠所造成的影響較小，比起擔心一個不小心吃掉鄰居(這很令人為難)，他更擔心被鄰居的貓吃掉。兩個小時後，Jacques全身赤裸地在橡樹頂端的細枝上醒來且迷失了方向，他開始養成晚上鎖門窗並在地上放幾顆核桃的習慣。
+如此能夠處理貓跟樹的問題，但Jacques更傾向完全不在意自身狀況，但這不尋常的變身情況讓他懷疑可能是某些事情引起的，有一陣子他認為這只會在他接近橡樹的幾天會發生，但遠離橡樹並未改善。
+Jacques決定改以科學的方法，他開始紀錄每天狀況，無論變形於否，如此希望能夠限縮引發變形的情況。
+</p>
+</div>
+<h2 id="Data-Sets"><a class="header-anchor" href="#Data-Sets"></a><strong>Data Sets</strong></h2>
+<ul>
+<li>為了使用整串資料，需要找到方法在記憶體中表現它；比如說：為了表現2、3、5、7、11的數字集合可以有下列方法：
+<ol>
+<li>string
+<ul>
+<li><code>string</code>不限制長度，但在做數字運算需要進行型態轉換</li>
+<li>Output: “2 3 5 7 11”</li>
+</ul>
+</li>
+<li>array <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> listOfNumbers = [<span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>];</span><br><span class="line"><span class="built_in">console</span>.log(listOfNumbers[<span class="number">2</span>]);</span><br><span class="line"><span class="comment">// -&gt; 5</span></span><br><span class="line"><span class="built_in">console</span>.log(listOfNumbers[<span class="number">0</span>]);</span><br><span class="line"><span class="comment">// -&gt; 2</span></span><br><span class="line"><span class="built_in">console</span>.log(listOfNumbers[<span class="number">2</span> - <span class="number">1</span>]);</span><br><span class="line"><span class="comment">// -&gt; 3</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>寫法：用方括號包在數值兩側，中間以逗點隔開，並從最左方的元素開始賦予index</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>array首個index從零開始 =&gt; <code>listOfNumbers[0]</code></li>
+</ul>
+<h3 id="Properties"><a class="header-anchor" href="#Properties"></a><em>Properties</em></h3>
+<ul>
+<li>
+<p><code>myString.length</code>、<code>Math.max</code> =&gt; 用於檢視<code>property</code> (屬性)的表示式</p>
+<ul>
+<li>幾乎所有Javascript的值都有屬性，除了<code>null</code>、<code>undefined</code>，若嘗試去檢視這些非值的屬性會回傳錯誤</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="literal">null</span>.length;</span><br><span class="line"><span class="comment">// -&gt; TypeError: null has no properties</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>檢視屬性的兩個符號：</p>
+<ol>
+<li>點 dot</li>
+<li>方括弧 square brackets</li>
+</ol>
+</li>
+<li>
+<p><code>value.x</code>、<code>value[x]</code>都是檢視<code>value</code>的屬性，<strong>但不一定是同個屬性</strong></p>
+<ul>
+<li>主要看<code>x</code>被怎麼闡釋
+<ul>
+<li>若使用<code>.</code> =&gt; 其後的<code>x</code>為屬性名稱</li>
+<li>若使用<code>[]</code> =&gt; 括號中的<code>x</code>被<strong>轉換</strong>成屬性名稱</li>
+</ul>
+</li>
+<li><code>value.x</code>會回傳<code>value</code>的屬性<code>x</code></li>
+<li><code>value[x]</code>會試著評估<code>x</code>這個表示式再使用其結果，轉換成字串後當作屬性名稱使用</li>
+</ul>
+</li>
+<li>
+<p>檢視屬性的三種方法：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">objectName.property        <span class="comment">// person.age</span></span><br><span class="line">objectName[<span class="string">"property"</span>]     <span class="comment">// person["age"]</span></span><br><span class="line">objectName[expression]     <span class="comment">// x = "age"; person[x]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>所有的屬性名稱都是<strong>字串</strong>，但可為任何字串</li>
+<li><code>.</code>後面只會對應有效的屬性名稱</li>
+<li>若想找其他屬性名稱像是<code>2</code>、<code>Ore wa tensai desu</code>則必須使用<code>[]</code>，如<code>value[2]</code>、<code>value[&quot;Ore wa tensai desu&quot;]</code></li>
+</ul>
+</li>
+<li>
+<p>陣列的元素作為陣列的屬性來儲存，並用數字來當屬性名稱</p>
+</li>
+<li>
+<p>陣列的其中一個屬性<code>length</code>會回傳元素的數量，因為我們已經知道這是一個有效的屬性名稱，故會寫<code>array.length</code>這種比較簡單的表示法來代替`array[“length”]</p>
+</li>
+</ul>
+<h3 id="Methods"><a class="header-anchor" href="#Methods"></a><em>Methods</em></h3>
+<ul>
+<li>
+<p>字串、陣列的物件，其大多屬性都具function特性</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> doh = <span class="string">"Doh"</span>;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> doh.toUpperCase);</span><br><span class="line"><span class="comment">// -&gt; function</span></span><br><span class="line"><span class="built_in">console</span>.log(doh.toUpperCase());</span><br><span class="line"><span class="comment">// -&gt; DOH</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>每個字串都有<code>toUpperCase</code>屬性 =&gt; 呼叫時回傳全轉為大寫字母的複製字串</p>
+<blockquote>
+<p>另外也有<code>toLowerCase</code></p>
+</blockquote>
+<ul>
+<li>有趣的是我們並沒有傳任何的argument，但卻能夠取得&quot;Doh&quot;字串，這個概念會在之後做詳細介紹</li>
+</ul>
+</li>
+<li>
+<p>包含function的屬性通常稱為<strong>屬於該物件的method</strong></p>
+<blockquote>
+<p>e.g. &quot;<code>toUpperCase</code> is a method of a string&quot;</p>
+</blockquote>
+</li>
+<li>
+<p>下面利用array來示範兩個methods：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> sequence = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line">sequence.push(<span class="number">4</span>);</span><br><span class="line">sequence.push(<span class="number">5</span>);</span><br><span class="line"><span class="built_in">console</span>.log(sequence);</span><br><span class="line"><span class="comment">// -&gt; [1, 2, 3, 4, 5]</span></span><br><span class="line"><span class="built_in">console</span>.log(sequence.pop());</span><br><span class="line"><span class="comment">// -&gt; 5</span></span><br><span class="line"><span class="built_in">console</span>.log(sequence);</span><br><span class="line"><span class="comment">// -&gt; [1, 2, 3, 4]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>push()</code> =&gt; 新增值到陣列末</li>
+<li><code>pop()</code> =&gt; 移除陣列最後一個值並回傳給使用者</li>
+<li>這兩個名詞源自資料結構的一個概念 - <code>stack</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="Objects"><a class="header-anchor" href="#Objects"></a><strong>Objects</strong></h2>
+<ul>
+<li>
+<p>看回到weresquirrel，一組日記記錄可以陣列呈現</p>
+<ul>
+<li>紀錄不可能只包含數字或字串 =&gt; 每組紀錄需儲存數項活動、Jacques變成松鼠的狀態布林值</li>
+<li>要把這些單獨的值群組化，並將其放入紀錄的陣列</li>
+</ul>
+</li>
+<li>
+<p><code>object</code>的值皆任意蒐集的屬性，新增一個物件的方法便是使用大括弧來表示</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> day1 = &#123;</span><br><span class="line">    squirrel: <span class="literal">false</span>, </span><br><span class="line">    events: [<span class="string">"work"</span>, <span class="string">"touched tree"</span>, <span class="string">"pizza"</span>, <span class="string">"running"</span>]</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(day1.squirrel);</span><br><span class="line"><span class="comment">// -&gt; false</span></span><br><span class="line"><span class="built_in">console</span>.log(day1.wolf);</span><br><span class="line"><span class="comment">// -&gt; undefined</span></span><br><span class="line">day1.wolf = <span class="literal">false</span>;</span><br><span class="line"><span class="built_in">console</span>.log(day1.wolf);</span><br><span class="line"><span class="comment">// -&gt; false</span></span><br><span class="line"><span class="built_in">console</span>.log(day1);</span><br><span class="line"><span class="comment">// -&gt; Object&#123; squirrel: false, events: (4) [...], wolf: false &#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>大括弧中用逗點分隔屬性</li>
+<li>每個屬性皆以<code>&lt;propertyName&gt;: &lt;value&gt;</code>的形式</li>
+<li>使用複數行來寫物件 =&gt; 方便閱讀</li>
+<li>若是要讀取不存在的屬性 =&gt; 回傳<code>undefined</code></li>
+<li>可使用<code>=</code>來賦予屬性的值：
+<ul>
+<li>若是已存在的屬性會覆蓋其原值</li>
+<li>若是不存在的屬性則會新創一個屬性並賦予其值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>若物件中的屬性非一般有效名稱或是有效數字則須引號</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> descriptions = &#123;</span><br><span class="line">    work: <span class="string">"Went to work"</span>, </span><br><span class="line">    <span class="string">"touched tree"</span>: <span class="string">"Touched a tree"</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>大括弧在Javascript中有兩個意義：</p>
+<ol>
+<li>位在程式敘述部分的起始位置 =&gt; 代表「開始程式敘述」
+<ul>
+<li>鮮少使用</li>
+</ul>
+</li>
+<li>在其他位置 =&gt; 代表「物件」</li>
+</ol>
+</li>
+<li>
+<p><code>delete</code>運算子</p>
+<ul>
+<li>為單元運算子</li>
+<li>會移除物件中已命名的屬性</li>
+<li>不常使用</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> anObject = &#123;</span><br><span class="line">    left: <span class="number">1</span>, </span><br><span class="line">    right: <span class="number">2</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(anObject.left);</span><br><span class="line"><span class="comment">// -&gt; 1</span></span><br><span class="line"><span class="keyword">delete</span> anObject.left;</span><br><span class="line"><span class="built_in">console</span>.log(anObject.left);</span><br><span class="line"><span class="comment">// -&gt; undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"left"</span> <span class="keyword">in</span> anObject);</span><br><span class="line"><span class="comment">// -&gt; false</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"right"</span> <span class="keyword">in</span> anObject);</span><br><span class="line"><span class="comment">// -&gt; true</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>in</code> =&gt; 應用在字串或物件，會回傳是否有該屬性名稱存在</li>
+</ul>
+</li>
+<li>
+<p>設定屬性值為<code>undefined</code>跟實際移除該屬性的差別在於：</p>
+<ul>
+<li>前者的物件仍然存在該屬性，只是不存在該有的值</li>
+<li>後者則是不復存在該屬性，使用<code>in</code>會回傳<code>false</code></li>
+</ul>
+</li>
+<li>
+<p><code>Object.keys</code> =&gt; 查看物件屬性，會回傳物件屬性名稱的陣列字串</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.keys(&#123;<span class="attr">x</span>: <span class="number">0</span>, <span class="attr">y</span>: <span class="number">0</span>, <span class="attr">z</span>: <span class="number">2</span>&#125;));</span><br><span class="line"><span class="comment">// -&gt; ["x", "y", "z"]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>Object.assign</code> =&gt; 複製某個物件的所有屬性到另一個物件上</p>
+<ul>
+<li>總共兩個參數，第一個為目標物件，第二個為來源物件</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> objectA = &#123;<span class="attr">a</span>: <span class="number">1</span>, <span class="attr">b</span>: <span class="number">2</span>&#125;;</span><br><span class="line"><span class="built_in">Object</span>.assign(objectA, &#123;<span class="attr">b</span>: <span class="number">3</span>, <span class="attr">c</span>: <span class="number">4</span>&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(objectA);</span><br><span class="line"><span class="comment">// -&gt; &#123;a: 1, b: 3, c: 4&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>陣列即是一種特別用來儲存連續性資料的物件</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="keyword">typeof</span> []);</span><br><span class="line"><span class="comment">// -&gt; object</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>可以將其視為以數字做為屬性的物件</li>
+</ul>
+</li>
+</ul>
+<h2 id="Multability"><a class="header-anchor" href="#Multability"></a><strong>Multability</strong></h2>
+<ul>
+<li>
+<p>我們理解到物件的值是可以修改的，然而值的型別卻是<strong>immutable (不可改變的)</strong></p>
+</li>
+<li>
+<p>物件的運作方式較為不同，我們可以改變其屬性，使單一物件可含有不同的內容</p>
+</li>
+<li>
+<p>假設我們有兩個數字分別為120、120，雖然這兩個數字可能指向不同的記憶體位址</p>
+<ul>
+<li>以物件來說，兩個物件指向相同位址跟兩個具有相同屬性的物件，兩者是不同的</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> object1 = &#123;<span class="attr">value</span>: <span class="number">10</span>&#125;;</span><br><span class="line"><span class="keyword">let</span> object2 = object1;</span><br><span class="line"><span class="keyword">let</span> object3 = &#123;<span class="attr">value</span>: <span class="number">10</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(object1 == object2);</span><br><span class="line"><span class="comment">// -&gt; true</span></span><br><span class="line"><span class="built_in">console</span>.log(object1 == object3);</span><br><span class="line"><span class="comment">// -&gt; false</span></span><br><span class="line"></span><br><span class="line">object1.value = <span class="number">15</span>;</span><br><span class="line"><span class="built_in">console</span>.log(object2.value);</span><br><span class="line"><span class="comment">// -&gt; 15</span></span><br><span class="line"><span class="built_in">console</span>.log(object3.value);</span><br><span class="line"><span class="comment">// -&gt; 10</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>object1</code>、<code>object2</code>兩者指向同一位址，故其中一個變動，另一個也會變；但<code>object3</code>指向不同位址，雖然起始值相同，但實際上卻有所區別</li>
+<li><code>==</code>可用於比較物件
+<ul>
+<li>回傳<code>true</code> =&gt; 兩物件精確擁有相同值</li>
+<li>Javascipt中沒有更深入的比較，比如比較物件內容，但可由自己實現</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Binding是可變動或為常數的</p>
+<ul>
+<li><code>let</code> =&gt; 可變動值</li>
+<li><code>const</code> =&gt; 若以物件，可能變動</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> score = &#123;<span class="attr">visitors</span>: <span class="number">0</span>, <span class="attr">home</span>: <span class="number">0</span>&#125;;    <span class="comment">// This is fine.</span></span><br><span class="line">score.visitors = <span class="number">1</span>;                      </span><br><span class="line">score = &#123;<span class="attr">visitors</span>: <span class="number">1</span>, <span class="attr">home</span>: <span class="number">1</span>&#125;;          <span class="comment">// This is not allowed.</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="The-Lycanthrope’s-Log"><a class="header-anchor" href="#The-Lycanthrope’s-Log"></a><strong>The Lycanthrope’s Log</strong></h2>
+<ul>
+<li>
+<p>在weresquarrel中，Jacques開始使用javascipt並設定環境以進行其日記</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> journal = [];</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">addEntry</span>(<span class="params">events, squirrel</span>)</span>&#123;</span><br><span class="line">    journal.push(&#123;events, squirrel&#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>會發現新增到日記本的方法有些出人意表，不再是宣告屬性(例如：<code>events: events</code>)，而只是給予屬性名稱 =&gt; 速記法</li>
+<li>下面是Jacques的紀錄</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">addEntry([<span class="string">"work"</span>, <span class="string">"touched tree"</span>, <span class="string">"pizza"</span>, <span class="string">"running"</span>, <span class="string">"television"</span>], <span class="literal">false</span>);</span><br><span class="line">addEntry([<span class="string">"work"</span>, <span class="string">"ice cream"</span>, <span class="string">"cauliflower"</span>, <span class="string">"lasagna"</span>, <span class="string">"touched tree"</span>, <span class="string">"brushed teeth"</span>], <span class="literal">false</span>);</span><br><span class="line">addEntry([<span class="string">"weekend"</span>, <span class="string">"cycling"</span>, <span class="string">"break"</span>, <span class="string">"peanuts"</span>, <span class="string">"beer"</span>], <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>只要Jacques蒐集到足夠多資料，便會統計是那些活動關係到松鼠化。</li>
+</ul>
+</li>
+<li>
+<p>首先會有個表格紀錄次數，再透過公式進行計算</p>
+<ul>
+<li>
+<p>以pizza為例，其表格可能如下</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>!pizza</th>
+<th>pizza</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>!squirrel</td>
+<td>76</td>
+<td>9</td>
+</tr>
+<tr>
+<td>squirrel</td>
+<td>4</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>計算ψ的公式<br>
+$$<br>
+φ = {n_{11}n_{00} - n_{10}n_{01} \over \sqrt{n_{1ｘ} * n_{0ｘ} * n_{ｘ1} * n_{ｘ0}}}.<br>
+$$</p>
+</li>
+<li>
+<p>計算過程 =&gt;</p>
+<ul>
+<li>1 * 76 - 4 * 9 = 40</li>
+<li>5 * 85 * 10 * 80 = 340000</li>
+<li>φ = 40 / sqrt{340000} = 0.069</li>
+</ul>
+</li>
+<li>
+<p>如此可以得知吃pizza不會是影響變形的主要因素</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Computing-Correlation"><a class="header-anchor" href="#Computing-Correlation"></a><em>Computing Correlation</em></h3>
+<ul>
+<li>
+<p>表示2 * 2矩陣的方法：</p>
+<ol>
+<li>四元素的一元陣列 =&gt; <code>([76, 9, 4, 1])</code></li>
+<li>二元陣列 =&gt; <code>([[76, 9], [4, 1]])</code></li>
+<li>物件，並取屬性名為<code>11</code>、<code>01</code>等</li>
+</ol>
+</li>
+<li>
+<p>我們將index視為兩bits的二進位數</p>
+<ul>
+<li>左邊位元表示squirrel變數</li>
+<li>右邊位元表示event變數</li>
+<li>例如<code>10</code>表示Jacques有變成松鼠，但沒有進行該項活動；<code>10</code>相當於十進位的<code>2</code>，故儲存在index 2上</li>
+</ul>
+</li>
+<li>
+<p>將φ寫成function</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">phi</span>(<span class="params">table</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (table[<span class="number">3</span>] * table[<span class="number">0</span>] - table[<span class="number">2</span>] * table[<span class="number">1</span>]) / <span class="built_in">Math</span>.sqrt((table[<span class="number">2</span>] + table[<span class="number">3</span>]) * (table[<span class="number">0</span>] + table[<span class="number">1</span>]) * (table[<span class="number">1</span>] + table[<span class="number">3</span>]) * (table[<span class="number">0</span>] + table[<span class="number">2</span>]));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(phi([<span class="number">76</span>, <span class="number">9</span>, <span class="number">4</span>, <span class="number">1</span>]));</span><br><span class="line"><span class="comment">// -&gt; 0.68599434</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>Math.sqrt</code> =&gt; 開方的function，由Javascript標準環境的<code>Math</code>物件所提供的</li>
+</ul>
+</li>
+<li>
+<p>Jacques持續記錄三個月，全部儲存在<a href="https://eloquentjavascript.net/code/journal.js" target="_blank" rel="noopener">JOURNAL</a></p>
+</li>
+<li>
+<p>利用迴圈將<a href="https://eloquentjavascript.net/code/journal.js" target="_blank" rel="noopener">JOURNAL</a>中的活動輸出成2 * 2的表格，以方便找出符合松鼠化的活動</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">tableFor</span>(<span class="params">event, journal</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> table = [<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i &lt; journal.length;i++)&#123;</span><br><span class="line">        <span class="keyword">let</span> entry = journal[i], index = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span>(entry.events.includes(event)) index += <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(entry.squirrel) index += <span class="number">2</span>;</span><br><span class="line">        table[index] += <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> table</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(tableFor(<span class="string">"pizza"</span>, JOURNAL));</span><br><span class="line"><span class="comment">// -&gt; [76, 9, 4, 1]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>includes</code> =&gt; 確認所給的值存在於陣列與否</li>
+</ul>
+</li>
+</ul>
+<h3 id="Array-Loops"><a class="header-anchor" href="#Array-Loops"></a><em>Array Loops</em></h3>
+<ul>
+<li>
+<p>在<code>tableFor</code>的function中，迴圈長相如下：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span>;i &lt; journal.length;i++)&#123;</span><br><span class="line">    <span class="keyword">let</span> entry = journal[i];</span><br><span class="line">    <span class="comment">// Do something with entry</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>這是經典Javascript常見的迴圈寫法</li>
+</ul>
+</li>
+<li>
+<p>現代Javascript有更簡潔的寫法如下：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> entry <span class="keyword">of</span> journal)&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;entry.events.length&#125;</span> events.`</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在變數宣告後接<code>of</code>，會跑完所有在<code>of</code>後變數內的所有元素</li>
+<li>可用在array、string或是其他資料結構</li>
+</ul>
+<blockquote>
+<p>會在之後進行討論</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="The-Final-Analysis"><a class="header-anchor" href="#The-Final-Analysis"></a><em>The Final Analysis</em></h3>
+<ul>
+<li>
+<p>我們需要計算所有活動的關聯係數，首先要找出所有活動的類型</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">journalEvents</span>(<span class="params">journal</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> events = [];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> entry <span class="keyword">of</span> journal)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> event <span class="keyword">of</span> entry.events)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!events.includes(event))&#123;</span><br><span class="line">                events.push(event);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> events;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(journalEvents(JOURNAL));</span><br><span class="line"><span class="comment">// -&gt; ["carrot", "exercise", ...]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>接著計算每個活動的關聯係數</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> event <span class="keyword">of</span> journalEvents(JOURNAL))&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(event + <span class="string">":"</span>, phi(tableFor(event, JOURNAL)));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>再進一步限縮範圍在大於0.1或小於-0.1</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> event <span class="keyword">of</span> journalEvents(JOURNAL))&#123;</span><br><span class="line">    <span class="keyword">let</span> correlation = phi(tableFor(event, JOURNAL));</span><br><span class="line">    <span class="keyword">if</span>(correlation &gt; <span class="number">0.1</span> || correlation &lt; <span class="number">-0.1</span>)&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(event + <span class="string">":"</span>, correlation); </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如此可以找到兩個較可能的因素 =&gt; Eating peanuts &amp; brushing teeth</li>
+<li>故再進一步做確認</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> entry <span class="keyword">of</span> JOURNAL)&#123;</span><br><span class="line">    <span class="keyword">if</span>(entry.events.includes(<span class="string">"peanuts"</span>) &amp;&amp; !entry.events.includes(<span class="string">"brushed teeth"</span>))&#123;</span><br><span class="line">        entry.events.push(<span class="string">"peanut teeth"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(phi(tableFor(<span class="string">"peanut teeth"</span>, JOURNAL)));</span><br><span class="line"><span class="comment">// -&gt; 1</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>如此得證Jacques會在吃完花生且沒刷牙的狀態下變成松鼠</li>
+</ul>
+</li>
+</ul>
+<div class="success">
+<p>得知此事後，Jacques不再吃花生，至此也就沒有再發生變形事故。<br>
+多年後，Jacques身上卻發生了重大的改變，首先是他失業了，原因在於居住在一個失業即失去醫療資源的荒亂城市，逼迫他受雇於馬戲團，並以&quot;The Incredible Squirrelman&quot;進行演出，且在每場演出前都會在嘴上塗滿花生醬。<br>
+某天，Jacques厭倦了如此糟糕的生存方式，同時再也變不回人形，從馬戲團帳篷的破洞跳出去之後，從此消失再森林中。</p>
+</div>
+<hr>
+<h2 id="Further-Arrayology"><a class="header-anchor" href="#Further-Arrayology"></a><strong>Further Arrayology</strong></h2>
+<ul>
+<li>
+<p>接著會介紹幾個常用的、且好用的array method</p>
+</li>
+<li>
+<p><code>shift</code>、<code>unshift</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> todoList = [];</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">remember</span>(<span class="params">task</span>)</span>&#123;</span><br><span class="line">    todoList.push(task);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getTask</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> todoList.shift();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">rememberUrgently</span>(<span class="params">task</span>)</span>&#123;</span><br><span class="line">    todoList.unshift(task);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>這是管理任務的queue</li>
+<li><code>getTask()</code> =&gt; 取得第一個項目並從queue中移除</li>
+<li><code>rememberUrgently</code> =&gt; 增加任務到queue的第一個項目</li>
+</ul>
+</li>
+<li>
+<p><code>indexOf</code>、<code>lastIndexOf</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>].indexOf(<span class="number">2</span>));</span><br><span class="line"><span class="comment">// -&gt; 1</span></span><br><span class="line"><span class="built_in">console</span>.log([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>].lastIndexOf(<span class="number">2</span>));</span><br><span class="line"><span class="comment">// -&gt; 3</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>indexOf</code> =&gt; 從頭開始找特定值的index</li>
+<li><code>lastIndexOf</code> =&gt; 從末端開始找特定值的index</li>
+<li>皆有第二個參數可輸入 =&gt; 從第幾個開始找</li>
+</ul>
+</li>
+<li>
+<p><code>slice</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].slice(<span class="number">2</span>, <span class="number">4</span>))</span><br><span class="line"><span class="comment">// -&gt; [2, 3]</span></span><br><span class="line"><span class="built_in">console</span>.log([<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>].slice(<span class="number">2</span>))</span><br><span class="line"><span class="comment">// -&gt; [2, 3, 4]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>取起始以及終止的index，回傳其中的元素</li>
+<li>包含起始的index，不包含終止的index</li>
+<li>亦可省略終止index已取得起始index之後的所有元素</li>
+</ul>
+</li>
+<li>
+<p><code>concat</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">remove</span>(<span class="params">array, index</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> array.slice(<span class="number">0</span>, index).concat(array.slice(index + <span class="number">1</span>));</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(remove([<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>], <span class="number">2</span>));</span><br><span class="line"><span class="comment">// -&gt; ["a", "b", "d", "e"]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>將特定陣列串聯成新的陣列，類似<code>+</code>在字串中的使用</li>
+<li>如果沒有<code>concat</code>而取走中間值，會分裂成兩個陣列 (若為一元陣列)</li>
+</ul>
+</li>
+</ul>
+<h2 id="Strings-and-Their-Properties"><a class="header-anchor" href="#Strings-and-Their-Properties"></a><em>Strings and Their Properties</em></h2>
+<ul>
+<li>
+<p>若是常是添加新的屬性進到string中，並不會成功</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> kim = <span class="string">"Kim"</span>;</span><br><span class="line">kim.age = <span class="number">88</span>;</span><br><span class="line"><span class="built_in">console</span>.log(kim.age);</span><br><span class="line"><span class="comment">// -&gt; undefined</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>string、number、Boolean這類型別並非物件，故無法新增屬性，但卻有內建好的屬性</li>
+</ul>
+</li>
+<li>
+<p><code>slice</code>、<code>indexOf</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"coconuts"</span>.slice(<span class="number">4</span>, <span class="number">7</span>));</span><br><span class="line"><span class="comment">// -&gt; nut</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"coconuts"</span>.indexOf(<span class="string">"u"</span>));</span><br><span class="line"><span class="comment">// -&gt; 5</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>與array的method相似</li>
+<li>不同的點在於<code>indexOf</code>可以在字串中尋找一個以上的字元；陣列只能找單一個元素</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"one two three"</span>.indexOf(<span class="string">"ee"</span>));</span><br><span class="line"><span class="comment">// -&gt; 11</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>trim</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"    okay \n"</span>.trim());</span><br><span class="line"><span class="comment">// -&gt; okay</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>移除字串首尾的空白、換行、tabs等等類似的字元</li>
+</ul>
+</li>
+<li>
+<p><code>padStart</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">String</span>(<span class="number">6</span>).padStart(<span class="number">3</span>, <span class="string">"0"</span>));</span><br><span class="line"><span class="comment">// -&gt; 006</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在設計的長度內填充字元</li>
+</ul>
+</li>
+<li>
+<p><code>split</code>、<code>join</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> sentence = <span class="string">"Secretarybirds specialize in stomping"</span>;</span><br><span class="line"><span class="keyword">let</span> words = sentence.split(<span class="string">" "</span>);</span><br><span class="line"><span class="built_in">console</span>.log(words);</span><br><span class="line"><span class="comment">// -&gt; ["Secretarybirds", "specialize", "in", "stomping"]</span></span><br><span class="line"><span class="built_in">console</span>.log(words.join(<span class="string">". "</span>));</span><br><span class="line"><span class="comment">// -&gt; Secretarybirds. specialize. in. stomping</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>repeat</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">"LA"</span>.repeat(<span class="number">3</span>));</span><br><span class="line"><span class="comment">// -&gt; LALALA</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>length</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> string = <span class="string">"abc"</span>;</span><br><span class="line"><span class="built_in">console</span>.log(string.length);</span><br><span class="line"><span class="comment">// -&gt; 3</span></span><br><span class="line"><span class="built_in">console</span>.log(string[<span class="number">1</span>]);</span><br><span class="line"><span class="comment">// -&gt; b</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Rest-Parameters"><a class="header-anchor" href="#Rest-Parameters"></a><em>Rest Parameters</em></h3>
+<ul>
+<li>
+<p>這在接收數字的argument非常方便，比如在<code>Math.max</code>可以接收所有argument</p>
+</li>
+<li>
+<p>寫法為在function最後一個參數前寫三個點</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">max</span>(<span class="params">...numbers</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> result = -<span class="literal">Infinity</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> number <span class="keyword">of</span> numbers)&#123;</span><br><span class="line">        <span class="keyword">if</span>(number &gt; result) result = number;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(max(<span class="number">4</span>, <span class="number">1</span>, <span class="number">9</span>, <span class="number">-2</span>));</span><br><span class="line"><span class="comment">// -&gt; 9</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>此便稱為 rest parameter</li>
+<li>另外也能用陣列的argument呼叫function</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> numbers = [<span class="number">5</span>, <span class="number">1</span>, <span class="number">7</span>];</span><br><span class="line"><span class="built_in">console</span>.log(max(...numbers));</span><br><span class="line"><span class="comment">// -&gt; 7</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>可以在兩個參數中間加上陣列，如此得出新的陣列</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> words = [<span class="string">"never"</span>, <span class="string">"fully"</span>];</span><br><span class="line"><span class="built_in">console</span>.log([<span class="string">"will"</span>, ...words, <span class="string">"understand"</span>]);</span><br><span class="line"><span class="comment">// -&gt; ["will", "never", "fully", "understand"]</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="The-Math-Object"><a class="header-anchor" href="#The-Math-Object"></a><em>The Math Object</em></h3>
+<ul>
+<li>
+<p>與數字相關的實用function，其自己具備命名空間</p>
+<ul>
+<li>過多的全域變數命名會汙染命名空間，提高複寫的可能性</li>
+</ul>
+</li>
+<li>
+<p>三角函數</p>
+<ul>
+<li><code>cos</code>(cosine)、<code>sin</code>(sine)、<code>tan</code>(tangent)、<code>acos</code>、<code>asin</code>、<code>atan</code></li>
+<li><code>Math.PI</code> =&gt; π的近似值</li>
+</ul>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">randomPointOnCircle</span>(<span class="params">radius</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">let</span> angle = <span class="built_in">Math</span>.random() * <span class="number">2</span> * <span class="built_in">Math</span>.PI;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        x: radius * <span class="built_in">Math</span>.cos(angle), </span><br><span class="line">        y: radius * <span class="built_in">Math</span>.sin(angle)</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(randomPointOnCircle(<span class="number">2</span>));</span><br><span class="line"><span class="comment">// -&gt; &#123;x: 0.3667, y: 1.966&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>Math.random</code> =&gt; 回傳新的介於0到1之間亂數值</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Math</span>.random());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Math</span>.random());</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Math</span>.random());</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p><code>Math.floor</code> =&gt; 無條件捨去</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">10</span>));</span><br></pre></td></tr></table></figure>
+<ul>
+<li>其他還有類似的如：
+<ul>
+<li><code>Math.ceil</code> =&gt; 無條件進位</li>
+<li><code>Math.round</code> =&gt; 四捨五入</li>
+<li><code>Math.abs</code> =&gt; 取絕對值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Destructuring"><a class="header-anchor" href="#Destructuring"></a><em>Destructuring</em></h3>
+<ul>
+<li>
+<p>看回<code>phi</code>function</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">phi</span>(<span class="params">table</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (table[<span class="number">3</span>] * table[<span class="number">0</span>] - table[<span class="number">2</span>] * table[<span class="number">1</span>]) / <span class="built_in">Math</span>.sqrt((table[<span class="number">2</span>] + table[<span class="number">3</span>]) * (table[<span class="number">0</span>] + table[<span class="number">1</span>]) * (table[<span class="number">1</span>] + table[<span class="number">3</span>]) * (table[<span class="number">0</span>] + table[<span class="number">2</span>]));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如上來看相當費力，若用陣列中的元素會更好讀，方法有二：
+<ol>
+<li>宣告<code>let n00 = table[0]</code>…</li>
+<li>用Javascript更簡明的方法來寫：</li>
+</ol>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">phi</span>(<span class="params">[n00, n01, n10, n11]</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (n11 * n00 - n10 * n01) / <span class="built_in">Math</span>.sqrt((n10 + n11) * (n00 + n01) * (n01 + n11) * (n00 + n10));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>
+<p>在宣告<code>let</code>、<code>var</code>、<code>const</code>，若確定值為陣列，可用方括弧來表示</p>
+</li>
+<li>
+<p>類似的想是確定為物件，則用大括弧代替方括弧</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> &#123;name&#125; = &#123;<span class="attr">name</span>: <span class="string">"Faraji"</span>, <span class="attr">age</span>: <span class="number">23</span>&#125;;</span><br><span class="line"><span class="built_in">console</span>.log(name);</span><br><span class="line"><span class="comment">// -&gt; Faraji</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>若嘗試用<code>null</code>、<code>undefined</code>重架構則會回傳Error</p>
+</li>
+</ul>
+
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/" data-id="ck5plbl8s0002x8accwza0h44"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/array/" rel="tag">array</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/data-structure/" rel="tag">data structure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/function/" rel="tag">function</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/" rel="tag">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/method/" rel="tag">method</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/object/" rel="tag">object</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            用Python編譯簡單UDP DoS工具
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/09/12/Zip%20Cracker/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Zip Cracker</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '10625ff957aef51a06bf',
+    clientSecret: '314e364248568028064347a4a7df418bb734433f',
+    repo: 'nightcatv.github.io',
+    owner: 'nightcatv',
+    admin: ['nightcatv'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+			onClick: (e) => {
+      	document.getElementById(e.target.innerText).scrollIntoView()
+      	return false;
+    	}
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>

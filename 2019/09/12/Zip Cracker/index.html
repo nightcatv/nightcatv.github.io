@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Zip Cracker |  Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-Zip Cracker" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Zip Cracker
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/09/12/Zip%20Cracker/" class="article-date">
+  <time datetime="2019-09-12T06:45:00.000Z" itemprop="datePublished">2019-09-12</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a> / <a class="article-category-link" href="/categories/Cyber-Security/Tool/">Tool</a> / <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字數統計:</span>
+            <span class="post-count">1.3k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 閱讀時長≈</span>
+            <span class="post-count">6分鐘</span>
+        </span>
+    </span>
+</div>
+
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="基本原理"><a class="header-anchor" href="#基本原理"></a><strong>基本原理</strong></h2>
+<blockquote>
+<p>Environment:</p>
+<ol>
+<li>Python 2.7 / Python 3.X</li>
+<li>Zipfile</li>
+</ol>
+</blockquote>
+<ul>
+<li>
+<p>這個Cracker本身是非常簡易的版本，主要方法是</p>
+<ul>
+<li>使用brute-force attack的方式，一一的去try密碼，最後再得到最終的結果</li>
+</ul>
+</li>
+<li>
+<p>整個專案的順序如下：</p>
+<ul>
+<li>首先準備一個加密過的zip檔(test.zip)，且使用8位元的數字密碼</li>
+<li>創建一個字典檔</li>
+<li>將加密過的zip檔以及字典檔一併餵入腳本中來破解</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<h2 id="word-list"><a class="header-anchor" href="#word-list"></a><strong>word list</strong></h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100000000</span>):</span><br><span class="line">    print(<span class="string">"%08d"</span> % i)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>首先創立一個檔案，個人命名為<code>gen_key.py</code></li>
+<li>運行這個程式後將結果寫入另一個檔案</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python gen_key.py &gt; dict.txt</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>dict.txt</code>便是我們所需要的字典檔(word list)</li>
+</ul>
+<h2 id="zip-cracker"><a class="header-anchor" href="#zip-cracker"></a><strong>zip cracker</strong></h2>
+<ul>
+<li>先將所需的套件引入：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"><span class="keyword">import</span> optparse</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> os</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>zipfile</code>用來處理zip檔案相關的動作</li>
+<li><code>optparse</code>用來處理命令列的指令</li>
+<li><code>time</code>用來取得各項時間</li>
+<li><code>os</code>用來針對本機進行一些操作</li>
+</ul>
+</li>
+<li>首先我們需要兩個function: main、extractFile  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extractFile</span><span class="params">(toPath, zFile, password)</span>:</span></span><br><span class="line">    <span class="string">"""</span></span><br><span class="line"><span class="string">    :param toPath: &lt;str&gt; the path that wa want to extract the file</span></span><br><span class="line"><span class="string">    :param zFile: &lt;str&gt; the encoded zip file name</span></span><br><span class="line"><span class="string">    :param password: &lt;byte&gt; password that we want to try</span></span><br><span class="line"><span class="string">    :return: &lt;bool&gt; if the password is correct then return true</span></span><br><span class="line"><span class="string">    """</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="extractFile"><a class="header-anchor" href="#extractFile"></a><em>extractFile</em></h3>
+<ul>
+<li>我們使用try…except來做判斷
+<ul>
+<li>如果try出結果 (即密碼正確) 則會return true並將壓縮檔中的所有檔案解壓縮；其他的會出現錯誤，則return false</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extractFile</span><span class="params">(toPath, zFile, password)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        zFile.extractall(path = toPath, pwd = password)</span><br><span class="line">        <span class="keyword">return</span> true</span><br><span class="line">    <span class="keyword">except</span> Exception:</span><br><span class="line">        <span class="keyword">return</span> false</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>zipfile.extractall(path, member, pwd)</code>三個參數：
+<ul>
+<li><code>path</code>預設為None，可以設定不同的路徑來解壓縮</li>
+<li><code>member</code>預設為None，可解壓縮該檔案中特定的幾個檔案，但要以list形式餵入參數</li>
+<li><code>pwd</code>預設為None，主要使用再加密的檔案</li>
+</ul>
+</li>
+<li><code>Exception</code>會捕捉所有例外、異常、錯誤</li>
+</ul>
+</li>
+</ul>
+<h3 id="main-Py2"><a class="header-anchor" href="#main-Py2"></a><em>main (Py2)</em></h3>
+<ul>
+<li>首先先做寫死的function來運行  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    zFile = zipfile.Zipfile(<span class="string">"test.zip"</span>)</span><br><span class="line">    passFile = open(dict.txt)</span><br><span class="line">    <span class="keyword">for</span> password <span class="keyword">in</span> passFile.readlines():</span><br><span class="line">        start = time.clock()</span><br><span class="line">        password = password.strip(<span class="string">"\n"</span>)</span><br><span class="line">        guess = extractFile(<span class="string">"./"</span>, zFile, password)</span><br><span class="line">        <span class="keyword">if</span> guess:</span><br><span class="line">            end = time.clock()</span><br><span class="line">            print(<span class="string">"KEY FOUND!!"</span>)</span><br><span class="line">            print(<span class="string">"The password is "</span> + password)</span><br><span class="line">            print(<span class="string">"Execution time: "</span> + str(end - start) + <span class="string">"s"</span>)</span><br><span class="line">            print()</span><br><span class="line">            print(<span class="string">"Extracting the file to './' ..."</span>)</span><br><span class="line">            print(<span class="string">"Complete!!"</span>)</span><br><span class="line">            os.popen(<span class="string">'M3554C-3.txt'</span>)</span><br><span class="line">            exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>先從簡單的架構來進行思考</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    宣告zip檔案跟字典檔</span><br><span class="line">    <span class="keyword">for</span> (一行一行讀取字典檔):</span><br><span class="line">        紀錄開始時間</span><br><span class="line">        將字典檔讀出的結果、zip檔名、欲解壓縮的路徑共三個參數傳入函式中</span><br><span class="line">        <span class="keyword">if</span> 回傳true，即確定密碼正確:</span><br><span class="line">            紀錄結束時間</span><br><span class="line">            印出密碼</span><br><span class="line">            計算執行時間並印出來</span><br><span class="line">            顯示壓縮檔中文件的內容</span><br><span class="line">            結束程式</span><br></pre></td></tr></table></figure>
+</li>
+<li>加上用指令傳入zip檔名、字典檔檔名  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    parser = optparse.OptionParser(<span class="string">"[+]Usage: %prog -f &lt;zipFile&gt; -d &lt;dictFile&gt;"</span>)</span><br><span class="line">    parser.add_option(<span class="string">"-f"</span>, dest = <span class="string">"zname"</span>, type = <span class="string">"string"</span>, help = <span class="string">"specify zip file"</span>)</span><br><span class="line">    parser.add_option(<span class="string">"-d"</span>, dest = <span class="string">"dname"</span>, type = <span class="string">"string"</span>, help = <span class="string">"specify dict file"</span>)</span><br><span class="line">    (options, args) = parser.parse_args()</span><br><span class="line">    <span class="keyword">if</span>(options.zname == <span class="literal">None</span>) <span class="keyword">or</span> (options.dname == <span class="literal">None</span>):</span><br><span class="line">        print(parser.usage)</span><br><span class="line">        exit(<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        zname = options.zname</span><br><span class="line">        dname = options.dname</span><br><span class="line">        zFile = zipfile.ZipFile(zname)</span><br><span class="line">        passFile = open(dname)</span><br><span class="line">        <span class="keyword">for</span> password <span class="keyword">in</span> passFile.readlines():</span><br><span class="line">            start = time.clock()</span><br><span class="line">            password = password.strip(<span class="string">"\n"</span>)</span><br><span class="line">            guess = extractFile(<span class="string">"./"</span>, zFile, password)</span><br><span class="line">            <span class="keyword">if</span> guess:</span><br><span class="line">                end = time.clock()</span><br><span class="line">                print(<span class="string">"-----------------------------------------------"</span>)</span><br><span class="line">                print(<span class="string">"KEY FOUND!!"</span>)</span><br><span class="line">                print(<span class="string">"The password is "</span> + password)</span><br><span class="line">                print(<span class="string">"Execution time: "</span> + str(end - start) + <span class="string">"s"</span>)</span><br><span class="line">                print()</span><br><span class="line">                print(<span class="string">"Extracting the file to './' ..."</span>)</span><br><span class="line">                print(<span class="string">"Complete!!"</span>)</span><br><span class="line">                os.popen(<span class="string">'M3554C-3.txt'</span>)</span><br><span class="line">                exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="main-Py3"><a class="header-anchor" href="#main-Py3"></a><em>main (Py3)</em></h3>
+<ul>
+<li>Python 3.3以後已經取消<code>time.clock()</code>的function，改用<code>time_perf_counter()</code>，即performance counter  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    parser = optparse.OptionParser(<span class="string">"[+]Usage: %prog -f &lt;zipFile&gt; -d &lt;dictFile&gt;"</span>)</span><br><span class="line">    parser.add_option(<span class="string">"-f"</span>, dest = <span class="string">"zname"</span>, type = <span class="string">"string"</span>, help = <span class="string">"specify zip file"</span>)</span><br><span class="line">    parser.add_option(<span class="string">"-d"</span>, dest = <span class="string">"dname"</span>, type = <span class="string">"string"</span>, help = <span class="string">"specify dict file"</span>)</span><br><span class="line">    (options, args) = parser.parse_args()</span><br><span class="line">    <span class="keyword">if</span>(options.zname == <span class="literal">None</span>) <span class="keyword">or</span> (options.dname == <span class="literal">None</span>):</span><br><span class="line">        print(parser.usage)</span><br><span class="line">        exit(<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        zname = options.zname</span><br><span class="line">        dname = options.dname</span><br><span class="line">        zFile = zipfile.ZipFile(zname)</span><br><span class="line">        passFile = open(dname)</span><br><span class="line">        <span class="keyword">for</span> password <span class="keyword">in</span> passFile:</span><br><span class="line">            start = time.perf_counter()</span><br><span class="line">            password = password.strip(<span class="string">"\n"</span>)</span><br><span class="line">            guess = extractFile(<span class="string">"./"</span>, zFile, password)</span><br><span class="line">            <span class="keyword">if</span> guess:</span><br><span class="line">                end = time.perf_counter()</span><br><span class="line">                print(<span class="string">"-----------------------------------------------"</span>)</span><br><span class="line">                print(<span class="string">"KEY FOUND!!"</span>)</span><br><span class="line">                print(<span class="string">"The password is "</span> + password)</span><br><span class="line">                print(<span class="string">"Execution time: "</span> + str(end - start) + <span class="string">"s"</span>)</span><br><span class="line">                print()</span><br><span class="line">                print(<span class="string">"Extracting the file to './' ..."</span>)</span><br><span class="line">                print(<span class="string">"Complete!!"</span>)</span><br><span class="line">                os.popen(<span class="string">'M3554C-3.txt'</span>)</span><br><span class="line">                exit(<span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Complete-Code"><a class="header-anchor" href="#Complete-Code"></a><strong>Complete Code</strong></h3>
+<ul>
+<li>
+<p>在最後加上運行<code>main()</code>的判斷</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>完整程式碼如下：</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># gen_key.py</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">100000000</span>):</span><br><span class="line">    print(<span class="string">"%08d"</span> % i)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Python 2.7 Version</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># zip_cracker(py2).py</span></span><br><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"><span class="keyword">import</span> optparse</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extractFile</span><span class="params">(toPath, zFile, password)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        zFile.extractall(path = toPath, pwd = password)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">except</span> Exception:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    parser = optparse.OptionParser(<span class="string">"[+]Usage: %prog -f &lt;zipFile&gt; -d &lt;dictFile&gt;"</span>)</span><br><span class="line">    parser.add_option(<span class="string">"-f"</span>, dest = <span class="string">"zname"</span>, type = <span class="string">"string"</span>, help = <span class="string">"specify zip file"</span>)</span><br><span class="line">    parser.add_option(<span class="string">"-d"</span>, dest = <span class="string">"dname"</span>, type = <span class="string">"string"</span>, help = <span class="string">"specify dict file"</span>)</span><br><span class="line">    (options, args) = parser.parse_args()</span><br><span class="line">    <span class="keyword">if</span>(options.zname == <span class="literal">None</span>) <span class="keyword">or</span> (options.dname == <span class="literal">None</span>):</span><br><span class="line">        print(parser.usage)</span><br><span class="line">        exit(<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        zname = options.zname</span><br><span class="line">        dname = options.dname</span><br><span class="line">        zFile = zipfile.ZipFile(zname)</span><br><span class="line">        passFile = open(dname)</span><br><span class="line">        <span class="keyword">for</span> password <span class="keyword">in</span> passFile.readlines():</span><br><span class="line">            start = time.clock()</span><br><span class="line">            password = password.strip(<span class="string">"\n"</span>)</span><br><span class="line">            guess = extractFile(<span class="string">"./"</span>, zFile, password)</span><br><span class="line">            <span class="keyword">if</span> guess:</span><br><span class="line">                end = time.clock()</span><br><span class="line">                print(<span class="string">"KEY FOUND!!"</span>)</span><br><span class="line">                print(<span class="string">"The password is "</span> + password)</span><br><span class="line">                print(<span class="string">"Execution time: "</span> + str(end - start) + <span class="string">"s"</span>)</span><br><span class="line">                print()</span><br><span class="line">                print(<span class="string">"Extracting the file to './' ..."</span>)</span><br><span class="line">                print(<span class="string">"Complete!!"</span>)</span><br><span class="line">                os.popen(<span class="string">'M3554C-3.txt'</span>)</span><br><span class="line">                exit(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Python 3.X Version</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> zipfile</span><br><span class="line"><span class="keyword">import</span> optparse</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">extractFile</span><span class="params">(toPath, zFile, password)</span>:</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        zFile.extractall(path = toPath, pwd = password.encode())</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">True</span></span><br><span class="line">    <span class="keyword">except</span> Exception:</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">False</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    parser = optparse.OptionParser(<span class="string">"[+]Usage: %prog -f &lt;zipFile&gt; -d &lt;dictFile&gt;"</span>)</span><br><span class="line">    parser.add_option(<span class="string">"-f"</span>, dest = <span class="string">"zname"</span>, type = <span class="string">"string"</span>, help = <span class="string">"specify zip file"</span>)</span><br><span class="line">    parser.add_option(<span class="string">"-d"</span>, dest = <span class="string">"dname"</span>, type = <span class="string">"string"</span>, help = <span class="string">"specify dict file"</span>)</span><br><span class="line">    (options, args) = parser.parse_args()</span><br><span class="line">    <span class="keyword">if</span>(options.zname == <span class="literal">None</span>) <span class="keyword">or</span> (options.dname == <span class="literal">None</span>):</span><br><span class="line">        print(parser.usage)</span><br><span class="line">        exit(<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        zname = options.zname</span><br><span class="line">        dname = options.dname</span><br><span class="line">        zFile = zipfile.ZipFile(zname)</span><br><span class="line">        passFile = open(dname)</span><br><span class="line">        <span class="keyword">for</span> password <span class="keyword">in</span> passFile:</span><br><span class="line">            start = time.perf_counter()</span><br><span class="line">            password = password.strip(<span class="string">"\n"</span>)</span><br><span class="line">            guess = extractFile(<span class="string">"./"</span>, zFile, password)</span><br><span class="line">            <span class="keyword">if</span> guess:</span><br><span class="line">                end = time.perf_counter()</span><br><span class="line">                print(<span class="string">"-----------------------------------------------"</span>)</span><br><span class="line">                print(<span class="string">"KEY FOUND!!"</span>)</span><br><span class="line">                print(<span class="string">"The password is "</span> + password)</span><br><span class="line">                print(<span class="string">"Execution time: "</span> + str(end - start) + <span class="string">"s"</span>)</span><br><span class="line">                print()</span><br><span class="line">                print(<span class="string">"Extracting the file to './' ..."</span>)</span><br><span class="line">                print(<span class="string">"Complete!!"</span>)</span><br><span class="line">                os.popen(<span class="string">'M3554C-3.txt'</span>)</span><br><span class="line">                exit(<span class="number">0</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                print(<span class="string">"Cracking ... "</span> + password)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/09/12/Zip%20Cracker/" data-id="ck5plbl93000fx8acdscndhkd"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/brute-force-attack/" rel="tag">brute-force attack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/crack/" rel="tag">crack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/zip/" rel="tag">zip</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Data Structures in JavaScript: Objects and Arrays
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Learn Blockchain by Building One</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '10625ff957aef51a06bf',
+    clientSecret: '314e364248568028064347a4a7df418bb734433f',
+    repo: 'nightcatv.github.io',
+    owner: 'nightcatv',
+    admin: ['nightcatv'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+			onClick: (e) => {
+      	document.getElementById(e.target.innerText).scrollIntoView()
+      	return false;
+    	}
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>

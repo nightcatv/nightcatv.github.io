@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Flask - Database |  Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-Flask - Database" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Flask - Database
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/03/26/Flask%20-%20Database/" class="article-date">
+  <time datetime="2019-03-26T11:30:00.000Z" itemprop="datePublished">2019-03-26</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字數統計:</span>
+            <span class="post-count">3.7k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 閱讀時長≈</span>
+            <span class="post-count">15分鐘</span>
+        </span>
+    </span>
+</div>
+
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <ul>
+<li>web app最常用的資料庫：關聯式模型
+<ul>
+<li>又稱為 <mark>SQL資料庫</mark>
+<blockquote>
+<p>SQL：Structured Query Language，結構化查詢語言</p>
+</blockquote>
+</li>
+<li>流行的替代方案：<mark>NoSQL資料庫</mark>
+<blockquote>
+<p>即文件導向(document-oriented)、鍵值(key-value)資料庫</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<hr>
+<h2 id="SQL-and-NoSQL-Database"><a class="header-anchor" href="#SQL-and-NoSQL-Database"></a><strong>SQL and NoSQL Database</strong></h2>
+<h3 id="SQL-Database"><a class="header-anchor" href="#SQL-Database"></a><em>SQL Database</em></h3>
+<ul>
+<li>關聯式資料庫：
+<ul>
+<li>將資料存入<strong>資料表</strong></li>
+<li>用資料表建立實體(Entity)的模型</li>
+</ul>
+</li>
+<li>資料表含：
+<ul>
+<li>固定的<strong>欄位 (Column)</strong>
+<blockquote>
+<p>定義資料表所有代表實體的資料屬性</p>
+</blockquote>
+<ul>
+<li>有一個<strong>主鍵 (primary key)</strong>，保存一個不重複的識別碼 =&gt; 辨識每一列</li>
+<li>可能有<strong>外鍵 (foreign key)</strong>，參考同一表或另一表裡某列的主鍵 =&gt; 之間的連結稱為<strong>關聯 (relationship)</strong></li>
+</ul>
+</li>
+<li>可變數量的<strong>資料列 (Row)</strong>
+<blockquote>
+<p>每一列都定義一個實際資料元素，並將值指派某些/所有欄位</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="NoSQL-Database"><a class="header-anchor" href="#NoSQL-Database"></a><em>NoSQL Database</em></h3>
+<ul>
+<li>經常使用<strong>集合 (collection)</strong> 來取代資料表，<strong>文件</strong> 來取代紀錄</li>
+<li>設計上較難聯結，故大多不提供這種操作 =&gt; 若要查詢需要自行執行聯結操作</li>
+<li>資料表較少 =&gt; 資料會重複</li>
+<li>重複的資料可加快查詢速度，因為不需要聯結</li>
+</ul>
+<h3 id="SQL-or-NoSQL"><a class="header-anchor" href="#SQL-or-NoSQL"></a><em>SQL or NoSQL?</em></h3>
+<ul>
+<li>SQL優點：用高效、緊湊的形式來儲存結構化資料
+<ul>
+<li>資料盡量保持一致性</li>
+<li>具備<a href="https://en.wikipedia.org/wiki/ACID" target="_blank" rel="noopener">ACID</a>
+<ul>
+<li>Atomicity (不可分割性)</li>
+<li>Consistency (一致性)</li>
+<li>Isolation (隔離性)</li>
+<li>Durability (持久性)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>NoSQL對ACID要求不高，故有時會有性能的優勢</li>
+<li>對中小型而言，SQL和NoSQL效能差不多</li>
+</ul>
+<h3 id="Python-Database-Framework"><a class="header-anchor" href="#Python-Database-Framework"></a><em>Python Database Framework</em></h3>
+<ul>
+<li>多數資料庫引擎都有Python套件，包括開放原始碼、商業套件</li>
+<li>另外亦可用資料庫抽象層套件：SQLAlchemy、MongoEngine
+<blockquote>
+<p>抽象層：物件關係對應器(ORM) / 物件文件對應器(ODM)</p>
+</blockquote>
+<ul>
+<li>可在較高層面上使用正規的Python物件</li>
+</ul>
+</li>
+<li>選擇資料庫框架應評估下列因素：
+<ul>
+<li>易用性</li>
+<li>效能</li>
+<li>可攜性</li>
+<li>Flask整合</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="Use-Flask-SQLAlchemy"><a class="header-anchor" href="#Use-Flask-SQLAlchemy"></a><strong>Use <em>Flask-SQLAlchemy</em></strong></h2>
+<ul>
+<li>
+<p><code>SQLAlchemy</code> =&gt; 一種強大的關聯式資料庫框架，支援多資料庫後端</p>
+</li>
+<li>
+<p>首先進行安裝</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install flask-sqlalchemy</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在SQLAlchemy，資料庫是用URL指定</li>
+</ul>
+<div class="info">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">資料庫引擎</th>
+<th>URL</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">MySQL</td>
+<td>mysql://username:password@hostname/database</td>
+</tr>
+<tr>
+<td style="text-align:left">Postgres</td>
+<td>postgresql://username:password@hostname/database</td>
+</tr>
+<tr>
+<td style="text-align:left">SQLite (Linux, MacOS)</td>
+<td>sqlite:////absolute/path/to/database</td>
+</tr>
+<tr>
+<td style="text-align:left">SQLite (Windows)</td>
+<td>sqlite:///c:/absolute/path/to/database</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li>URL中；
+<ul>
+<li><code>hostname</code>：承載資料庫服務的伺服器</li>
+<li><code>database</code>：想使用的資料庫名稱</li>
+<li><code>username</code>、<code>password</code>：資料庫使用者憑證</li>
+</ul>
+<div class="warning">
+<p>SQLite沒有伺服器，故沒有hostname、username、password，database是資料庫在磁碟中的檔名</p>
+</div>
+</li>
+<li>用<code>SQLALCHEMY_DATABASE_URI</code>來設置app資料庫的URL；將<code>SQLALCHEMY_TRACK_MODIFICATIONS</code>設為<code>False</code> (使用較少的記憶體)</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> flask_sqlalchemy <span class="keyword">import</span> SALAlchemy</span><br><span class="line"></span><br><span class="line">basedir = os.path.abspath(os.path.dirname(__file__))</span><br><span class="line"></span><br><span class="line">app = flask(__name__)</span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_DATABASE_URI'</span>] =\</span><br><span class="line">    <span class="string">'sqlite:///'</span> + os.path.join(basedir, <span class="string">'data.sqlite'</span>)</span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_TRACK_MODIFICATIONS'</span>] = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">db = SQLAlchemy(app)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Model-Definition"><a class="header-anchor" href="#Model-Definition"></a><em>Model Definition</em></h3>
+<ul>
+<li>在ORM環境中，Model通常是Python的類別 =&gt; 其屬性匹配對應的資料表欄位</li>
+<li>SQLAlchemy資料庫實例提供<ins>模型基礎類別</ins>、一組用來定義他們結構的<ins>協助類別與函式</ins>
+<ul>
+<li>使用<code>roles</code>、<code>users</code>定義<code>Role</code>、<code>User</code>模型</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Role</span><span class="params">(db.Model)</span>:</span></span><br><span class="line">    __tablename__ = <span class="string">'roles'</span></span><br><span class="line">    id = db.Column(db.Integer, primary_key = <span class="literal">True</span>)</span><br><span class="line">    name = db.Column(db.String(<span class="number">64</span>), unique = <span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'&lt;Role %r&gt;'</span> % self.name</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span><span class="params">(db.Model)</span>:</span></span><br><span class="line">    __tablename__ = <span class="string">'users'</span></span><br><span class="line">    id = db.Column(db.Integer, primary_key = <span class="literal">True</span>)</span><br><span class="line">    username = db.Column(db.String(<span class="number">64</span>), unique = <span class="literal">True</span>, index = <span class="literal">True</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__repr__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">'&lt;User %r&gt;'</span> % self.username</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>__tablename__</code>：定義資料庫的資料表名稱
+<blockquote>
+<p>若省略，SQLAlchemy會指派預設表明</p>
+</blockquote>
+</li>
+<li><code>db.Column</code>：定義模型屬性
+<ul>
+<li>第一引數 =&gt; 資料庫欄位型態、模型屬性</li>
+<li>其他引述 =&gt; 指定各屬性設置選項</li>
+</ul>
+<div class="info">
+<ul>
+<li>常見欄位型態</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>型態名稱</strong></th>
+<th style="text-align:left"><strong>Python型態</strong></th>
+<th style="text-align:left"><strong>說明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Integer</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">一般的整數，通常32 bits</td>
+</tr>
+<tr>
+<td style="text-align:left">SmallInteger</td>
+<td style="text-align:left">int</td>
+<td style="text-align:left">短範圍整數，通常16 bits</td>
+</tr>
+<tr>
+<td style="text-align:left">BigInteger</td>
+<td style="text-align:left">int / long</td>
+<td style="text-align:left">不限精度整數</td>
+</tr>
+<tr>
+<td style="text-align:left">Float</td>
+<td style="text-align:left">float</td>
+<td style="text-align:left">浮點數</td>
+</tr>
+<tr>
+<td style="text-align:left">Numeric</td>
+<td style="text-align:left">decimal.Decimal</td>
+<td style="text-align:left">定點數</td>
+</tr>
+<tr>
+<td style="text-align:left">String</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">可變長度字串</td>
+</tr>
+<tr>
+<td style="text-align:left">Text</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">可變長度字串，經最佳化，供極長 / 不限長度的字串使用</td>
+</tr>
+<tr>
+<td style="text-align:left">Unicode</td>
+<td style="text-align:left">unicode</td>
+<td style="text-align:left">可變長度Unicode字串</td>
+</tr>
+<tr>
+<td style="text-align:left">UnicodeText</td>
+<td style="text-align:left">unicode</td>
+<td style="text-align:left">可變長度Unicode字串，經最佳化，供極長 / 不限長度的字串使用</td>
+</tr>
+<tr>
+<td style="text-align:left">Boolean</td>
+<td style="text-align:left">bool</td>
+<td style="text-align:left">布林值</td>
+</tr>
+<tr>
+<td style="text-align:left">Date</td>
+<td style="text-align:left">datetime.date</td>
+<td style="text-align:left">日期值</td>
+</tr>
+<tr>
+<td style="text-align:left">Time</td>
+<td style="text-align:left">datetime.time</td>
+<td style="text-align:left">時間值</td>
+</tr>
+<tr>
+<td style="text-align:left">Datetime</td>
+<td style="text-align:left">datetime.datetime</td>
+<td style="text-align:left">日期與時間值</td>
+</tr>
+<tr>
+<td style="text-align:left">Interval</td>
+<td style="text-align:left">datetime.timedelta</td>
+<td style="text-align:left">時間間隔</td>
+</tr>
+<tr>
+<td style="text-align:left">Enum</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">字串值串列</td>
+</tr>
+<tr>
+<td style="text-align:left">PickleType</td>
+<td style="text-align:left">Any Python Object</td>
+<td style="text-align:left">自動Pickle序列化</td>
+</tr>
+<tr>
+<td style="text-align:left">LargeBinary</td>
+<td style="text-align:left">str</td>
+<td style="text-align:left">二進位blob</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>常見欄位選項</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>選項名稱</strong></th>
+<th style="text-align:left"><strong>說明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">primary_key</td>
+<td style="text-align:left">設為True =&gt; 該欄位就是表的主鍵</td>
+</tr>
+<tr>
+<td style="text-align:left">unique</td>
+<td style="text-align:left">設為True =&gt; 該欄位不允許重複值</td>
+</tr>
+<tr>
+<td style="text-align:left">index</td>
+<td style="text-align:left">設為True =&gt; 該欄位建立索引，讓查詢指令更有效率</td>
+</tr>
+<tr>
+<td style="text-align:left">nullable</td>
+<td style="text-align:left">設為True =&gt; 該欄位允許空值(null)</td>
+</tr>
+<tr>
+<td style="text-align:left">default</td>
+<td style="text-align:left">定義該欄位預設值</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li><code>__repr__()</code>：提供給人看得字串
+<blockquote>
+<p>非必要，有助於除錯</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Relation"><a class="header-anchor" href="#Relation"></a><em>Relation</em></h3>
+<ul>
+<li>藉由關係建立不同表兩列間的連結
+<ul>
+<li>e.g. 角色對應使用者為<strong>一對多</strong>關係 =&gt; 一個角色可以指派給多個使用者、一個使用者僅一個角色</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Role</span><span class="params">(db.Model)</span>:</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    users = db.relationship(<span class="string">'User'</span>, backref = <span class="string">'role'</span>)</span><br><span class="line">    </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">User</span><span class="params">(db.Model)</span>:</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    role_id = db.Column(db.Integer, db.ForeignKey(<span class="string">'roles.id'</span>))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>User模型中<code>role_id</code>欄位定義為外鍵
+<ul>
+<li><code>db.ForeignKey()</code>的<code>roles.id</code> =&gt; 這個欄位存有roles表資料列的id值</li>
+</ul>
+</li>
+<li>Role模型中<code>users</code>：
+<ul>
+<li>可用此屬性取得該角色相關使用者串列</li>
+<li><code>db.relationship()</code>
+<ul>
+<li>第一個引數 =&gt; <ins>對方模型</ins></li>
+<li><code>backref</code>引數 =&gt; 將<code>role</code>屬性加入User模型 =&gt; 定義關係的反方向</li>
+<li>大多能自行找關係的外鍵位置，但有兩個以上欄位被定義成外鍵則須提供額外的引數</li>
+</ul>
+</li>
+</ul>
+<div class="info">
+<ul>
+<li>常見關係選項</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>選項名稱</strong></th>
+<th style="text-align:left"><strong>說明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">backref</td>
+<td style="text-align:left">在關係的另一個模型加入反向參考</td>
+</tr>
+<tr>
+<td style="text-align:left">primaryjoin</td>
+<td style="text-align:left">明確指令兩模型間的連結條件 (僅有不明確關係時需要)</td>
+</tr>
+<tr>
+<td style="text-align:left">lazy</td>
+<td style="text-align:left">指定如何載入相關項目，可用值：<code>select</code>、<code>immediate</code>、<code>joined</code>、<code>subquery</code>、<code>noload</code>、<code>dynamic</code></td>
+</tr>
+<tr>
+<td style="text-align:left">uselist</td>
+<td style="text-align:left">設為False =&gt; 使用純量而非串列</td>
+</tr>
+<tr>
+<td style="text-align:left">order_by</td>
+<td style="text-align:left">指定關係中的項目順序</td>
+</tr>
+<tr>
+<td style="text-align:left">secondary</td>
+<td style="text-align:left">指令多對多關係使用的關聯表名稱</td>
+</tr>
+<tr>
+<td style="text-align:left">secondaryjoin</td>
+<td style="text-align:left">指定多對多關係的二級連結條件</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="Operating-Database"><a class="header-anchor" href="#Operating-Database"></a><strong>Operating Database</strong></h2>
+<ul>
+<li>學習使用Database最好利用Python Shell，而在使用前要將<code>FLASK_APP</code>設為<code>app.py</code>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ set FLASK_APP &#x3D; app.py</span><br><span class="line">(venv) $ flask shell</span><br></pre></td></tr></table></figure>
+<ul>
+<li>以下皆會以Python Shell進行練習</li>
+</ul>
+</li>
+</ul>
+<h3 id="Create-Table"><a class="header-anchor" href="#Create-Table"></a><em>Create Table</em></h3>
+<ul>
+<li><code>db.create_all()</code>會找出<code>db.Model</code>所有子類別  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> app <span class="keyword">import</span> db</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.create_all()</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看app目錄時便會建立<code>data.sqlite</code>的檔案</li>
+<li>若資料表已在資料庫裡，此函式不會重新建立或更改該表</li>
+<li>想修改模型並套用到既有資料庫，建議先移除舊的資料表：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.drop_all()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.create_all()</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如此會移除舊的資料表</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Insert-Data"><a class="header-anchor" href="#Insert-Data"></a><em>Insert Data</em></h3>
+<ul>
+<li>建立一些角色與使用者：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> app <span class="keyword">import</span> Role, User</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_admin = Role(name = <span class="string">'Admin'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_mod = Role(name = <span class="string">'Moderator'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_user = Role(name = <span class="string">'User'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_root = User(username = <span class="string">'root'</span>, role = role_admin)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_vincent = User(username = <span class="string">'Vincent'</span>, role = role_user)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_karen = User(username = <span class="string">'Karen'</span>, role = role_user)</span><br></pre></td></tr></table></figure>
+<div class="warning">
+<p>可以使用<code>role</code>屬性 (儘管不是真正的資料庫欄位)是一對多關係的高階表示法</p>
+</div>
+</li>
+<li>許多資料庫會自行管理主鍵 =&gt; 我們沒有明確設定這些物件的<code>id</code>屬性
+<ul>
+<li>這些物件都還只在Python方而未寫入資料庫 =&gt; <code>id</code>值還未指派</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(role_admin.id)</span><br><span class="line"><span class="literal">None</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(role_mod.id)</span><br><span class="line"><span class="literal">None</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(role_user.id)</span><br><span class="line"><span class="literal">None</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>資料庫修改都透過<strong>資料庫session</strong>管理
+<ul>
+<li>以下將欲加入資料庫的物件<strong>一一</strong>加入session
+<blockquote>
+<p>注意：要確認有沒有從app實例中import <code>db</code></p>
+</blockquote>
+</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.add(role_admin)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.add(role_mod)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.add(role_user)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.add(user_root)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.add(user_Vincent)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.add(user_Karen)</span><br></pre></td></tr></table></figure>
+<div class="info">
+<p>或者簡明的方法如：</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.add_all([role_admin, role_mod, role_user, user_root, user_Vincent, user_Karen])</span><br></pre></td></tr></table></figure>
+</div>
+<ul>
+<li>寫入資料庫時，呼叫<code>commit()</code>提交</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.commit()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Edit-Data"><a class="header-anchor" href="#Edit-Data"></a><em>Edit Data</em></h3>
+<ul>
+<li>可用session中<code>add()</code>方法來更改模型，下面將&quot;Admin&quot;角色改為&quot;Administrator&quot;  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_admin.name = <span class="string">'Administrator'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.add(role_admin)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.commit()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Delete-Data"><a class="header-anchor" href="#Delete-Data"></a><em>Delete Data</em></h3>
+<ul>
+<li>可用session中<code>delete()</code>，下面刪除資料庫中&quot;Moderator&quot;角色  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.delete(role_mod)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>db.session.commit()</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<div class="success">
+<ul>
+<li>刪除和插入、更新一樣，僅在提交資料庫session後才執行。</li>
+</ul>
+</div>
+<h3 id="Search-Data"><a class="header-anchor" href="#Search-Data"></a><em>Search Data</em></h3>
+<ul>
+<li>
+<p>SQLAlchemy每個模型類別中<code>query</code>物件的<code>all()</code>方法可以回傳資料表所有內容</p>
+<blockquote>
+<p>注意：要確認有沒有從app實例中import模型類別，如：<code>Role</code>、<code>User</code>…</p>
+</blockquote>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>Role.query.all()</span><br><span class="line">[&lt;Role <span class="string">'Administrator'</span>&gt;, &lt;Role <span class="string">'User'</span>&gt;]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>User.query.all()</span><br><span class="line">[&lt;User <span class="string">'root'</span>&gt;, &lt;User <span class="string">'Vincent'</span>&gt;, &lt;User <span class="string">'Karen'</span>&gt;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>可用過濾器(filter)設置查詢物件，發出較具體的搜尋  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>User.query.filter_by(role = role_user).all()</span><br><span class="line">[&lt;User <span class="string">'Vincent'</span>&gt;, &lt;User <span class="string">'Karen'</span>&gt;]</span><br></pre></td></tr></table></figure>
+轉換成字串可看到原生SQL查詢  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>str(User.query.filter_by(role = role_user))</span><br><span class="line"><span class="string">'SELECT users.id AS users_id, users.username AS users_username, users.role_id AS users_role_id \nFROM users \nWHERE ? = users.role_id'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>退出殼層session則這些查詢不會以Python物件形式存在</li>
+</ul>
+</li>
+<li>
+<p>下面用名稱&quot;User&quot;載入使用者角色：</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_user = Role.query.filter_by(name = <span class="string">'User'</span>).first()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>print(role_user)</span><br><span class="line">&lt;Role <span class="string">'User'</span>&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>first()</code>回傳第一個結果 =&gt; 沒有結果回傳None；<code>all()</code>回傳全部結果</li>
+<li>過濾器都是在查詢物件時呼叫，可以呼叫複數個，其會回傳新的細部query</li>
+</ul>
+<div class="info">
+<blockquote>
+<p><a href="http://docs.sqlalchemy.org" target="_blank" rel="noopener">SQLAlchemy文件</a>有完整清單</p>
+</blockquote>
+<ul>
+<li>常見過濾器</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">filter()</td>
+<td style="text-align:left">將一個<strong>過濾器</strong>加到原始查詢指令</td>
+</tr>
+<tr>
+<td style="text-align:left">filter_by()</td>
+<td style="text-align:left">將一個<strong>相等過濾器</strong>家道原始查詢指令</td>
+</tr>
+<tr>
+<td style="text-align:left">limit()</td>
+<td style="text-align:left">指定並限制查詢結果數量</td>
+</tr>
+<tr>
+<td style="text-align:left">offset()</td>
+<td style="text-align:left">將查詢結果串列套用位移值</td>
+</tr>
+<tr>
+<td style="text-align:left">order_by()</td>
+<td style="text-align:left">依指定規則排序查詢結果</td>
+</tr>
+<tr>
+<td style="text-align:left">group_by()</td>
+<td style="text-align:left">依指定規則分組排序查詢結果</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>常見查詢指令方法</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">項目</th>
+<th style="text-align:left">說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">all()</td>
+<td style="text-align:left">用串列回傳所有結果</td>
+</tr>
+<tr>
+<td style="text-align:left">first()</td>
+<td style="text-align:left">回傳第一筆查詢結果，若無則回傳None</td>
+</tr>
+<tr>
+<td style="text-align:left">first_or_404()</td>
+<td style="text-align:left">回傳第一筆查詢結果，若無則終止請求並回應404</td>
+</tr>
+<tr>
+<td style="text-align:left">get()</td>
+<td style="text-align:left">回傳匹配指定主鍵的資料，若無則回傳None</td>
+</tr>
+<tr>
+<td style="text-align:left">get_or_404()</td>
+<td style="text-align:left">回傳匹配指定主鍵的資料，若無則終止請求並回應404</td>
+</tr>
+<tr>
+<td style="text-align:left">count()</td>
+<td style="text-align:left">回傳查詢結果數量</td>
+</tr>
+<tr>
+<td style="text-align:left">paginate()</td>
+<td style="text-align:left">回傳Pagination物件，內含指定範圍的結果</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li>
+<p>查詢角色、使用者間一對多關係</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>users = role_user.users</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>users</span><br><span class="line">[&lt;User <span class="string">'Vincent'</span>&gt;, &lt;User <span class="string">'Karen'</span>]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>users[<span class="number">0</span>].role</span><br><span class="line">&lt;Role <span class="string">'User'</span>&gt;</span><br></pre></td></tr></table></figure>
+<div class="warning">
+<ul>
+<li><code>role_user.users</code>有個問題：執行時有內部指令呼叫<code>all()</code>
+<ul>
+<li>因為該查詢物件是隱藏的，無法用額外的過濾器縮減範圍</li>
+<li>用<code>lazy = 'dynamic'</code>引數修改關係組態 =&gt; 要求不要自動執行query</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Role</span><span class="params">(db.Model)</span>:</span></span><br><span class="line">    <span class="comment"># ...</span></span><br><span class="line">    users = db.relationship(<span class="string">'User'</span>, backref = <span class="string">'role'</span>, lazy = <span class="string">'dynamic'</span>)</span><br><span class="line">    <span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>如此<code>role_user.users</code>會回傳尚未執行的查詢指令，可另外加過濾器，下面範例要求以字母順序回傳使用者串列</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_user.users.order_by(User.username).all()</span><br><span class="line">[&lt;User <span class="string">'Vincent'</span>&gt;, &lt;User <span class="string">'Karen'</span>&gt;]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_user.users.count()</span><br><span class="line"><span class="number">2</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<hr>
+<h2 id="Use-Database-in-view-function"><a class="header-anchor" href="#Use-Database-in-view-function"></a><strong>Use Database in view function</strong></h2>
+<ul>
+<li>可以直接在view函式中使用先前的資料庫操作
+<ul>
+<li>下面用<code>app.py</code>中的<code>/nameform</code>進行更改</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"><span class="meta">@app.route('/nameform', methods = ['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">form</span><span class="params">()</span>:</span></span><br><span class="line">    form = NameForm()</span><br><span class="line">    <span class="keyword">if</span> form.validate_on_submit():</span><br><span class="line">        user = User.query.filter_by(username = form.name.data).first()</span><br><span class="line">        <span class="keyword">if</span> user <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            user = User(username = form.name.data)</span><br><span class="line">            db.session.add(user)</span><br><span class="line">            db.session.commit()</span><br><span class="line">            session[<span class="string">'known'</span>] = <span class="literal">False</span></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            session[<span class="string">'known'</span>] = <span class="literal">True</span></span><br><span class="line">        session[<span class="string">'name'</span>] = form.name.data</span><br><span class="line">        form.name.data = <span class="string">''</span></span><br><span class="line">        <span class="keyword">return</span> redirect(url_for(<span class="string">'form'</span>))</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'nameForm.html'</span>, form = form, name = session.get(<span class="string">'name'</span>), known = session.get(<span class="string">'known'</span>, <span class="literal">False</span>))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>每當名字送來，便會用<code>filter_by()</code>在資料庫中查看它
+<ul>
+<li>會將<code>known</code>寫入使用者session</li>
+<li>轉址後這項資訊會送到模板 =&gt; 用來自訂歡迎訊息</li>
+</ul>
+<blockquote>
+<p>注意：要讓app動作，必須像之前一樣在Python Shell建立資料庫</p>
+</blockquote>
+</li>
+<li>下面更改模板<code>templates/nameForm.html</code>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">&lt;!--templates&#x2F;nameForm.html--&gt;</span><br><span class="line">&#123;% extends &quot;base.html&quot; %&#125;</span><br><span class="line">&#123;% import &quot;bootstrap&#x2F;wtf.html&quot; as wtf %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block title %&#125;Name Form&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block page_content %&#125;</span><br><span class="line">&lt;div class&#x3D;&quot;page-header&quot;&gt;</span><br><span class="line">    &lt;h1&gt;</span><br><span class="line">        Hello, </span><br><span class="line">        &#123;% if name %&#125;</span><br><span class="line">            &#123;&#123; name &#125;&#125;</span><br><span class="line">        &#123;% else %&#125;</span><br><span class="line">            Stranger</span><br><span class="line">        &#123;% endif %&#125;</span><br><span class="line">        !</span><br><span class="line">    &lt;&#x2F;h1&gt;</span><br><span class="line">    &#123;% if not known %&#125;</span><br><span class="line">        &lt;p&gt;Pleased to meet you!&lt;&#x2F;p&gt;</span><br><span class="line">    &#123;% else %&#125;</span><br><span class="line">        &lt;p&gt;Happy to see you again!&lt;&#x2F;p&gt;</span><br><span class="line">    &#123;% endif %&#125;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;&#123; wtf.quick_form(form) &#125;&#125;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Integrate-with-Python-Shell"><a class="header-anchor" href="#Integrate-with-Python-Shell"></a><em>Integrate with Python Shell</em></h3>
+<ul>
+<li>每次啟動shell session都要匯入資料庫實例與模型 =&gt; 費工、麻煩
+<ul>
+<li>可以設置<code>flask shell</code>命令來自動匯入</li>
+</ul>
+</li>
+<li>要將物件加入匯入清單，必須
+<ol>
+<li>建立 <em>殼層環境處理常式 (shell context processor)</em></li>
+<li>用<code>app.shell_context_processor</code>裝飾器註冊</li>
+</ol>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.shell_context_processor</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">make_shell_context</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> dict(db = db, User = User, Role = Role)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>會回傳含有資料庫實例與模型的字典</li>
+</ul>
+</li>
+<li>如此<code>flask shell</code>除了預設匯入的app，也將自動匯入這些項目  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ set FLASK_APP &#x3D; app.py</span><br><span class="line">(venv) $ flask shell</span><br><span class="line">&gt;&gt;&gt; app</span><br><span class="line">&lt;Flask &#39;app&#39;&gt;</span><br><span class="line">&gt;&gt;&gt; db</span><br><span class="line">&lt;SQLAlchmy engine&#x3D;&#39;sqlite:&#x2F;&#x2F;&#x2F;&#x2F;home&#x2F;flask&#x2F;flasky&#x2F;data.sqlite&#39;&gt;</span><br><span class="line">&gt;&gt;&gt; User </span><br><span class="line">&lt;class &#39;app.User&#39;&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h2 id="Migrate-Database-with-Flask-Migrate"><a class="header-anchor" href="#Migrate-Database-with-Flask-Migrate"></a><strong>Migrate Database with Flask-Migrate</strong></h2>
+<ul>
+<li>Flask-SQLAlchemy只會在資料表不存在時才會用模型建立
+<ul>
+<li>更新資料庫唯一的方法：銷毀舊的資料表，同時也移除所有資料</li>
+</ul>
+</li>
+<li>較好的做法：使用<strong>資料庫遷移</strong>框架
+<ul>
+<li>可以追蹤資料庫結構描述的變動 =&gt; 如此套用漸進式更改</li>
+</ul>
+</li>
+<li>方法有二：
+<ul>
+<li>SQLAlchemy的開發者寫了一個遷移框架 =&gt; Alembic</li>
+<li><strong>Flask-Migrate</strong> =&gt; 輕量的Alembic包裝器，其與flask命令整合一起</li>
+</ul>
+</li>
+</ul>
+<h3 id="Build-Migrate-Storage-Area"><a class="header-anchor" href="#Build-Migrate-Storage-Area"></a><em>Build Migrate Storage Area</em></h3>
+<ul>
+<li>首先安裝Flask-Migrate  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install flask-migrate</span><br></pre></td></tr></table></figure>
+</li>
+<li>在<code>app.py</code>中初始化  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_migrate <span class="keyword">import</span> Migrate</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">migrate = Migrate(app, db)</span><br></pre></td></tr></table></figure>
+</li>
+<li>Flask-Migrate加入<code>flask db</code>命令以及一些子命令來公開資料庫遷移命令
+<ul>
+<li>進行新專案，用<code>init</code>子命令加入對資料庫遷移的支援：</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ flask db init</span><br></pre></td></tr></table></figure>
+<ul>
+<li>此會建立一 <em>migrations</em> 目錄</li>
+</ul>
+</li>
+</ul>
+<h3 id="Build-Migrate-Script"><a class="header-anchor" href="#Build-Migrate-Script"></a><em>Build Migrate Script</em></h3>
+<ul>
+<li>Alembic可將資料庫設成變動紀錄中的任何時間點</li>
+<li>資料庫遷移是用<strong>遷移腳本</strong>來表示，函式：
+<ul>
+<li><code>upgrade()</code> =&gt; 套用在遷移過程改變資料庫的部分</li>
+<li><code>downgrade()</code> =&gt; 會移除它們</li>
+</ul>
+</li>
+<li>建立Alembic遷移分手動和自動
+<ul>
+<li><code>revision</code> =&gt; 手動建立遷移，用空的遷移函式建立骨架腳本</li>
+<li><code>migrate</code> =&gt; 自動遷移，必須用<code>Operations</code>物件公開的指令來實作，會試著尋找模型的定義與目前資料庫狀況間的差異
+<blockquote>
+<p>不一定準確，可能會遺漏一些不明確的細節</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>為改變資料庫結構，需採取下列程序：
+<ul>
+<li>對模型類別做必要的變更</li>
+<li>用<code>flask db migrate</code>建立自動遷移腳本</li>
+<li>檢查生成的腳本並修改</li>
+<li>將遷移腳本加入原始檔控制系統</li>
+<li>用<code>flask db upgrade</code>將遷移套用到資料庫</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ flask db migrate -m &quot;initial migration&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="Upgrade-Database"><a class="header-anchor" href="#Upgrade-Database"></a><em>Upgrade Database</em></h3>
+<ul>
+<li>接收遷移腳本後，可使用<code>flask db upgrade</code>套用到資料庫  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ flask db upgrade</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>初次遷移相當於<code>db.create_all()</code>，之後只會對資料表套用變更</p>
+</blockquote>
+</li>
+</ul>
+
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/03/26/Flask%20-%20Database/" data-id="ck5plbl8v0005x8ac5ue86nny"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/database/" rel="tag">database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sqlalchemy/" rel="tag">sqlalchemy</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/05/05/Flask%20-%20Email/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Flask - Email
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/03/15/Flask%20-%20Web%20Form/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Flask - Web Form</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '10625ff957aef51a06bf',
+    clientSecret: '314e364248568028064347a4a7df418bb734433f',
+    repo: 'nightcatv.github.io',
+    owner: 'nightcatv',
+    admin: ['nightcatv'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+			onClick: (e) => {
+      	document.getElementById(e.target.innerText).scrollIntoView()
+      	return false;
+    	}
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Begin with Flask |  Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-Begin with Flask" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Begin with Flask
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/02/24/Begin%20with%20Flask/" class="article-date">
+  <time datetime="2019-02-24T05:35:00.000Z" itemprop="datePublished">2019-02-24</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字數統計:</span>
+            <span class="post-count">4.6k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 閱讀時長≈</span>
+            <span class="post-count">21分鐘</span>
+        </span>
+    </span>
+</div>
+
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <blockquote>
+<p>Reference Website:</p>
+<ol>
+<li><a href="https://blog.techbridge.cc/2017/06/03/python-web-flask101-tutorial-introduction-and-environment-setup/" target="_blank" rel="noopener">Python Web Flask 實戰開發教學 - 簡介與環境建置</a></li>
+<li><a href="http://flask.pocoo.org/" target="_blank" rel="noopener">Flask</a></li>
+<li><a href="https://medium.com/pyladies-taiwan/%E5%BE%9E%E7%93%B6%E8%A3%A1%E5%80%92%E5%87%BA%E7%AC%AC%E4%B8%80%E6%BB%B4-flask-%E9%96%8B%E5%A7%8B%E5%8B%95%E6%89%8B%E7%8E%A9-95f85895fd64" target="_blank" rel="noopener">從瓶裡倒出第一滴 — Flask 開始動手玩</a></li>
+<li><a href="https://www.tutorialspoint.com/flask" target="_blank" rel="noopener">Learn Flask</a></li>
+<li><a href="http://flask.pocoo.org/docs/1.0/tutorial/" target="_blank" rel="noopener">Tutorial - Flask 1.0.2 document</a></li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="What-is-Flask"><a class="header-anchor" href="#What-is-Flask"></a><strong>What is Flask?</strong></h2>
+<ul>
+<li>使用Python寫的輕量級Web應用框架。</li>
+<li>通常被稱為 “microframework(微框架)”，原因：
+<ul>
+<li>使用簡單的核心</li>
+<li>用extension增加其他功能</li>
+</ul>
+</li>
+<li>沒有預設的資料庫、表單驗證工具 =&gt; 保留了擴增的彈性</li>
+<li>Flask是基於下列工具所開發出來的：
+<ul>
+<li>WSGI
+<ul>
+<li>Web Server Gate Interface</li>
+<li>為Python網頁應用程式開發的標準，主要為介於網路應用程式與伺服器之間的規範</li>
+</ul>
+</li>
+<li>Werkzeug
+<ul>
+<li>WSGI的工具</li>
+<li>允許網頁框架以此為基礎來建立</li>
+</ul>
+</li>
+<li>Jinja2
+<ul>
+<li>Python的模板引擎 (Templating Engine)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<a id="more"></a>
+<div class="info">
+<p>Flask和Django的差別：</p>
+<ul>
+<li>兩個之間，Django就像是套裝電腦、Flask就像是組裝電腦一樣的差別
+<ul>
+<li>Django：
+<ul>
+<li>有自己的 authentication system 以及 Admin 管理系統</li>
+<li>有自己的 ORM 以及 migration system</li>
+<li>有自己的 templating language</li>
+<li><a href="http://manage.py" target="_blank" rel="noopener">manage.py</a> 也幫你準備好了</li>
+</ul>
+</li>
+<li>Flask：
+<ul>
+<li>extension 很多，很多事情找到對的 extension 掛上去就好了</li>
+<li>使用 Jinja2 作為 templating language</li>
+<li>定義 URL 很簡單</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<hr>
+<h2 id="Environment"><a class="header-anchor" href="#Environment"></a><strong>Environment</strong></h2>
+<ul>
+<li>
+<p>首先必然先建立一個目錄(newproj)作為Flask的根目錄。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir flasky</span><br><span class="line">$ cd newproj</span><br></pre></td></tr></table></figure>
+<div class="info">
+<p>書中所附範例程式碼可作為參考，其依照書中內容來做版本控制：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git clone https:&#x2F;&#x2F;github.com&#x2F;miguelgrinberg&#x2F;flasky.git</span><br><span class="line">$ cd flasky</span><br><span class="line">$ git checkout 1a</span><br></pre></td></tr></table></figure>
+</div>
+</li>
+<li>
+<p>安裝Flask，方便且保險的方式便是安裝<strong>虛擬環境 (<em>virtual environment</em>)</strong></p>
+</li>
+<li>
+<p>虛擬Python環境建構，能讓使用者同時建立複數個Python環境，在安裝私人套件時不會影響全域的Python解譯器。</p>
+</li>
+<li>
+<p>Python 3和Python 2解譯器不同，安裝虛擬環境的方法也有所不同</p>
+</li>
+</ul>
+<div class="danger">
+<ul>
+<li>Mac 很麻煩，需要另外的方式安裝，詳情見<a href="https://sourabhbajaj.com/mac-setup/Python/virtualenv.html" target="_blank" rel="noopener">VirtualEnv</a></li>
+</ul>
+</div>
+<h3 id="Python-3"><a class="header-anchor" href="#Python-3"></a><em>Python 3</em></h3>
+<ul>
+<li>內建<code>venv</code>套件，原生便支援虛擬環境</li>
+</ul>
+<div class="warning">
+<p>若是Ubuntu Linux，其並未預設安裝<code>venv</code>套件<br>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install python3-venv</span><br></pre></td></tr></table></figure></p>
+</div>
+<ul>
+<li>建立虛擬環境命令結構：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python -m venv [virtual-environment-name]</span><br></pre></td></tr></table></figure>
+<code>-m venv</code>會將<code>venv</code>套件當成獨立腳本運行</li>
+<li>在自己建立的專案目錄(newproj)中建立新的虛擬環境(通常命名為venv)  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python -m venv venv</span><br></pre></td></tr></table></figure>
+</li>
+<li>在newprof中會有
+<ul>
+<li>名為venv的子目錄</li>
+<li>全新的虛擬環境</li>
+<li>該專案專用的Python解譯器</li>
+</ul>
+</li>
+</ul>
+<h3 id="Python-2"><a class="header-anchor" href="#Python-2"></a><em>Python 2</em></h3>
+<ul>
+<li>Python 2本身沒有<code>venv</code>套件，故需要安裝<code>virtualenv</code>
+<ul>
+<li>首先打開cmd，以管理員身分進行安裝
+<ul>
+<li>Windows  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install virtualenv</span><br></pre></td></tr></table></figure>
+</li>
+<li>Linux / Mac OS  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install virtualenv</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>在安裝好後，在自己建立的專案目錄(newproj)中，建立新的虛擬環境(通常命名為venv):  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir newproj</span><br><span class="line">$ cd newproj</span><br><span class="line">$ virtualenv venv</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Activate-Installation"><a class="header-anchor" href="#Activate-Installation"></a><em>Activate &amp; Installation</em></h3>
+<blockquote>
+<p>以下以<code>venv</code>作為虛擬環境的命名。</p>
+</blockquote>
+<ul>
+<li>欲使用虛擬環境必須先啟動
+<ul>
+<li>Windows</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ venv\Scripts\activate</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Linux / Mac OS</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ source venv&#x2F;bin&#x2F;activate</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>註：以上動作皆在根目錄(newproj)中進行</p>
+</blockquote>
+</li>
+<li>啟動虛擬環境後會更改命令提示字元，加入環境名稱：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $</span><br></pre></td></tr></table></figure>
+<ul>
+<li>若要結束虛擬環境時則輸入：</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ deactivate</span><br></pre></td></tr></table></figure>
+</li>
+<li>在啟動虛擬環境後首先安裝Flask  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install flask</span><br></pre></td></tr></table></figure>
+<ul>
+<li>安裝Flask同時也會安裝其所有依賴項目，可用<code>pip freeze</code>來查看虛擬環境安裝的套件</li>
+</ul>
+</li>
+<li>在安裝好後啟動Python解譯器試著匯入Flask以確認安裝  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ python</span><br><span class="line">&gt;&gt;&gt; import flask</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li>至此都沒有問題的話，便代表Flask的環境安裝完成。</li>
+</ul>
+<div class="success">
+<p><code>venv</code>套件本身為數個腳本的集合體，若有需要可以直接進行環境的複製，意即可以<strong>直接將該環境的整個資料夾複製到新的專案</strong>，如此便可以得到相同的環境。</p>
+</div>
+<hr>
+<h2 id="Basic-App-Structure"><a class="header-anchor" href="#Basic-App-Structure"></a><strong>Basic App Structure</strong></h2>
+<ul>
+<li>所有的Flask App都必須建立一個<strong>app實例</strong>，即<code>Flask</code>類別的物件。</li>
+<li>建立的方式通常是：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line">app = Flask(__name__)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>Flask</code>類別建構式唯一需要的引數 =&gt; <em>app的主模組</em> 或 <em>套件名稱</em></li>
+<li>多數app而言，引數的值是Python的<code>__name__</code>變數</li>
+</ul>
+</li>
+</ul>
+<h3 id="Route-view-Function"><a class="header-anchor" href="#Route-view-Function"></a><em>Route &amp; <em>view</em> Function</em></h3>
+<ul>
+<li>網頁瀏覽器的用戶端會將request送到網頁伺服器，伺服器在將其送到Flask app實例
+<ul>
+<li>Flask app實例必須知道那些程式處理用戶端請求的<strong>每一個</strong>URL =&gt; 有個URL到Python函式的對應</li>
+<li>URL與處理它的函式之間關係稱為<strong>路由(route)</strong></li>
+</ul>
+</li>
+<li>定義路由的方式
+<ul>
+<li>最方便的是使用app實例公開的<code>app.route</code>裝飾器：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;h1&gt;Hello World!&lt;/h1&gt;'</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>裝飾器 =&gt; Python語言的標準功能，經常用來將函式註冊成在某些事件發生時呼叫的處理函式。<br>
+想了解更多可參考<a href="https://blog.techbridge.cc/2018/06/15/python-decorator-introduction/" target="_blank" rel="noopener">Python Decorator 入門教學</a></p>
+</blockquote>
+</li>
+<li>較為傳統的方式則使用<code>app.add_url_rule()</code>，基本形式接收三個參數：<em>URL</em>、<em>端點名稱</em>、<em>view函式</em>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;h1&gt;Hello World!&lt;/h1&gt;'</span></span><br><span class="line">    </span><br><span class="line">app.add_url_rule(<span class="string">'/'</span>, <span class="string">'index'</span>, index)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>如<code>index()</code>這類處理app URL的函式便稱為<strong>view函式</strong>
+<ul>
+<li>若app在<code>www.example.com</code>上部屬，則<code>index()</code>會在瀏覽器前往<code>https://www.example.com/</code>時執行</li>
+<li>view函式回傳值即是response，是在瀏覽器視窗顯示的文件</li>
+</ul>
+</li>
+</ul>
+<div class="danger">
+<p>一般來說在Python源碼中放HTML程式碼會讓程式難以維護，此僅作示範用。</p>
+</div>
+<ul>
+<li>另外也可以用一種帶有動態成分的方式來寫路由：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/user/&lt;name&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;h1&gt;Welcome to SIRLA, &#123;&#125;!&lt;/h1&gt;'</span>.format(name)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>角括號 =&gt; URL動態的部分，所有符合固定部分的URL都會對應到這個路由</li>
+<li>動態路由預設使用字串，但也可使用不同型態，例：<code>/user/&lt;int:id&gt;</code>，支援的型態有：
+<ul>
+<li>string</li>
+<li>int</li>
+<li>float</li>
+<li>path =&gt; 特殊字串型態，可使用正斜線</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Execution"><a class="header-anchor" href="#Execution"></a><em>Execution</em></h3>
+<ul>
+<li><code>hello.py</code>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;h1&gt;hello World!&lt;/h1&gt;'</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/user/&lt;name&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;h1&gt;Welcome to SIRLA, &#123;&#125;!&lt;/h1&gt;'</span>.format(name)</span><br></pre></td></tr></table></figure>
+</li>
+<li>首先啟動已經建立好的虛擬環境，然後用<code>flask run</code>指令啟動web server：
+<ul>
+<li>Windows  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ set FLASK_APP&#x3D;hello.py</span><br><span class="line">(venv) $ flask run</span><br><span class="line">* Serving Flask app &quot;hello&quot;</span><br><span class="line">* Running on http:&#x2F;&#x2F;127.0.0.1:5000&#x2F; (Press CTRL+C to quit)</span><br></pre></td></tr></table></figure>
+</li>
+<li>Linux / Mac OS  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ export FLASK_APP&#x3D;hello.py</span><br><span class="line">(venv) $ flask run</span><br><span class="line">* Serving Flask app &quot;hello&quot;</span><br><span class="line">* Running on http:&#x2F;&#x2F;127.0.0.1:5000&#x2F; (Press CTRL+C to quit)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>打開瀏覽器，並且輸入 <code>http://127.0.0.1:5000/</code> 或 <code>http://localhost:5000/</code> 即可。</li>
+</ul>
+<div class="info">
+<ul>
+<li><strong>除錯模式</strong>
+<ul>
+<li>Windows  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ set FLASK_APP&#x3D;hello.py</span><br><span class="line">(venv) $ set FLASK_DEBUG&#x3D;1</span><br><span class="line">(venv) $ flask run</span><br><span class="line">* Serving Flask app &quot;app&quot;</span><br><span class="line">* Forcing debug mode on</span><br><span class="line">* Running on http:&#x2F;&#x2F;127.0.0.1:5000&#x2F; (Press CTRL+C to quit)</span><br><span class="line">* Restarting with stat</span><br><span class="line">* Debugger is active!</span><br><span class="line">* Debugger PIN:273-181-528</span><br></pre></td></tr></table></figure>
+</li>
+<li>Linux / Mac OS  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ export FLASK_APP&#x3D;hello.py</span><br><span class="line">(venv) $ export FLASK_DEBUG&#x3D;1</span><br><span class="line">(venv) $ flask run</span><br><span class="line">* Serving Flask app &quot;app&quot;</span><br><span class="line">* Forcing debug mode on</span><br><span class="line">* Running on http:&#x2F;&#x2F;127.0.0.1:5000&#x2F; (Press CTRL+C to quit)</span><br><span class="line">* Restarting with stat</span><br><span class="line">* Debugger is active!</span><br><span class="line">* Debugger PIN:273-181-528</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>命令列選項
+<ul>
+<li>可執行<code>flask --help</code>或單純<code>flask</code>查看有哪些命令選項</li>
+<li>也可執行<code>flask run --help</code>來查看該命令的參數</li>
+<li>Flask開發web伺服器預設僅給本機端連結，下列命令可讓同一個網路的其他電腦與之連結：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ flask run --host 0.0.0.0</span><br><span class="line">* Serving Flask app &quot;hello&quot;</span><br><span class="line">* Running on http:&#x2F;&#x2F;0.0.0.0:5000&#x2F; (Press CTRL+C to quit)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<hr>
+<h2 id="Template"><a class="header-anchor" href="#Template"></a><strong>Template</strong></h2>
+<ul>
+<li>商業邏輯(business logic)：收到含使用者資料的request，Flask將其指派給處理該類request的view函式</li>
+<li>展示邏輯(presentation logic)：該view函式必須與資料庫溝通已進行動作，產生一個response回傳給伺服器</li>
+<li>若將商業邏輯、展示邏輯混在一塊 =&gt; 程式碼難以理解、維護</li>
+<li><strong>模板</strong>是個含有 <em><ins>回應文字</ins></em> 及 <em><ins>保留給動態部分變數</ins></em> 的檔案
+<ul>
+<li>動態部分僅在request的context裡面才能知道</li>
+<li>將這些變數改為實際值並回傳最終回應字串的程式為<code>render</code></li>
+<li>使用Jinja2模板引擎來轉譯模板</li>
+</ul>
+</li>
+</ul>
+<h3 id="Render"><a class="header-anchor" href="#Render"></a><em>Render</em></h3>
+<ul>
+<li>Jinja2模板最簡單的形式便是內涵回應文字的檔案</li>
+<li>以下將前述的<code>hello.py</code>進行修改：
+<ul>
+<li>首先新建一個資料夾名為<code>templates</code></li>
+<li>接著製作兩個模板，分別為<code>index.html</code>、<code>user.html</code>，並且放入<code>templates</code>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- index.html --&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;Index&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h1&gt;Hello World!&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- user.html --&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;User Page&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;h1&gt;Hello, &#123;&#123; name &#125;&#125;!&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li>新寫一個<code>app.py</code>作為Flask app：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template</span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'index.html'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/user/&lt;name&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">user</span><span class="params">(name)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'user.html'</span>, name=name)</span><br></pre></td></tr></table></figure>
+</li>
+<li>啟動web server後實際執行一次</li>
+</ul>
+</li>
+</ul>
+<div class="info">
+<ul>
+<li>
+<p>Variable</p>
+<ul>
+<li>在模板中的<code></code>結構引用一個變數，用這特殊佔位符號告知模板引擎，該位置的值<strong>應從收到的資料中取得</strong></li>
+<li>可辨識任何型態，含串列、字典、物件等等，下列為例：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;p&gt;A value from a dictionary: &#123;&#123; mydict[&#39;key&#39;] &#125;&#125;.&lt;&#x2F;p&gt;</span><br><span class="line">&lt;p&gt;A value from a list: &#123;&#123; mylist[3] &#125;&#125;.&lt;&#x2F;p&gt;</span><br><span class="line">&lt;p&gt;A value from a list, with a variable index: &#123;&#123; mylist[myintvar] &#125;&#125;.&lt;&#x2F;p&gt;</span><br><span class="line">&lt;p&gt;A value from an object&#39;s method: &#123;&#123; myobj.somemethod() &#125;&#125;.&lt;&#x2F;p&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>
+<p>Filter</p>
+<ul>
+<li>可用過濾器修改變數，是變數名稱後面<strong>直線字元後面</strong>的關鍵字，例：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 會顯示大寫的name變數 --&gt;</span><br><span class="line">&lt;h1&gt;Hello, &#123;&#123; name|capitalize &#125;&#125;&lt;&#x2F;h1&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>過濾器名稱</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>safe</td>
+<td>在不轉義(escape)的情況下轉譯值</td>
+</tr>
+<tr>
+<td>capitalize</td>
+<td>值的第一字元大寫、其餘小寫</td>
+</tr>
+<tr>
+<td>lower</td>
+<td>值改為小寫字元</td>
+</tr>
+<tr>
+<td>upper</td>
+<td>值改為大寫字元</td>
+</tr>
+<tr>
+<td>title</td>
+<td>值得每個單字首字母大寫</td>
+</tr>
+<tr>
+<td>trim</td>
+<td>移除值的前面與後面的空白字元</td>
+</tr>
+<tr>
+<td>striptags</td>
+<td>在轉譯前移除值的所有HTML標籤</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Jinja2官方文件有完整的<a href="http://jinja.pocoo.org/docs/2.10/templates/#builtin-filters" target="_blank" rel="noopener">過濾器清單</a></p>
+</blockquote>
+</li>
+</ul>
+</div>
+<h3 id="Structure-Controll"><a class="header-anchor" href="#Structure-Controll"></a><em>Structure Controll</em></h3>
+<ul>
+<li>在Jinja2中提供一些改變模板流程的的控制結構：
+<ul>
+<li><strong>判斷</strong>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;% if user %&#125;</span><br><span class="line">    Hello, &#123;&#123; user &#125;&#125;!</span><br><span class="line">&#123;% else %&#125;</span><br><span class="line">    Hello, Stanger!</span><br><span class="line">&#123;% endif %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><strong>迴圈</strong> =&gt; 轉譯一串元素  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;ul&gt;</span><br><span class="line">    &#123;% for comment in comments %&#125;</span><br><span class="line">        &lt;li&gt;&#123;&#123; comment &#125;&#125;&lt;&#x2F;li&gt;</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">&lt;&#x2F;ul&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li>可以將需要在許多地方重複使用的模板程式碼放在單獨的檔案，並在所有模板中<code>include</code>它  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% include &#39;common.html&#39; %&#125;</span><br></pre></td></tr></table></figure>
+<div class="info">
+<ul>
+<li>補充方法：模板繼承
+<ul>
+<li>首先建立基礎模板<code>base_index.html</code>，定義可讓繼承它的模板覆寫的區塊(block)  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- base_index.html --&gt;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &#123;% block head %&#125;</span><br><span class="line">    &lt;title&gt;</span><br><span class="line">        &#123;% block title %&#125;&#123;% endblock %&#125; - My Application</span><br><span class="line">    &lt;&#x2F;title&gt;</span><br><span class="line">    &#123;% endblock %&#125;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line"></span><br><span class="line">&lt;body&gt;</span><br><span class="line">    &#123;% block body %&#125;</span><br><span class="line">    &#123;% endblock %&#125;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>用<code>block</code>、<code>endblock</code>指令來定義基礎模板的內容區塊</li>
+</ul>
+</li>
+<li>繼承基礎模板的模板  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#123;% extends &quot;base_index.html&quot; %&#125;</span><br><span class="line">&#123;% block title %&#125;Index&#123;% endblock %&#125;</span><br><span class="line">&#123;% block head %&#125;</span><br><span class="line">    &#123;&#123; super() &#125;&#125;</span><br><span class="line">    &lt;style&gt;</span><br><span class="line">    &lt;&#x2F;style&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br><span class="line">&#123;% block body %&#125;</span><br><span class="line">    &lt;h1&gt;Hello, World!&lt;&#x2F;h1&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>extends</code>宣告該模板衍生自<code>base.html</code></li>
+<li><code>super()</code> =&gt; 引用基礎模板的區塊內容</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Flask-Bootstrap"><a class="header-anchor" href="#Flask-Bootstrap"></a><em>Flask-Bootstrap</em></h3>
+<ul>
+<li>
+<p>要整合Bootstrap與app原本的做法：照Bootstrap文件的建議對HTML模板做必要的修改</p>
+</li>
+<li>
+<p>使用<code>Flask-Bootstrap</code>可以更容易完成這種整合工作</p>
+<ul>
+<li>首先使用<code>pip</code>安裝它：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install flask-bootstrap</span><br></pre></td></tr></table></figure>
+</li>
+<li>在建立app實例時同時初始化：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_bootstrap <span class="keyword">import</span> Bootstrap</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">bootstrap = Bootstrap(app)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>擴充套件通常都是從 <code>flask_&lt;name&gt;</code> 套件匯入的，<code>&lt;name&gt;</code> 是套件名稱</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>
+<p>Flask-Bootstrap初始化後便可使用一包含所有Bootstrap檔案與通用結構的基礎模板</p>
+<ul>
+<li>以下基於<code>user.html</code>進行修改 (下列為完整源碼)  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&#123;% extends &quot;bootstrap&#x2F;base.html&quot; %&#125;</span><br><span class="line">&#123;% block title %&#125;Flasky&#123;% endblock %&#125;</span><br><span class="line">&#123;% block navbar %&#125;</span><br><span class="line">&lt;div class&#x3D;&quot;navbar navbar-inverse&quot; role&#x3D;&quot;navigation&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;container&quot;&gt;</span><br><span class="line">        &lt;div class&#x3D;&quot;navbar-header&quot;&gt;</span><br><span class="line">            &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;navbar-toggle&quot; data-toggle&#x3D;&quot;collapse&quot; data-target&#x3D;&quot;.navbar-collapse&quot;&gt;</span><br><span class="line">                &lt;span class&#x3D;&quot;sr-only&quot;&gt;Toggle navigation&lt;&#x2F;span&gt;</span><br><span class="line">                &lt;span class&#x3D;&quot;icon-bar&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">                &lt;span class&#x3D;&quot;icon-bar&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">                &lt;span class&#x3D;&quot;icon-bar&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">            &lt;&#x2F;button&gt;</span><br><span class="line">            &lt;a class&#x3D;&quot;navbar-brand&quot; href&#x3D;&quot;&#x2F;&quot;&gt;Flasky&lt;&#x2F;a&gt;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">        &lt;div class&#x3D;&quot;navbar-collapse collapse&quot;&gt;</span><br><span class="line">            &lt;ul class&#x3D;&quot;nav navbar-nav&quot;&gt;</span><br><span class="line">                &lt;li&gt;&lt;a href&#x3D;&quot;&#x2F;&quot;&gt;Home&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;</span><br><span class="line">            &lt;&#x2F;ul&gt;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block content %&#125;</span><br><span class="line">&lt;div class&#x3D;&quot;container&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;page-header&quot;&gt;</span><br><span class="line">        &lt;h1&gt;Hello, &#123;&#123; name &#125;&#125;!&lt;&#x2F;h1&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>關於Bootstrap navbar的部分可以直接上到其<a href="https://getbootstrap.com/docs/4.0/components/navbar/" target="_blank" rel="noopener">官方文件</a>查詢</p>
+</blockquote>
+</li>
+</ul>
+<div class="info">
+<ul>
+<li>
+<p>Flask-Bootstrap的基礎模板區塊</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Block Name</th>
+<th style="text-align:left">Expaination</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">doc</td>
+<td style="text-align:left">整個HTML文件</td>
+</tr>
+<tr>
+<td style="text-align:left">html_attribs</td>
+<td style="text-align:left"><code>&lt;html&gt;</code>標籤內的屬性</td>
+</tr>
+<tr>
+<td style="text-align:left">html</td>
+<td style="text-align:left"><code>&lt;html&gt;</code>標籤的內容</td>
+</tr>
+<tr>
+<td style="text-align:left">head</td>
+<td style="text-align:left"><code>&lt;head&gt;</code>標籤的內容</td>
+</tr>
+<tr>
+<td style="text-align:left">title</td>
+<td style="text-align:left"><code>&lt;title&gt;</code>標籤的內容</td>
+</tr>
+<tr>
+<td style="text-align:left">metas</td>
+<td style="text-align:left"><code>&lt;meta&gt;</code>標籤清單</td>
+</tr>
+<tr>
+<td style="text-align:left">styles</td>
+<td style="text-align:left">CSS定義</td>
+</tr>
+<tr>
+<td style="text-align:left">body_attribs</td>
+<td style="text-align:left"><code>&lt;body&gt;</code>標籤內的屬性</td>
+</tr>
+<tr>
+<td style="text-align:left">body</td>
+<td style="text-align:left"><code>&lt;body&gt;</code>標籤內容</td>
+</tr>
+<tr>
+<td style="text-align:left">navbar</td>
+<td style="text-align:left">使用者定義的導覽列</td>
+</tr>
+<tr>
+<td style="text-align:left">content</td>
+<td style="text-align:left">使用者定義的網頁內容</td>
+</tr>
+<tr>
+<td style="text-align:left">scripts</td>
+<td style="text-align:left">在文件底部的JavaScript宣告</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>style</code>、<code>scripts</code>區塊是宣告Bootstrap CSS、JavaScript檔案的地方，若直接覆寫可能會有問題 =&gt; 使用<code>super()</code></li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 在衍生模板中將新的JavaScript檔案加入文件 --&gt;</span><br><span class="line">&#123;% block scripts %&#125;</span><br><span class="line">&#123;&#123; super() &#125;&#125;</span><br><span class="line">&lt;script type&#x3D;&quot;text&#x2F;javascript&quot; src&#x3D;&quot;my-script.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+<h3 id="Error-Page"><a class="header-anchor" href="#Error-Page"></a><em>Error Page</em></h3>
+<ul>
+<li>Flask可讓app用模板定義自己的錯誤網頁，最常見的兩種錯誤碼：
+<ul>
+<li>404 =&gt; 在用戶端請求未知的網頁或路由</li>
+<li>500 =&gt; 在app有未處理的異常狀況</li>
+</ul>
+</li>
+<li>可使用<code>app.errorhandler</code>裝飾器來自定處理函式
+<ul>
+<li>在<code>web.py</code>下設定錯誤網頁的路由  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.errorhandler(404)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">page_not_found</span><span class="params">(e)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'404.html'</span>), <span class="number">404</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.errorhandler(500)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">internal_server_error</span><span class="params">(e)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'500.html'</span>), <span class="number">500</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>接著我們依然要編寫錯誤處理函式的模板，而因為這些版面配置應該與一般的網頁相同，方法如下：
+<ol>
+<li>最直接的方法即是將<code>user.html</code>直接複製到<code>404.html</code>、<code>500.html</code>後對內容進行更改，其架構如下：</li>
+</ol>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">digraph hierarchy &#123;</span><br><span class="line">        nodesep&#x3D;1.0</span><br><span class="line">        node [color&#x3D;Black,fontname&#x3D;Courier,shape&#x3D;box]</span><br><span class="line">        edge [color&#x3D;Blue, style&#x3D;dashed]</span><br><span class="line"></span><br><span class="line">        &quot;bootstrap&#x2F;base.html&quot;-&gt;&#123;&quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">        &#123;rank&#x3D;same;&quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>  但是這麼做的話，每個檔案的程式碼會相對比較複雜，管理起來會比較麻煩
+</code></pre>
+<ol start="2">
+<li>另外則是新增一個新的基礎模板，如此在此網站系統下都可以直接引用這個模板進行內容更動</li>
+</ol>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">digraph hierarchy &#123;</span><br><span class="line">        nodesep&#x3D;1.0</span><br><span class="line">        node [color&#x3D;Black,fontname&#x3D;Courier,shape&#x3D;box]</span><br><span class="line">        edge [color&#x3D;Blue, style&#x3D;dashed]</span><br><span class="line"></span><br><span class="line">        &quot;bootstrap&#x2F;base.html&quot;-&gt;&quot;templates&#x2F;base.html&quot;</span><br><span class="line">        &quot;templates&#x2F;base.html&quot;-&gt;&#123;&quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">        &#123;rank&#x3D;same;&quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li>我們所選的為第二個方法：
+<ul>
+<li>首先新增一個基礎模版，其會繼承<code>bootstrap/base.html</code></li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">&#123;% extends &quot;bootstrap&#x2F;base.html&quot; %&#125;</span><br><span class="line">&#123;% block title %&#125;Flasky&#123;% endblock %&#125;</span><br><span class="line">&#123;% block navbar %&#125;</span><br><span class="line">&lt;div class&#x3D;&quot;navbar navbar-inverse&quot; role&#x3D;&quot;navigation&quot;&gt;</span><br><span class="line">    &lt;div class&#x3D;&quot;container&quot;&gt;</span><br><span class="line">        &lt;div class&#x3D;&quot;navbar-header&quot;&gt;</span><br><span class="line">            &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;navbar-toggle&quot; data-toggle&#x3D;&quot;collapse&quot; data-target&#x3D;&quot;.navbar-collapse&quot;&gt;</span><br><span class="line">                &lt;span class&#x3D;&quot;sr-only&quot;&gt;Tooggle navigation&lt;&#x2F;span&gt;</span><br><span class="line">                &lt;span class&#x3D;&quot;icon-bar&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">                &lt;span class&#x3D;&quot;icon-bar&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">                &lt;span class&#x3D;&quot;icon-bar&quot;&gt;&lt;&#x2F;span&gt;</span><br><span class="line">            &lt;&#x2F;button&gt;</span><br><span class="line">            &lt;a class&#x3D;&quot;navbar-brand&quot; href&#x3D;&quot;&#x2F;&quot;&gt;Flasky&lt;&#x2F;a&gt;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">        &lt;div class&#x3D;&quot;navbar-collapse collapse&quot;&gt;</span><br><span class="line">            &lt;ul class&#x3D;&quot;nav navbar-nav&quot;&gt;</span><br><span class="line">                &lt;li&gt;&lt;a href&#x3D;&quot;&#x2F;&quot;&gt;Home&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;</span><br><span class="line">            &lt;&#x2F;ul&gt;</span><br><span class="line">        &lt;&#x2F;div&gt;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block content %&#125;</span><br><span class="line">&lt;div class&#x3D;&quot;container&quot;&gt;</span><br><span class="line">    &#123;% block page_content %&#125;&#123;% endblock %&#125;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>這模板的<code>content</code>中有一個新的空區塊<code>page_content</code>，可讓衍生模板定義。</li>
+<li>如此便能以此基礎模板來建構自訂的404錯誤網頁以及500錯誤網頁</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 404.html --&gt;</span><br><span class="line">&#123;% extends &quot;base.html&quot; %&#125;</span><br><span class="line">&#123;% block title %&#125;Flasky - Page Not Found&#123;% endblock %&#125;</span><br><span class="line">&#123;% block page_content %&#125;</span><br><span class="line">&lt;div class&#x3D;&quot;page-header&quot;&gt;</span><br><span class="line">    &lt;h1&gt;404 - Page Not Found&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 500.html --&gt;</span><br><span class="line">&#123;% extends &quot;base.html&quot; %&#125;</span><br><span class="line">&#123;% block title %&#125;Flasky - Internal Server Error&#123;% endblock %&#125;</span><br><span class="line">&#123;% block page_content %&#125;</span><br><span class="line">&lt;div class&#x3D;&quot;page-header&quot;&gt;</span><br><span class="line">    &lt;h1&gt;500 - Internal Server Error&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>透過這個基礎模板，我們也可以去簡化<code>user.html</code></li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- user.html --&gt;</span><br><span class="line">&#123;% extends &quot;base.html&quot; %&#125;</span><br><span class="line">&#123;% block title %&#125;Flasky&#123;% endblock %&#125;</span><br><span class="line">&#123;% block page_content %&#125;</span><br><span class="line">&lt;div class&#x3D;&quot;page-header&quot;&gt;</span><br><span class="line">    &lt;h1&gt;Hello, &#123;&#123; name &#125;&#125;!&lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="Integration"><a class="header-anchor" href="#Integration"></a><strong>Integration</strong></h2>
+<ul>
+<li>指令  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 啟動虛擬系統</span><br><span class="line">$ venv\Scripts\activate         # Windows用這個</span><br><span class="line">$ source venv&#x2F;bin&#x2F;activate  # Linux跟Mac OS用這個</span><br><span class="line"></span><br><span class="line"># 關閉虛擬系統</span><br><span class="line">(venv) $ diactivate</span><br></pre></td></tr></table></figure>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 啟動Flask </span><br><span class="line">(venv) $ export FLASK_APP&#x3D;[你設定路由的.py檔]    # Windows的寫法：將export改成set</span><br><span class="line">(venv) $ flask run</span><br></pre></td></tr></table></figure>
+</li>
+<li>程式碼  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template    <span class="comment"># 引入Flask基本套件跟模板使用套件</span></span><br><span class="line"><span class="keyword">from</span> flask_bootstrap <span class="keyword">import</span> Bootstrap       <span class="comment"># 引入Bootstrap套件</span></span><br><span class="line">app = Flask(__name__)                       <span class="comment"># Flask初始化</span></span><br><span class="line">bootstrap = Bootstrap(app)                  <span class="comment"># Bootstrap初始化</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 以下為路由的設定</span></span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>系統架構
+<ul>
+<li>以本篇筆記為主</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">digraph hierarchy &#123;</span><br><span class="line">        nodesep&#x3D;1.0</span><br><span class="line">        node [color&#x3D;Black,fontname&#x3D;Courier,shape&#x3D;box]</span><br><span class="line">        edge [color&#x3D;Blue, style&#x3D;dashed]</span><br><span class="line"></span><br><span class="line">        &quot;&#x2F;&quot;-&gt;&#123;venv templates &quot;web.py&quot;&#125;</span><br><span class="line">        venv-&gt;&quot;虛擬環境套件&quot;</span><br><span class="line">        templates-&gt;&#123;&quot;index.html&quot; &quot;base.html&quot; &quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">        &quot;base.html&quot;-&gt;&#123;&quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">        &#123;rank&#x3D;same;&quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/02/24/Begin%20with%20Flask/" data-id="ck5plbl8n0000x8aceukxeo6w"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/microframework/" rel="tag">microframework</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/03/15/Flask%20-%20Web%20Form/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Flask - Web Form
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2018/09/07/Web-crawler%20in%20Python/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Web-crawler in Python</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '10625ff957aef51a06bf',
+    clientSecret: '314e364248568028064347a4a7df418bb734433f',
+    repo: 'nightcatv.github.io',
+    owner: 'nightcatv',
+    admin: ['nightcatv'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+			onClick: (e) => {
+      	document.getElementById(e.target.innerText).scrollIntoView()
+      	return false;
+    	}
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>

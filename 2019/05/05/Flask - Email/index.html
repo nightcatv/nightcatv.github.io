@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Flask - Email |  Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-Flask - Email" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Flask - Email
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/05/05/Flask%20-%20Email/" class="article-date">
+  <time datetime="2019-05-05T15:35:00.000Z" itemprop="datePublished">2019-05-05</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字數統計:</span>
+            <span class="post-count">1.2k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 閱讀時長≈</span>
+            <span class="post-count">5分鐘</span>
+        </span>
+    </span>
+</div>
+
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="Use-Flask-Mail"><a class="header-anchor" href="#Use-Flask-Mail"></a><strong>Use <em>Flask-Mail</em></strong></h2>
+<ul>
+<li>
+<p>Python標準函式庫含<code>smtlib</code>套件寄送email，但Flask-Mail包裝了<code>smtlib</code>並將其與Flask做整合</p>
+<ul>
+<li>安裝<code>Flask-Mail</code></li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install flask-mail</span><br></pre></td></tr></table></figure>
+<ul>
+<li>會連接 <em>簡易郵件傳輸通訊協定(SMTP)</em> 伺服器 =&gt; 127.0.0.1:25</li>
+</ul>
+<div class="info">
+<ul>
+<li>設置SMTP伺服器的組態鍵清單</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>鍵</strong></th>
+<th style="text-align:left"><strong>預設值</strong></th>
+<th style="text-align:left"><strong>說明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">MAIL_SERVER</td>
+<td style="text-align:left"><em>localhost</em></td>
+<td style="text-align:left">email伺服器的主機名稱 / IP位址</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_PORT</td>
+<td style="text-align:left">25</td>
+<td style="text-align:left">email伺服器的連接埠</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_USE_TLS</td>
+<td style="text-align:left">False</td>
+<td style="text-align:left">啟用傳輸層安全性(TLS)</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_USE_SSL</td>
+<td style="text-align:left">False</td>
+<td style="text-align:left">啟用安全通訊端層(SSL)</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_USERNAME</td>
+<td style="text-align:left">None</td>
+<td style="text-align:left">郵件帳號的使用者名稱</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_PASSWORD</td>
+<td style="text-align:left">None</td>
+<td style="text-align:left">郵件帳號的密碼</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li>
+<p>在開發期，連接外部的SMTP較方便，下面以Google Gmail：</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">app.config[<span class="string">'MAIL_SERVER'</span>] = <span class="string">'smtp.googlemail.com'</span></span><br><span class="line">app.config[<span class="string">'MAIL_PORT'</span>] = <span class="number">587</span></span><br><span class="line">app.config[<span class="string">'MAIL_USE_TLS'</span>] = <span class="literal">True</span></span><br><span class="line">app.config[<span class="string">'MAIL_USERNAME'</span>] = os.environ.get(<span class="string">'MAIL_USERNAME'</span>)</span><br><span class="line">app.config[<span class="string">'MAIL_PASSWORD'</span>] = os.environ.get(<span class="string">'MAIL_PASSWORD'</span>)</span><br></pre></td></tr></table></figure>
+<div class="danger">
+<ul>
+<li>絕對不要將帳號憑證直接寫在腳本裡!!為了保護帳號資訊，要讓腳本從環境變數匯入敏感資訊</li>
+<li>基於安全理由，Gmail帳號被設置要求外部app使用OAuth2驗證來連接</li>
+</ul>
+</div>
+</li>
+<li>
+<p>初始化Flask-Mail</p>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_mail <span class="keyword">import</span> Mail</span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line">mail = Mail(app)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>mail</code>的初始化要放在<code>app.config</code>後面</li>
+</ul>
+</li>
+<li>
+<p>要在環境中保存mail server使用者名稱與密碼的環境變數</p>
+<ul>
+<li>Linux / macOS  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ export MAIL_USERNAME &#x3D; &lt;Gmail username&gt;</span><br><span class="line">(venv) $ export MAIL_PASSWORD &#x3D; &lt;Gmail password&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li>Windows  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ set MAIL_USERNAME &#x3D; &lt;Gmail username&gt;</span><br><span class="line">(venv) $ set MAIL_PASSWORD &#x3D; &lt;Gmail password&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Send-Email-from-Python-Shell"><a class="header-anchor" href="#Send-Email-from-Python-Shell"></a><em>Send Email from Python Shell</em></h3>
+<ul>
+<li>為測試結果，可啟動shell session來寄出測試email
+<blockquote>
+<p>you@example.com換成個人email地址</p>
+</blockquote>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ flask shell</span><br><span class="line">&gt;&gt;&gt; from flask_mail import Message</span><br><span class="line">&gt;&gt;&gt; from app import mail</span><br><span class="line">&gt;&gt;&gt; msg &#x3D; Message(&#39;test email&#39;, sender &#x3D; &#39;you@example.com&#39;, recipients &#x3D; [&#39;you@example.com&#39;])</span><br><span class="line">&gt;&gt;&gt; msg.body &#x3D; &#39;This is the plain text body&#39;</span><br><span class="line">&gt;&gt;&gt; msg.html &#x3D; &#39;This is the &lt;b&gt;HTML&lt;&#x2F;b&gt; body&#39;</span><br><span class="line">&gt;&gt;&gt; with app.app_context():</span><br><span class="line">...     mail.sendset(msg)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Flask-Mail的<code>send()</code>使用current_app，故要用一個已啟動的app context來執行</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ set FLASK_APP &#x3D; app.py</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Integrate-Email-and-App"><a class="header-anchor" href="#Integrate-Email-and-App"></a><strong>Integrate Email and App</strong></h2>
+<ul>
+<li>為了避免每次都手動建立email訊息 =&gt; 寫成函式
+<ul>
+<li>好處是函式具有極大的彈性，可將Janja2模板轉譯成email內文</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"><span class="keyword">from</span> flask_mail <span class="keyword">import</span> Message</span><br><span class="line"></span><br><span class="line">app.config[<span class="string">'MAIL_SUBJECT_PREFIX'</span>] = <span class="string">'[Test Email]'</span></span><br><span class="line">app.config[<span class="string">'FLASKY_MAIL_SENDER'</span>] = <span class="string">'Website Admin &lt;your-email-address&gt;'</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_email_text</span><span class="params">(to, subject, template, **kwargs)</span>:</span></span><br><span class="line">    msg = Message(app.config[<span class="string">'MAIL_SUBJECT_PREFIX'</span>] + subject, sender = app.config[<span class="string">'MAIL_SENDER'</span>], recipients = [to])</span><br><span class="line">    msg.body = render_template(template + <span class="string">'.txt'</span>, **kwargs)</span><br><span class="line">    mail.send(msg)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_email_html</span><span class="params">(to, subject, template, **kwargs)</span>:</span></span><br><span class="line">    msg = Message(app.config[<span class="string">'MAIL_SUBJECT_PREFIX'</span>] + subject, sender = app.config[<span class="string">'MAIL_SENDER'</span>], recipients = [to])</span><br><span class="line">    msg.html = render_template(template + <span class="string">'.html'</span>, **kwargs)</span><br><span class="line">    mail.send(msg)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>函式內容：
+<ul>
+<li>兩個app專屬組態鍵：
+<ul>
+<li><code>app.config['MAIL_SUBJECT_PREFIX']</code> =&gt; 定義主旨開頭文件</li>
+<li><code>app.config['MAIL_SENDER']</code> =&gt; 定義寄件者地址</li>
+</ul>
+</li>
+<li><code>send_email()</code>中接收
+<ul>
+<li>目的地址</li>
+<li>主旨列</li>
+<li>email內文模板
+<ul>
+<li>名稱不含副檔名</li>
+<li>可以準備兩種模板版本 =&gt; 分別讓純文字、HTML內文使用</li>
+</ul>
+</li>
+<li>一串關鍵字引數
+<ul>
+<li>呼叫的關鍵字引數會送給<code>render_template()</code> =&gt; 讓產生email內文的模板將其當成模板變數使用</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>可以擴充網站中<code>nameform</code>的功能  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"> </span><br><span class="line">app.config[<span class="string">'MAIL_ADMIN'</span>] = os.environ.get(<span class="string">'MAIL_ADMIN'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/nameform', methods = ['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">form</span><span class="params">()</span>:</span></span><br><span class="line">    form = NameForm()</span><br><span class="line">    <span class="keyword">if</span> form.validate_on_submit():</span><br><span class="line">        user = User.query.filter_by(namename = form.name.data).first()</span><br><span class="line">        <span class="keyword">if</span> user <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">            user = User(username = form.name.data)</span><br><span class="line">            db.session.add(user)</span><br><span class="line">            db.session.commit()</span><br><span class="line">            session[<span class="string">'known'</span>] = <span class="literal">False</span></span><br><span class="line">            <span class="keyword">if</span> app.config[<span class="string">'MAIL_ADMIN'</span>]:</span><br><span class="line">                send_email(app.config[<span class="string">'MAIL_ADMIN'</span>], <span class="string">'New User'</span>, <span class="string">'mail/new_user'</span>, user = user)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            session[<span class="string">'known'</span>] = <span class="literal">True</span></span><br><span class="line">        session[<span class="string">'name'</span>] = form.name.data</span><br><span class="line">        form.name.data = <span class="string">''</span></span><br><span class="line">        </span><br><span class="line">        <span class="keyword">return</span> redirect(url_for(<span class="string">'form'</span>))</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'nameForm.html'</span>, form = form, name = session.get(<span class="string">'name'</span>), known = session.get(<span class="string">'known'</span>, <span class="literal">False</span>))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>email收件者是<code>MAIL_ADMIN</code>環境變數提供的 =&gt; 啟動期間會被載入同名稱的組態變數</li>
+<li>必須為email的純文字和HTML版本建模 =&gt; 放在<code>template</code>的mail子目錄，和普通模板分開 (意即建立新的mail資料夾)
+<ul>
+<li>email模板期望用模板引數收到使用者 =&gt; <code>send_email()</code>用關鍵字引數接收它們</li>
+</ul>
+</li>
+<li>除了先前的<code>MAIL_USERNAME</code>、<code>MAIL_PASSWORD</code>，需要新加<code>FLASK_ADMIN</code>環境變數</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ export MAIL_ADMIN &#x3D; &lt;your-email-address&gt;    &#x2F;&#x2F; Linux&#x2F;MacOS</span><br><span class="line">(venv) $ set MAIL_ADMIN &#x3D; &lt;your-email-address&gt;       &#x2F;&#x2F; Windows</span><br></pre></td></tr></table></figure>
+<ul>
+<li>如此後每當在表單輸入新名字便會收到一封email</li>
+</ul>
+</li>
+</ul>
+<h2 id="Send-Asynchronous-Email"><a class="header-anchor" href="#Send-Asynchronous-Email"></a><strong>Send Asynchronous Email</strong></h2>
+<ul>
+<li>再寄出測試email時 =&gt; mail.send()函式會在寄出email凍結幾秒鐘，使Browser看起來沒有反應</li>
+<li>為避免處理請求的過程中產生不必要延遲 =&gt; 將寄送函式移往背景執行緒  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> threading <span class="keyword">import</span> Thread</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_async_email</span><span class="params">(app, msg)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> app.app_context():</span><br><span class="line">        mail.send(msg)</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_email</span><span class="params">(to, subject, template, **kwargs)</span>:</span></span><br><span class="line">    msg = Message(app.config[<span class="string">'MAIL_SUBJECT_PREFIX'</span>] + subject, sender = app.config[<span class="string">'MAIL_SENDER'</span>], recipients = [to])</span><br><span class="line">    <span class="comment"># body和html擇一</span></span><br><span class="line">    msg.body = render_template(template + <span class="string">'.txt'</span>, **kwargs)</span><br><span class="line">    msg.html = render_template(template + <span class="string">'.html'</span>, **kwargs)</span><br><span class="line">    thr = Thread(target = send_async_email, args = [app, msg])</span><br><span class="line">    thr.start()</span><br><span class="line">    <span class="keyword">return</span> thr</span><br></pre></td></tr></table></figure>
+<ul>
+<li>大多Flask擴充套件在操作時都假設有個已啟動的application / request context
+<ul>
+<li>Flask-Mail的<code>send()</code>會使用<code>current_app()</code> =&gt; 其要求application context是啟動的</li>
+<li>因為context與執行緒有關，當<code>mail.send()</code>在不同的執行緒執行時<br>
+=&gt; 必須使用<code>app.app_context()</code>來人工建立application context<br>
+=&gt; 用引數將app實例傳給執行緒建立context</li>
+<li>app需要寄送大量email，用專門的工作來寄送email較合適 =&gt; 可將<code>send_async_email()</code>函式的執行工作送到Celery工作佇列</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/05/05/Flask%20-%20Email/" data-id="ck5plbl8x0007x8ac1u32fwaj"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/email/" rel="tag">email</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Learn Blockchain by Building One
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/03/26/Flask%20-%20Database/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Flask - Database</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '10625ff957aef51a06bf',
+    clientSecret: '314e364248568028064347a4a7df418bb734433f',
+    repo: 'nightcatv.github.io',
+    owner: 'nightcatv',
+    admin: ['nightcatv'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+			onClick: (e) => {
+      	document.getElementById(e.target.innerText).scrollIntoView()
+      	return false;
+    	}
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>

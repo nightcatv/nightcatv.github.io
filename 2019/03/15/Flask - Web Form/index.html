@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Flask - Web Form |  Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-Flask - Web Form" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Flask - Web Form
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/03/15/Flask%20-%20Web%20Form/" class="article-date">
+  <time datetime="2019-03-15T06:55:00.000Z" itemprop="datePublished">2019-03-15</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字數統計:</span>
+            <span class="post-count">3.6k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 閱讀時長≈</span>
+            <span class="post-count">15分鐘</span>
+        </span>
+    </span>
+</div>
+
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <ul>
+<li>先前所使用的模板為單向，但目前大多資訊都是雙向的流動，故也要讓使用者提供資料來讓伺服器接收與處理
+<ul>
+<li>可用HTML建立web表單，讓使用者輸入資訊，接著讓網頁瀏覽器將表單傳給伺服器</li>
+<li>通常使用<code>POST request</code></li>
+</ul>
+</li>
+<li>雖然Flask中request物件提供的支援已足以處理web表單，但還是會有許多繁瑣且重複的工作，其中典型的案例：
+<ul>
+<li>表單HTML碼的生成</li>
+<li>驗證使用者送出的表單資料<br>
+故會在進一步使用<a href="http://pythonhosted.org/Flask-WTF" target="_blank" rel="noopener">Flask-WTF</a>的擴充套件來處理網頁表單</li>
+</ul>
+</li>
+</ul>
+<h2 id="more"><a class="header-anchor" href="#more"></a><a id="more"></a></h2>
+<h2 id="Request-and-Response"><a class="header-anchor" href="#Request-and-Response"></a><strong>Request and Response</strong></h2>
+<h3 id="Application-and-Request-Context"><a class="header-anchor" href="#Application-and-Request-Context"></a><em>Application and Request Context</em></h3>
+<ul>
+<li>
+<p>當Flask從用戶端收到request時，必須讓處理它的view函式能夠使用一些物件</p>
+<ul>
+<li>其中例子：<code>request</code>物件，其封裝用戶端送來的HTTP request</li>
+</ul>
+</li>
+<li>
+<p>為了讓view函式讀取<code>request</code>物件，其方法有兩種：</p>
+<ol>
+<li>最直接做法是用引數傳入<code>request</code>物件，但是會讓app每個view函式多一個引數</li>
+<li>避免view函式有許多不一定用得到的引述，使用<code>context</code>還讓某些物件暫時可被全域操作，寫法如下： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> request</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/req')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">req</span><span class="params">()</span>:</span></span><br><span class="line">    user_agent = request.headers.get(<span class="string">'User-Agent'</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;p&gt;Your browser is &#123;&#125;&lt;/p&gt;'</span>.format(user_agent)</span><br></pre></td></tr></table></figure>
+<div class="warning">
+<ul>
+<li>在view函式中，<code>request</code>被當成全域變數使用，但實際上<code>request</code>並非全域變數</li>
+<li>在多執行緒伺服器中，各自可以同時處裡來自不同客戶端的不同request，故需要在request內看到不同物件</li>
+<li>Flask藉由<code>context</code>讓某一執行緒可全域存取某些變數而不干擾其他執行緒</li>
+</ul>
+</div>
+<div class="info">
+<p>一個程序通常有多個活動的執行緒，而多執行緒的web伺服器會啟動一執行緒池，並從中選出一個執行緒來處理收到的各個request</p>
+</div>
+</li>
+</ol>
+</li>
+<li>
+<p>Flask有兩種context，其公開變數如下表：</p>
+<table>
+<thead>
+<tr>
+<th>Context</th>
+<th>變數名稱</th>
+<th>說明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>application context</td>
+<td>current_app</td>
+<td>運行中的app實例</td>
+</tr>
+<tr>
+<td>application context</td>
+<td>g</td>
+<td>在app處理request時可將這物件當成暫存區，該變數會在各request重設</td>
+</tr>
+<tr>
+<td>request context</td>
+<td>request</td>
+<td>request物件，封裝用戶端送來的HTTP request內容</td>
+</tr>
+<tr>
+<td>request context</td>
+<td>session</td>
+<td>使用者session(是個字典)，app可用來儲存需要在各request之間記住的值</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Flask會在發送request給app前，啟動/推動(push)兩個<code>context</code>，並在處裡完request後移除
+<ul>
+<li>啟動<code>application context</code> =&gt; 可用<code>current_app</code>、<code>g</code></li>
+<li>啟動<code>request context</code> =&gt; 可用<code>request</code>、<code>session</code></li>
+<li>若沒有啟動<code>context</code>就存取上述變數則會出錯</li>
+<li>在Python殼層session展示<code>application context</code>運作如下 (假設寫app實例的檔名為<code>hello.py</code>)：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> hello <span class="keyword">import</span> app</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> flask <span class="keyword">import</span> current_app</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>current_app.name</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">...</span><br><span class="line">RuntimeError: working outside of application context</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>app_ctx = app.app_context()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>app_ctx.push()</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>current_app.name</span><br><span class="line"><span class="string">'hello'</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>app_ctx.pop()</span><br></pre></td></tr></table></figure>
+</li>
+<li>該範例中：
+<ul>
+<li><code>application context</code>未啟動 =&gt; <code>current_app.name</code>錯誤</li>
+<li><code>app</code>啟動<code>application context</code> (透過<code>app.app_context()</code>) =&gt; <code>current_app.name</code>成功</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Request-Assignment"><a class="header-anchor" href="#Request-Assignment"></a><em>Request Assignment</em></h3>
+<ul>
+<li>當app收到自用戶端的request，必須知道應該呼叫哪個<code>view</code>函式
+<ul>
+<li>Flask會在app的<code>URL map</code>中尋找request裡面的URL =&gt; 存有UAL與其相對view函式的對應關係</li>
+<li>建立map會以下列方式取資料：
+<ul>
+<li><code>app.route</code>裝飾器</li>
+<li><code>app.add_url_rule</code>無裝飾器的版本</li>
+<li>可用Python shell查看<code>hello.py</code>的map</li>
+</ul>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ python</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> hello <span class="keyword">import</span> app</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>app.url_map</span><br><span class="line">Map([Rule '/' (HEAD, OPTION, GET) -&gt; index&gt;,</span><br><span class="line">    &lt;Rule '/static/&lt;filename&gt;' (HEAD, OPTIONS, GET) -&gt; static&gt;,</span><br><span class="line">    &lt;Rule '/user/&lt;name&gt;' (HEAD, OPTIONS, GET) -&gt; user&gt;])</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>app中的路由：
+<ul>
+<li><code>/</code>、<code>/user/&lt;name&gt;</code>適用<code>app.route</code>裝飾器定義的</li>
+<li><code>/static/&lt;filename&gt;</code>是Flask加入的特殊路由 =&gt; 用於存取靜態檔案</li>
+</ul>
+</li>
+<li>URL map裡的<code>(HEAD, OPTIONS, GET)</code>元素是路由要處理的request方法
+<ul>
+<li>Flask會自動管理<code>HEAD</code>、<code>OPTIONS</code>方法 =&gt; 實際上app的URL map裡的路由都被指派給<code>GET</code>方法</li>
+</ul>
+</li>
+</ul>
+<h3 id="Response"><a class="header-anchor" href="#Response"></a><em>Response</em></h3>
+<ul>
+<li>當Flask呼叫view函式時 =&gt; 預期回傳值為request的回應，通常是一個被當成HTML網頁回去給用戶端的簡單字串</li>
+<li>但是HTTP協定在回應request時需要的是<strong>狀態碼</strong>
+<ul>
+<li>預設是200 =&gt; request已被成功執行</li>
+<li>若view函式需要不同狀態碼來回應 =&gt; 在回應文字後面加數字碼作為第二回傳值  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route('/res400')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">res400</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;h1&gt;Bad Request&lt;/h1&gt;'</span>, <span class="number">400</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>回應也可以使用第三個引數，但要加入HTTP回應標頭字典</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Flask view函式可以回傳一個回應物件
+<ul>
+<li><code>make_response()</code>可接收一到三個引數，讓view函式可回傳相同的值並回傳一等效的回應物件</li>
+<li>下面會建立一個回應物件，接著設置一個cookie：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">        <span class="keyword">from</span> flask <span class="keyword">import</span> make_response</span><br><span class="line">        </span><br><span class="line"><span class="meta">        @app.route('/resobj')</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">resobj</span><span class="params">()</span>:</span></span><br><span class="line">            response = make_response(<span class="string">'&lt;h1&gt;This document carries a cookie!&lt;/h1&gt;'</span>)</span><br><span class="line">            response.set_cookie(<span class="string">'answer'</span>, <span class="string">'42'</span>)</span><br><span class="line">            <span class="keyword">return</span> response</span><br><span class="line">        ``</span><br><span class="line"></span><br><span class="line">* **轉址(redirect)**</span><br><span class="line">    * 此回應中沒有網頁文件，僅有一新的URL讓瀏覽器前往，在處理web表單時經常使用</span><br><span class="line">    * 通常是用`<span class="number">302</span>`回應狀態碼，並在`Location`標頭裡加入應前往的URL</span><br><span class="line">    * Flask提供`redirect()`來建立此回應：</span><br><span class="line">        ```python=</span><br><span class="line">        <span class="keyword">from</span> flask <span class="keyword">import</span> redirect</span><br><span class="line">        </span><br><span class="line"><span class="meta">        @app.route('/google')</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">redir</span><span class="params">()</span>:</span></span><br><span class="line">            <span class="keyword">return</span> redirect(<span class="string">'http://www.google.com'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>處理錯誤
+<ul>
+<li>使用<code>abort()</code>，在URL裡的id動態引數非有效使用者時回傳404  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> abort</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/user/&lt;id&gt;')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_user</span><span class="params">(id)</span>:</span></span><br><span class="line">    user = load_user(id)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> user:</span><br><span class="line">        abort(<span class="number">404</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'&lt;h1&gt;Hello, &#123;&#125;&lt;/h1&gt;'</span>.format(user.name)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>abort()</code>沒有將控制權還回函式，因為引發了異常狀況</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="Web-Form"><a class="header-anchor" href="#Web-Form"></a><strong>Web Form</strong></h2>
+<ul>
+<li>首先會使用Flask-WTF擴充套件
+<ul>
+<li>可在處理網頁表單時更輕鬆</li>
+<li>此為Flask製做的整合套件，有無關特定框架的WTForms套件</li>
+<li>使用pip進行安裝：  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install flask-wtf</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>Flask-WTF
+<ul>
+<li>不需要app層級的初始化，但希望app設置密鑰
+<ul>
+<li>密鑰：一種隨機且不重複的字串，當成加密/簽署金鑰來使用</li>
+<li>Flask使用金鑰來防止使用者session的內容被竄改。</li>
+</ul>
+<blockquote>
+<p>如果有各種不同的app，建議選擇不同的金鑰</p>
+</blockquote>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">app = Flask(__name__)</span><br><span class="line">app.config[<span class="string">'SECRET_KEY'</span>] = <span class="string">'7l-l!$ !5 $7l2!|\|C-'</span> <span class="comment"># THIS IS STRING</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>app.config</code>是儲存Flask、擴充套件、app本身使用的組態變數的通用位置。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Flask-WTF要求設置密鑰的原因：保護所有表單免於CSRF</p>
+<blockquote>
+<p>CSRF (Cross-Site Request Forgery，跨站偽造請求)，使用者在無知的情況下點選某外部網站的鏈結(甚至僅是瀏覽頁面)回到已登入網站，即使沒有執行任何JavaScript的情況也能使CSRF攻擊成立，因此又稱 One-click Attack<br>
+<a href="https://www.ithome.com.tw/voice/115822" target="_blank" rel="noopener">從防禦認識CSRF</a></p>
+</blockquote>
+</blockquote>
+</li>
+</ul>
+<h3 id="Form-Type"><a class="header-anchor" href="#Form-Type"></a><em>Form Type</em></h3>
+<ul>
+<li>使用Flask-WTF，伺服器裡的每個web表單都是一繼承<code>FlaskForm</code>的類別來表示
+<ul>
+<li>此類別定義表單的欄位串 =&gt; <ins>每個欄位都是物件</ins></li>
+<li>每個欄位物件都可附加一個以上的<strong>驗證函式</strong>
+<blockquote>
+<p>可檢查使用者送來的資料是否有效</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>在<code>app.py</code>中添加下列程式：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask_wtf <span class="keyword">import</span> FlaskForm</span><br><span class="line"><span class="keyword">from</span> wtforms <span class="keyword">import</span> StringField, SubmitField</span><br><span class="line"><span class="keyword">from</span> wtforms.validators <span class="keyword">import</span> DataRequired</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NameForm</span><span class="params">(FlaskForm)</span>:</span></span><br><span class="line">    name = StringField(<span class="string">'What is your name?'</span>, validators=[DataRequired()])</span><br><span class="line">    submit = SubmitField(<span class="string">'Submit'</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>將<strong>表單欄位</strong>定義為<strong>類別變數</strong> =&gt; 指派與欄位類型有關的物件
+<ul>
+<li><code>Nameform</code>表單中有<code>name</code>文字欄位、<code>submit</code>送出按鈕</li>
+</ul>
+</li>
+<li><code>StringField</code>類別：<code>type=&quot;text&quot;</code>的HTML<code>&lt;input&gt;</code>元素
+<ul>
+<li>選用引數<code>validators</code>定義一串驗證函式 =&gt; <code>DataRequired()</code>確保送出的欄位不是空的</li>
+</ul>
+<blockquote>
+<p>欄位建構式的第一個引數為表單轉為HTML時的標籤</p>
+</blockquote>
+</li>
+<li><code>SubmitField</code>類別：<code>type=&quot;submit&quot;</code>的HTML<code>&lt;input&gt;</code>元素</li>
+</ul>
+</li>
+</ul>
+<div class="warning">
+<ul>
+<li>WTForms的HTML欄位</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>Field Type</strong></th>
+<th style="text-align:left"><strong>Explaination</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">BooleanField</td>
+<td style="text-align:left">有<code>True</code>、<code>False</code>的確認方塊</td>
+</tr>
+<tr>
+<td style="text-align:left">DateField</td>
+<td style="text-align:left">以指定格式接收 <code>datetime.date</code>的文字欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">DateTimeField</td>
+<td style="text-align:left">以指定格式接收 <code>datetime.datetime</code>的文字欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">DecimalField</td>
+<td style="text-align:left">接收<code>decimal.Decimal</code>的文字欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">FileField</td>
+<td style="text-align:left">檔案上傳欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">HiddenField</td>
+<td style="text-align:left">隱藏文字欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">MultipleFileField</td>
+<td style="text-align:left">多檔案上傳欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">FieldList</td>
+<td style="text-align:left">一串指定類型的欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">FloatField</td>
+<td style="text-align:left">接受浮點值得文字欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">FormField</td>
+<td style="text-align:left">在容器表單內當成欄位的表單</td>
+</tr>
+<tr>
+<td style="text-align:left">IntegerField</td>
+<td style="text-align:left">接收整數值文字欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">PasswordField</td>
+<td style="text-align:left">密碼文字欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">RadioField</td>
+<td style="text-align:left">單選按鈕列</td>
+</tr>
+<tr>
+<td style="text-align:left">SelectField</td>
+<td style="text-align:left">下拉式選單</td>
+</tr>
+<tr>
+<td style="text-align:left">SelectMultipleField</td>
+<td style="text-align:left">可多重選的下拉式選單</td>
+</tr>
+<tr>
+<td style="text-align:left">SubmitField</td>
+<td style="text-align:left">表單送出按鈕</td>
+</tr>
+<tr>
+<td style="text-align:left">StringField</td>
+<td style="text-align:left">文字欄位</td>
+</tr>
+<tr>
+<td style="text-align:left">TextAreaField</td>
+<td style="text-align:left">多行文字欄位</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>WTForms驗證函式</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>Validator</strong></th>
+<th style="text-align:left"><strong>Explaination</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">DataRequired</td>
+<td style="text-align:left">驗證欄位在轉換型態後含有資料</td>
+</tr>
+<tr>
+<td style="text-align:left">Email</td>
+<td style="text-align:left">驗證email地址</td>
+</tr>
+<tr>
+<td style="text-align:left">EqualTo</td>
+<td style="text-align:left">比較兩欄位的值</td>
+</tr>
+<tr>
+<td style="text-align:left">InputRequired</td>
+<td style="text-align:left">在轉換型態之前驗證欄位裏有資料</td>
+</tr>
+<tr>
+<td style="text-align:left">IPAddress</td>
+<td style="text-align:left">驗證IPv4地址</td>
+</tr>
+<tr>
+<td style="text-align:left">Length</td>
+<td style="text-align:left">驗證輸入字串長度</td>
+</tr>
+<tr>
+<td style="text-align:left">MacAddress</td>
+<td style="text-align:left">驗證MAC位址</td>
+</tr>
+<tr>
+<td style="text-align:left">NumberRange</td>
+<td style="text-align:left">驗證輸入值在某個數字範圍內</td>
+</tr>
+<tr>
+<td style="text-align:left">Optional</td>
+<td style="text-align:left">允許欄位沒有被輸入 (忽略其他驗證函式)</td>
+</tr>
+<tr>
+<td style="text-align:left">Regexp</td>
+<td style="text-align:left">用正規表達式來驗證輸入</td>
+</tr>
+<tr>
+<td style="text-align:left">URL</td>
+<td style="text-align:left">驗證URL</td>
+</tr>
+<tr>
+<td style="text-align:left">UUID</td>
+<td style="text-align:left">驗證UUID</td>
+</tr>
+<tr>
+<td style="text-align:left">AnyOf</td>
+<td style="text-align:left">驗證輸入是一串可能值之一</td>
+</tr>
+<tr>
+<td style="text-align:left">NoneOf</td>
+<td style="text-align:left">驗證輸入不屬於一串可能的值</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Translate-to-HTML"><a class="header-anchor" href="#Translate-to-HTML"></a><em>Translate to HTML</em></h3>
+<ul>
+<li>表單欄位是可呼叫物 =&gt; 從模板呼叫後會自己轉譯成HTML</li>
+<li>若view函式用<code>form</code>引述將NameForm實例傳給模板，產生簡單的HTML  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form method&#x3D;&quot;POST&quot;&gt;</span><br><span class="line">    &#123;&#123; form.hidden_tag() &#125;&#125;</span><br><span class="line">    &#123;&#123; form.name.label &#125;&#125; &#123;&#123; form.name() &#125;&#125;</span><br><span class="line">    &#123;&#123; form.submit() &#125;&#125;</span><br><span class="line">&lt;&#x2F;form&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>form.hidden_tag()</code> =&gt; 隱藏表單欄位，可讓Flask-WTF實作CSRF防護</li>
+<li>用這種方法轉譯web表單的結果很簡單
+<ul>
+<li>任何傳入欄位轉譯函式呼叫式的關鍵字引數都會被轉換成該欄位的HTML屬性</li>
+<li>e.g. 可提供欄位id / class屬性：</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;form method&#x3D;&quot;POST&quot;&gt;</span><br><span class="line">    &#123;&#123; form.hidden_tag() &#125;&#125;</span><br><span class="line">    &#123;&#123; form.name.label &#125;&#125; &#123;&#123; form.name(id&#x3D;&#39;my-text-field&#39;) &#125;&#125;</span><br><span class="line">    &#123;&#123; form.submit() &#125;&#125;</span><br><span class="line">&lt;&#x2F;form&gt;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>就算定義id / class去寫CSS，要讓整個頁面有好看的外觀也不容易
+<ul>
+<li>Flask-Bootstrap有預先定義的表單樣式來轉一整個Flask-WTF表單</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;% import &quot;bootstrap&#x2F;wtf.html&quot; as wtf %&#125;</span><br><span class="line">&#123;&#123; wtf.quick_form(form) &#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>利用<code>import</code>匯入<code>bootstrap/wtf.html</code>，其中有定義一些協助函式用Bootstrap轉譯Flask-WTF表單</li>
+<li><code>wtf.quick_form()</code>接收一個Flask-WTF表單物件，用預設的Bootstrap樣式來轉譯</li>
+<li>下面新增一個<code>NameForm.html</code></li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;% extends &quot;base.html&quot; %&#125;</span><br><span class="line">&#123;% import &quot;bootstrap&#x2F;wtf.html&quot; as wtf %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% block title %&#125;NameForm&#123;% endblock %&#125;</span><br><span class="line">&#123;% block page_content %&#125;</span><br><span class="line">&lt;div&gt; </span><br><span class="line">    &lt;h1&gt;Hello, </span><br><span class="line">        &#123;% if name %&#125;</span><br><span class="line">            &#123;&#123; name &#125;&#125;</span><br><span class="line">        &#123;% else %&#125;</span><br><span class="line">            Stranger</span><br><span class="line">        &#123;% endif %&#125;</span><br><span class="line">    &lt;&#x2F;h1&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;&#123; wtf.quick_form(form) &#125;&#125;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>  &gt; Jinja2的條件式格式：
+  &gt; &gt; {% if condition %}...{% else %}...{% endif %}
+</code></pre>
+</li>
+</ul>
+<h3 id="View-Function-to-Handle-the-Form"><a class="header-anchor" href="#View-Function-to-Handle-the-Form"></a><em>View Function to Handle the Form</em></h3>
+<ul>
+<li>在<code>app.py</code>中，新增一個新的route跟view函式  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"><span class="meta">@app.route('/nameform', methods = ['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">nameform</span><span class="params">()</span>:</span></span><br><span class="line">    name = <span class="literal">None</span></span><br><span class="line">    form = NameForm()</span><br><span class="line">    <span class="keyword">if</span> form.validate_on_submit():</span><br><span class="line">        name = form.name.data</span><br><span class="line">        form.name.data = <span class="string">''</span></span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'nameForm.html'</span>, form = form, name = name)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>app.route</code>中<code>method</code>引數會讓Flask在URL map裡將view函式註冊為<code>GET</code>、<code>POST</code>request的處理函式
+<ul>
+<li>若沒提供 =&gt; 註冊為<code>GET</code>處理函式</li>
+</ul>
+</li>
+<li>表單用POST request來處理表單相對方便
+<ul>
+<li>GET request沒有內文(body)，故會用查詢字串形式將資料附在URL上</li>
+</ul>
+</li>
+<li><code>name</code>：保存表單收到的名字，若無則初始化為None</li>
+<li>表單的<code>validate_on_submit()</code>會在表單被送出、所有驗證函式都收到資料 =&gt; 回傳<code>True</code>
+<ul>
+<li>初次造訪時會收到一沒有表單資料的GET request
+<ul>
+<li><code>validate_on_submit()</code>回傳<code>False</code></li>
+<li>跳過<code>if</code>，用轉譯模板來處理request =&gt; name設為None後傳入函式</li>
+</ul>
+</li>
+<li>表單由使用者送出，伺服器收到一POST request與資料</li>
+<li><code>validate_on_submit()</code>呼叫驗證函式，倘若接受後則回傳<code>true</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Redirection-and-User-Session"><a class="header-anchor" href="#Redirection-and-User-Session"></a><em>Redirection and User Session</em></h3>
+<ul>
+<li>上面<code>app.py</code>的版本會有一個問題在於：
+<ul>
+<li>當輸入名字送出之後，再按重新整理後，可能會看到警告，要求確認之後再次送出表單</li>
+<li>原因：重新整理之後會送出上一個request</li>
+<li>解決方法：使用<strong>轉址</strong>來回應POST請求</li>
+</ul>
+</li>
+</ul>
+<div class="info">
+<ul>
+<li>轉址為一種特殊回應，其內容為URL，而非HTML字串
+<ul>
+<li>當瀏覽器收到轉址回應</li>
+<li>用GET發出轉址URL
+<blockquote>
+<p>因為需要送出兩個request，此頁面可能要多花費幾毫秒載入</p>
+</blockquote>
+</li>
+<li>此法為 <em>Post/Redirect/Get</em> 模式</li>
+</ul>
+</li>
+</ul>
+</div>
+<ul>
+<li>第二種問題為：
+<ul>
+<li>當app處理POST request，可讀取使用者在<code>form.name.data</code>輸入的名字 =&gt; 但request結束則資料消失</li>
+<li>app可將資料放在<code>使用者 session</code>，在兩次request間記得它
+<blockquote>
+<p>使用者session：</p>
+<ol>
+<li>私用的存放區，每個連接用戶端都可以使用它</li>
+<li>預設情況下會放在用戶端cookie，且會被密鑰加密簽署 =&gt; cookie內容更改則簽章失效</li>
+<li>與request context有關變數，稱為session</li>
+</ol>
+</blockquote>
+</li>
+<li>在<code>app.py</code>中添加下列程式：</li>
+</ul>
+  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template, session, redirect, url_for</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/nameform', methods=['GET', 'POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">nameform</span><span class="params">()</span>:</span></span><br><span class="line">    form = NameForm()</span><br><span class="line">    <span class="keyword">if</span> form.validate_on_submit():</span><br><span class="line">        session[<span class="string">'name'</span>] = form.name.data</span><br><span class="line">        <span class="keyword">return</span> redirect(url_for(<span class="string">'nameform'</span>))</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'nameForm.html'</span>, form = form, name = session.get(<span class="string">'name'</span>))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>前一版的<code>name</code>變數放入session裡面的<code>session['name']</code> =&gt; 可在不同request之間保存</li>
+<li>儲存有效表單資料的request會在結束時呼叫<code>redirect()</code> =&gt; 產生HTTP轉址回應的Flask協助函式
+<ul>
+<li>會接收一轉址URL引數，方法有二：
+<ol>
+<li><code>redirect('/nameform')</code></li>
+<li><code>redirect(url_for('nameform'))</code>
+<ul>
+<li>唯一的引數為<strong>端點 (endpoint)</strong> 名稱
+<blockquote>
+<p>端點：每個路由都具備的內部名稱，一般是指view函式</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><code>render_template()</code>的部分會用<code>session.get('name')</code>直接從session中取得name引數
+<ul>
+<li>使用<code>get()</code>查詢，找不到則會回傳None</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Flash-Message"><a class="header-anchor" href="#Flash-Message"></a><em>Flash Message</em></h3>
+<ul>
+<li>在完成request後讓使用者看到狀態的更新 =&gt; 顯示確認訊息 / 警告 / 錯誤</li>
+<li>使用<code>flash()</code>函式來實作，以下更改<code>app.py</code>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, render_template, session, redirect, url_for, flash</span><br><span class="line"><span class="comment">#...</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/nameform', method=['GET', 'POST']</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">nameform</span><span class="params">()</span>:</span></span><br><span class="line">    form = NameForm()</span><br><span class="line">    <span class="keyword">if</span> form.validate_on_submit():</span><br><span class="line">        old_name = session.get(<span class="string">'name'</span>)</span><br><span class="line">        <span class="keyword">if</span> old_name <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span> <span class="keyword">and</span> old_name != form.name.data:</span><br><span class="line">            flash(<span class="string">'Looks like you have changed your name!'</span>)</span><br><span class="line">        session[<span class="string">'name'</span>] = form.name.data</span><br><span class="line">        <span class="keyword">return</span> redirect(url_for(<span class="string">'form'</span>))</span><br><span class="line">    <span class="keyword">return</span> render_template(<span class="string">'nameForm.html'</span>, form = form, name = session.get(<span class="string">'name'</span>))</span><br></pre></td></tr></table></figure>
+<ul>
+<li>當名字送出之後，會拿它與使用者session裡面的名字做比較 =&gt; 若有不同則呼叫<code>flash()</code></li>
+<li><strong>只呼叫<code>flash()</code>不會顯示訊息</strong> =&gt; app使用的模板必須轉譯這些訊息
+<ul>
+<li>基礎模板轉譯可在所以網頁中啟用這些訊息</li>
+<li><code>get_flashed_messages()</code>可讓模板取得訊息與轉譯</li>
+</ul>
+</li>
+<li>以下更改<code>templates/base.html</code>  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;% block content %&#125;</span><br><span class="line">&lt;div class&#x3D;&quot;container&quot;&gt;</span><br><span class="line">    &#123;% for message in get_flashed_messages() %&#125;</span><br><span class="line">    &lt;div class&#x3D;&quot;alert alert-warning&quot;&gt;</span><br><span class="line">        &lt;button type&#x3D;&quot;button&quot; class&#x3D;&quot;close&quot; data-dismiss&#x3D;&quot;alert&quot;&gt;&amp;times;&lt;&#x2F;button&gt;</span><br><span class="line">        &#123;&#123; message &#125;&#125;</span><br><span class="line">    &lt;&#x2F;div&gt;</span><br><span class="line">    &#123;% endfor %&#125;</span><br><span class="line">    </span><br><span class="line">    &#123;% block page_content %&#125;&#123;% endblock %&#125;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>使用Bootstrap警告訊息CSS樣式alert</li>
+<li>使用一個迴圈
+<ul>
+<li>每次的request循環都可能呼叫<code>flash()</code> =&gt; 造成多個訊息在佇列等候顯示</li>
+<li>用<code>get_flashed_messages()</code>得到的訊息再下次呼叫此函式就無法取得</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/03/15/Flask%20-%20Web%20Form/" data-id="ck5plbl8y0008x8acclnb9dgi"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web-form/" rel="tag">web form</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2019/03/26/Flask%20-%20Database/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Flask - Database
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2019/02/24/Begin%20with%20Flask/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Begin with Flask</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '10625ff957aef51a06bf',
+    clientSecret: '314e364248568028064347a4a7df418bb734433f',
+    repo: 'nightcatv.github.io',
+    owner: 'nightcatv',
+    admin: ['nightcatv'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+			onClick: (e) => {
+      	document.getElementById(e.target.innerText).scrollIntoView()
+      	return false;
+    	}
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+     Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      
+<section class="cover">
+    
+  <div class="cover-frame">
+    <div class="bg-box">
+      <img src="/images/Hacker_peaking.png" alt="image frame" />
+    </div>
+    <div class="cover-inner text-center text-white">
+      <h1><a href="/">Noir Espace</a></h1>
+      <h2></h2>
+      <div>
+        
+        <img
+          src="/images/ayer.svg"
+          class="cover-logo"
+          alt="Noir Espace"
+        />
+        
+      </div>
+    </div>
+  </div>
+  <div class="cover-learn-more">
+    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
+  </div>
+</section>
+
+<div id="main">
+  <section class="outer">
+  <article class="articles">
+    
+    
+    
+    
+    <article id="post-用Python編譯簡單UDP DoS工具" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/"
+    >用Python編譯簡單UDP DoS工具</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/" class="article-date">
+  <time datetime="2019-10-28T12:50:00.000Z" itemprop="datePublished">2019-10-28</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a> / <a class="article-category-link" href="/categories/Cyber-Security/Tool/">Tool</a> / <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <blockquote>
+<p>Reference: <a href="https://www.youtube.com/watch?v=n2XZeofp41E" target="_blank" rel="noopener">用python編譯簡單的dos工具</a></p>
+</blockquote>
+<hr>
+<h2 id="UDP-DoS-Attack"><a class="header-anchor" href="#UDP-DoS-Attack"></a><strong>UDP? DoS Attack?</strong></h2>
+<h3 id="What-is-UDP"><a class="header-anchor" href="#What-is-UDP"></a><em>What is UDP?</em></h3>
+<ul>
+<li>UDP，User Datagram Protocal，主要位在OSI傳輸層</li>
+<li>在TCP/IP模型中在網路層上、應用層下提供簡單的介面，只提供資料的不可靠傳遞</li>
+<li>因缺乏可靠性，且屬於無連接協定 =&gt; 應用程式必須容許一些<strong>遺失</strong>、<strong>錯誤</strong>、<strong>重複</strong>的封包</li>
+<li>有些應用程式不大需要可靠性機制，甚至可能因為引入可靠性而降低效能，故而使用此類協定
+<ul>
+<li>e.g. 串流媒體、即時多人遊戲、IP語音</li>
+</ul>
+</li>
+<li>因為UDP傳送端無法檢測壅塞，所以像使用queue、丟棄技術路由器之類的網路基礎裝置會用於降低UDP過大流量
+<ul>
+<li>DCCP(資料壅塞控制協定) =&gt; 通過在諸如串流媒體類型的高速UDP流中增加主機壅塞控制，來減小此潛在問題</li>
+</ul>
+</li>
+<li>主要應用：
+<ul>
+<li>DNS (Domain Name Server)</li>
+<li>DHCP (Dynamic Host Configuration Protocol)</li>
+<li>SNMP (Simple Network Management Protocol)</li>
+<li>RIP (Router Information Protocol)</li>
+</ul>
+</li>
+</ul>
+      
+      <a class="article-more-link" href="/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/" data-id="ck5plbl95000gx8ac8efhe34w"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security-tool/" rel="tag">cyber security - tool</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dos/" rel="tag">dos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/udp/" rel="tag">udp</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
+    <article id="post-Data Structures in JavaScript: Objects and Arrays" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/"
+    >Data Structures in JavaScript: Objects and Arrays</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/" class="article-date">
+  <time datetime="2019-10-07T15:30:00.000Z" itemprop="datePublished">2019-10-07</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/JavaScript/">JavaScript</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <blockquote>
+<p>Reference Website:</p>
+<ol>
+<li><a href="http://eloquentjavascript.net/" target="_blank" rel="noopener">Eloquent Javascript</a></li>
+<li><a href="https://eloquentjavascript.net/code" target="_blank" rel="noopener">Online coding sandbox</a></li>
+<li><a href="https://pjchender.blogspot.com/2016/01/javascriptobject.html" target="_blank" rel="noopener">[筆記] 物件是什麼？method 是什麼？談談 JavaScript 中的物件建立(Object) - Part 1 </a></li>
+<li><a href="https://pjchender.blogspot.com/2016/04/javascriptparameterargumentsspread.html" target="_blank" rel="noopener">[筆記] 談談JavaScript中函式的參數(parameter),arguments和展開運算子(spread)</a></li>
+</ol>
+</blockquote>
+<hr>
+<ul>
+<li><code>Number</code>、<code>Boolean</code>、<code>String</code>皆為資料結構的元素之一
+<ul>
+<li>許多型別資訊需要不只單一的因素</li>
+</ul>
+</li>
+<li><code>Object</code> =&gt; 允許包含複數數值 (包括其他Object)</li>
+<li>Javascript程式寫到目前可以發現到大多運算都是簡單的資料類型，故於此會簡單介紹資料結構。</li>
+</ul>
+      
+      <a class="article-more-link" href="/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/" data-id="ck5plbl8s0002x8accwza0h44"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/array/" rel="tag">array</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/data-structure/" rel="tag">data structure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/function/" rel="tag">function</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/" rel="tag">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/method/" rel="tag">method</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/object/" rel="tag">object</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
+    <article id="post-Zip Cracker" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/09/12/Zip%20Cracker/"
+    >Zip Cracker</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/09/12/Zip%20Cracker/" class="article-date">
+  <time datetime="2019-09-12T06:45:00.000Z" itemprop="datePublished">2019-09-12</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a> / <a class="article-category-link" href="/categories/Cyber-Security/Tool/">Tool</a> / <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="基本原理"><a class="header-anchor" href="#基本原理"></a><strong>基本原理</strong></h2>
+<blockquote>
+<p>Environment:</p>
+<ol>
+<li>Python 2.7 / Python 3.X</li>
+<li>Zipfile</li>
+</ol>
+</blockquote>
+<ul>
+<li>
+<p>這個Cracker本身是非常簡易的版本，主要方法是</p>
+<ul>
+<li>使用brute-force attack的方式，一一的去try密碼，最後再得到最終的結果</li>
+</ul>
+</li>
+<li>
+<p>整個專案的順序如下：</p>
+<ul>
+<li>首先準備一個加密過的zip檔(test.zip)，且使用8位元的數字密碼</li>
+<li>創建一個字典檔</li>
+<li>將加密過的zip檔以及字典檔一併餵入腳本中來破解</li>
+</ul>
+</li>
+</ul>
+      
+      <a class="article-more-link" href="/2019/09/12/Zip%20Cracker/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/09/12/Zip%20Cracker/" data-id="ck5plbl93000fx8acdscndhkd"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/brute-force-attack/" rel="tag">brute-force attack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/crack/" rel="tag">crack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/zip/" rel="tag">zip</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
+    <article id="post-Learn Blockchain by Building One" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/05/28/Learn%20Blockchain%20by%20Building%20One/"
+    >Learn Blockchain by Building One</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" class="article-date">
+  <time datetime="2019-05-28T13:50:00.000Z" itemprop="datePublished">2019-05-28</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Blockchain/">Blockchain</a> / <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <blockquote>
+<p>Reference Websites:</p>
+<ol>
+<li><a href="https://hackernoon.com/learn-blockchains-by-building-one-117428612f46" target="_blank" rel="noopener">Learn Blockchains by Building One</a></li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="Before-we-get-started…"><a class="header-anchor" href="#Before-we-get-started…"></a><strong>Before we get started…</strong></h2>
+<ul>
+<li>所謂的區塊鏈：<strong>不可變動</strong>、<strong>連續</strong>紀錄鏈結 (區塊)
+<ul>
+<li>其中可包含 <ins>交易</ins>、<ins>檔案</ins>、任何資料</li>
+<li>這些都透過<strong>hash</strong>做鏈結</li>
+</ul>
+</li>
+<li>工具：
+<ul>
+<li>Python 3.6+
+<ul>
+<li>venv (recommend)</li>
+<li>Flask</li>
+<li>requests</li>
+<li>hashlib</li>
+<li>json</li>
+<li>time</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      
+      <a class="article-more-link" href="/2019/05/28/Learn%20Blockchain%20by%20Building%20One/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" data-id="ck5plbl90000bx8ac9uyph75f"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blockchain/" rel="tag">blockchain</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
+    <article id="post-Flask - Email" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/05/05/Flask%20-%20Email/"
+    >Flask - Email</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/05/05/Flask%20-%20Email/" class="article-date">
+  <time datetime="2019-05-05T15:35:00.000Z" itemprop="datePublished">2019-05-05</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="Use-Flask-Mail"><a class="header-anchor" href="#Use-Flask-Mail"></a><strong>Use <em>Flask-Mail</em></strong></h2>
+<ul>
+<li>
+<p>Python標準函式庫含<code>smtlib</code>套件寄送email，但Flask-Mail包裝了<code>smtlib</code>並將其與Flask做整合</p>
+<ul>
+<li>安裝<code>Flask-Mail</code></li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) $ pip install flask-mail</span><br></pre></td></tr></table></figure>
+<ul>
+<li>會連接 <em>簡易郵件傳輸通訊協定(SMTP)</em> 伺服器 =&gt; 127.0.0.1:25</li>
+</ul>
+<div class="info">
+<ul>
+<li>設置SMTP伺服器的組態鍵清單</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"><strong>鍵</strong></th>
+<th style="text-align:left"><strong>預設值</strong></th>
+<th style="text-align:left"><strong>說明</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">MAIL_SERVER</td>
+<td style="text-align:left"><em>localhost</em></td>
+<td style="text-align:left">email伺服器的主機名稱 / IP位址</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_PORT</td>
+<td style="text-align:left">25</td>
+<td style="text-align:left">email伺服器的連接埠</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_USE_TLS</td>
+<td style="text-align:left">False</td>
+<td style="text-align:left">啟用傳輸層安全性(TLS)</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_USE_SSL</td>
+<td style="text-align:left">False</td>
+<td style="text-align:left">啟用安全通訊端層(SSL)</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_USERNAME</td>
+<td style="text-align:left">None</td>
+<td style="text-align:left">郵件帳號的使用者名稱</td>
+</tr>
+<tr>
+<td style="text-align:left">MAIL_PASSWORD</td>
+<td style="text-align:left">None</td>
+<td style="text-align:left">郵件帳號的密碼</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+      
+      <a class="article-more-link" href="/2019/05/05/Flask%20-%20Email/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/05/05/Flask%20-%20Email/" data-id="ck5plbl8x0007x8ac1u32fwaj"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/email/" rel="tag">email</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
+    <article id="post-Flask - Database" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/03/26/Flask%20-%20Database/"
+    >Flask - Database</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/03/26/Flask%20-%20Database/" class="article-date">
+  <time datetime="2019-03-26T11:30:00.000Z" itemprop="datePublished">2019-03-26</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <ul>
+<li>web app最常用的資料庫：關聯式模型
+<ul>
+<li>又稱為 <mark>SQL資料庫</mark>
+<blockquote>
+<p>SQL：Structured Query Language，結構化查詢語言</p>
+</blockquote>
+</li>
+<li>流行的替代方案：<mark>NoSQL資料庫</mark>
+<blockquote>
+<p>即文件導向(document-oriented)、鍵值(key-value)資料庫</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+      
+      <a class="article-more-link" href="/2019/03/26/Flask%20-%20Database/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/03/26/Flask%20-%20Database/" data-id="ck5plbl8v0005x8ac5ue86nny"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/database/" rel="tag">database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sqlalchemy/" rel="tag">sqlalchemy</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
+    <article id="post-Flask - Web Form" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/03/15/Flask%20-%20Web%20Form/"
+    >Flask - Web Form</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/03/15/Flask%20-%20Web%20Form/" class="article-date">
+  <time datetime="2019-03-15T06:55:00.000Z" itemprop="datePublished">2019-03-15</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <ul>
+<li>先前所使用的模板為單向，但目前大多資訊都是雙向的流動，故也要讓使用者提供資料來讓伺服器接收與處理
+<ul>
+<li>可用HTML建立web表單，讓使用者輸入資訊，接著讓網頁瀏覽器將表單傳給伺服器</li>
+<li>通常使用<code>POST request</code></li>
+</ul>
+</li>
+<li>雖然Flask中request物件提供的支援已足以處理web表單，但還是會有許多繁瑣且重複的工作，其中典型的案例：
+<ul>
+<li>表單HTML碼的生成</li>
+<li>驗證使用者送出的表單資料<br>
+故會在進一步使用<a href="http://pythonhosted.org/Flask-WTF" target="_blank" rel="noopener">Flask-WTF</a>的擴充套件來處理網頁表單</li>
+</ul>
+</li>
+</ul>
+<h2 id="more"><a class="header-anchor" href="#more"></a>
+      
+      <a class="article-more-link" href="/2019/03/15/Flask%20-%20Web%20Form/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/03/15/Flask%20-%20Web%20Form/" data-id="ck5plbl8y0008x8acclnb9dgi"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web-form/" rel="tag">web form</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
+    <article id="post-Begin with Flask" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/02/24/Begin%20with%20Flask/"
+    >Begin with Flask</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2019/02/24/Begin%20with%20Flask/" class="article-date">
+  <time datetime="2019-02-24T05:35:00.000Z" itemprop="datePublished">2019-02-24</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <blockquote>
+<p>Reference Website:</p>
+<ol>
+<li><a href="https://blog.techbridge.cc/2017/06/03/python-web-flask101-tutorial-introduction-and-environment-setup/" target="_blank" rel="noopener">Python Web Flask 實戰開發教學 - 簡介與環境建置</a></li>
+<li><a href="http://flask.pocoo.org/" target="_blank" rel="noopener">Flask</a></li>
+<li><a href="https://medium.com/pyladies-taiwan/%E5%BE%9E%E7%93%B6%E8%A3%A1%E5%80%92%E5%87%BA%E7%AC%AC%E4%B8%80%E6%BB%B4-flask-%E9%96%8B%E5%A7%8B%E5%8B%95%E6%89%8B%E7%8E%A9-95f85895fd64" target="_blank" rel="noopener">從瓶裡倒出第一滴 — Flask 開始動手玩</a></li>
+<li><a href="https://www.tutorialspoint.com/flask" target="_blank" rel="noopener">Learn Flask</a></li>
+<li><a href="http://flask.pocoo.org/docs/1.0/tutorial/" target="_blank" rel="noopener">Tutorial - Flask 1.0.2 document</a></li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="What-is-Flask"><a class="header-anchor" href="#What-is-Flask"></a><strong>What is Flask?</strong></h2>
+<ul>
+<li>使用Python寫的輕量級Web應用框架。</li>
+<li>通常被稱為 “microframework(微框架)”，原因：
+<ul>
+<li>使用簡單的核心</li>
+<li>用extension增加其他功能</li>
+</ul>
+</li>
+<li>沒有預設的資料庫、表單驗證工具 =&gt; 保留了擴增的彈性</li>
+<li>Flask是基於下列工具所開發出來的：
+<ul>
+<li>WSGI
+<ul>
+<li>Web Server Gate Interface</li>
+<li>為Python網頁應用程式開發的標準，主要為介於網路應用程式與伺服器之間的規範</li>
+</ul>
+</li>
+<li>Werkzeug
+<ul>
+<li>WSGI的工具</li>
+<li>允許網頁框架以此為基礎來建立</li>
+</ul>
+</li>
+<li>Jinja2
+<ul>
+<li>Python的模板引擎 (Templating Engine)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      
+      <a class="article-more-link" href="/2019/02/24/Begin%20with%20Flask/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2019/02/24/Begin%20with%20Flask/" data-id="ck5plbl8n0000x8aceukxeo6w"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/microframework/" rel="tag">microframework</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
+    <article id="post-Web-crawler in Python" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/09/07/Web-crawler%20in%20Python/"
+    >Web-crawler in Python</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2018/09/07/Web-crawler%20in%20Python/" class="article-date">
+  <time datetime="2018-09-07T04:10:00.000Z" itemprop="datePublished">2018-09-07</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <blockquote>
+<p>References：</p>
+<ol>
+<li><a href="https://www.slideshare.net/tw_dsconf/python-78691041" target="_blank" rel="noopener">Python爬蟲實戰</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10190994" target="_blank" rel="noopener">網路爬蟲Day1 - 概述</a></li>
+<li><a href="https://pala.tw/python-web-crawler/" target="_blank" rel="noopener">Python爬蟲新手日記</a></li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="What-is-Web-crawler"><a class="header-anchor" href="#What-is-Web-crawler"></a><strong>What is Web-crawler?</strong></h2>
+<ul>
+<li>一種機器人，自動爬取目標網頁並依需求蒐集目標資料</li>
+<li>步驟：
+<ol>
+<li>取得指定網域下的HTML資料</li>
+<li>解析這些資料以取得目標資料</li>
+<li>Loop</li>
+</ol>
+</li>
+<li>套件簡介：
+<ul>
+<li><code>requests</code>       =&gt; 用來對目標網頁的server發出request，底層為urllib</li>
+<li><code>BeautifulSoup</code>  =&gt; 用來解析html，底層為re</li>
+<li><code>pandas</code>         =&gt; 爬取表格</li>
+<li><code>selenium</code>       =&gt; 網頁測試工具，用來應付較麻煩的JavaScript</li>
+<li><code>re</code>             =&gt; 正則表達式，用以取技術性較高的文字段落</li>
+</ul>
+</li>
+</ul>
+      
+      <a class="article-more-link" href="/2018/09/07/Web-crawler%20in%20Python/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2018/09/07/Web-crawler%20in%20Python/" data-id="ck5plbl91000cx8ac6ilq6pno"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web-crawler/" rel="tag">web-crawler</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
+  </article>
+  
+
+  
+</section>
+</div>
+
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+      <aside class="sidebar">
+        
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>
