@@ -101,14 +101,7 @@
       
 
       
-      <blockquote>
-<p>Reference Websites:</p>
-<ol>
-<li><a href="https://hackernoon.com/learn-blockchains-by-building-one-117428612f46" target="_blank" rel="noopener">Learn Blockchains by Building One</a></li>
-</ol>
-</blockquote>
-<hr>
-<h2 id="Before-we-get-started…"><a class="header-anchor" href="#Before-we-get-started…"></a><strong>Before we get started…</strong></h2>
+      <h2 id="Before-we-get-started…"><a class="header-anchor" href="#Before-we-get-started…"></a><strong>Before we get started…</strong></h2>
 <ul>
 <li>所謂的區塊鏈：<strong>不可變動</strong>、<strong>連續</strong>紀錄鏈結 (區塊)
 <ul>
@@ -347,13 +340,20 @@ Linux則可以使用<code>cURL</code>指令</p>
   <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># application.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/nodes/register', methods = ['POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register_nodes</span><span class="params">()</span>:</span></span><br><span class="line">    values = request.get_json()</span><br><span class="line">    nodes = values.get(<span class="string">'nodes'</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> nodes <span class="keyword">in</span> nodes:</span><br><span class="line">        blockchain.register_node(node)</span><br><span class="line">        </span><br><span class="line">    response = &#123;</span><br><span class="line">        <span class="string">'message'</span>: <span class="string">'New nodes have been added'</span>, </span><br><span class="line">        <span class="string">'total_nodes'</span>: list(blockchain.nodes), </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> jsonify(response, <span class="number">201</span>)</span><br><span class="line">    </span><br><span class="line"><span class="meta">@app.route('/nodes/resolve', methods = ['GET'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">consensus</span><span class="params">()</span>:</span></span><br><span class="line">    replaced = blockchain.resolve_conflicts()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> replaced:</span><br><span class="line">        response = &#123;</span><br><span class="line">            <span class="string">'message'</span>: Our chain was replaced<span class="string">', </span></span><br><span class="line"><span class="string">            '</span>new_chain<span class="string">': blockchain.chain</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    else:</span></span><br><span class="line"><span class="string">        response = &#123;</span></span><br><span class="line"><span class="string">            '</span>message<span class="string">': '</span>Our chain <span class="keyword">is</span> authoritative<span class="string">', </span></span><br><span class="line"><span class="string">            '</span>chain<span class="string">': blockchain.chain</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    return jsonify(response), 200</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
+<hr>
+<blockquote>
+<p>Reference Websites:</p>
+<ol>
+<li><a href="https://hackernoon.com/learn-blockchains-by-building-one-117428612f46" target="_blank" rel="noopener">Learn Blockchains by Building One</a></li>
+</ol>
+</blockquote>
 
       
       <!-- 打賞 -->
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" data-id="ck5plbl90000bx8ac9uyph75f"
+      <a data-url="https://nightcatv.github.io/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" data-id="ck5qxshqz0009t1acd29xfshx"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blockchain/" rel="tag">blockchain</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>

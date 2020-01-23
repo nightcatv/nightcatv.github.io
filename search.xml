@@ -3,11 +3,7 @@
   <entry>
     <title>用Python編譯簡單UDP DoS工具</title>
     <url>/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/</url>
-    <content><![CDATA[<blockquote>
-<p>Reference: <a href="https://www.youtube.com/watch?v=n2XZeofp41E" target="_blank" rel="noopener">用python編譯簡單的dos工具</a></p>
-</blockquote>
-<hr>
-<h2 id="UDP-DoS-Attack"><a class="header-anchor" href="#UDP-DoS-Attack"></a><strong>UDP? DoS Attack?</strong></h2>
+    <content><![CDATA[<h2 id="UDP-DoS-Attack"><a class="header-anchor" href="#UDP-DoS-Attack"></a><strong>UDP? DoS Attack?</strong></h2>
 <h3 id="What-is-UDP"><a class="header-anchor" href="#What-is-UDP"></a><em>What is UDP?</em></h3>
 <ul>
 <li>UDP，User Datagram Protocal，主要位在OSI傳輸層</li>
@@ -247,6 +243,10 @@
 </ul>
 </li>
 </ul>
+<hr>
+<blockquote>
+<p>Reference: <a href="https://www.youtube.com/watch?v=n2XZeofp41E" target="_blank" rel="noopener">用python編譯簡單的dos工具</a></p>
+</blockquote>
 ]]></content>
       <categories>
         <category>Python</category>
@@ -263,17 +263,7 @@
   <entry>
     <title>Data Structures in JavaScript: Objects and Arrays</title>
     <url>/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/</url>
-    <content><![CDATA[<blockquote>
-<p>Reference Website:</p>
-<ol>
-<li><a href="http://eloquentjavascript.net/" target="_blank" rel="noopener">Eloquent Javascript</a></li>
-<li><a href="https://eloquentjavascript.net/code" target="_blank" rel="noopener">Online coding sandbox</a></li>
-<li><a href="https://pjchender.blogspot.com/2016/01/javascriptobject.html" target="_blank" rel="noopener">[筆記] 物件是什麼？method 是什麼？談談 JavaScript 中的物件建立(Object) - Part 1 </a></li>
-<li><a href="https://pjchender.blogspot.com/2016/04/javascriptparameterargumentsspread.html" target="_blank" rel="noopener">[筆記] 談談JavaScript中函式的參數(parameter),arguments和展開運算子(spread)</a></li>
-</ol>
-</blockquote>
-<hr>
-<ul>
+    <content><![CDATA[<ul>
 <li><code>Number</code>、<code>Boolean</code>、<code>String</code>皆為資料結構的元素之一
 <ul>
 <li>許多型別資訊需要不只單一的因素</li>
@@ -810,6 +800,16 @@ $$</p>
 <p>若嘗試用<code>null</code>、<code>undefined</code>重架構則會回傳Error</p>
 </li>
 </ul>
+<hr>
+<blockquote>
+<p>Reference Website:</p>
+<ol>
+<li><a href="http://eloquentjavascript.net/" target="_blank" rel="noopener">Eloquent Javascript</a></li>
+<li><a href="https://eloquentjavascript.net/code" target="_blank" rel="noopener">Online coding sandbox</a></li>
+<li><a href="https://pjchender.blogspot.com/2016/01/javascriptobject.html" target="_blank" rel="noopener">[筆記] 物件是什麼？method 是什麼？談談 JavaScript 中的物件建立(Object) - Part 1 </a></li>
+<li><a href="https://pjchender.blogspot.com/2016/04/javascriptparameterargumentsspread.html" target="_blank" rel="noopener">[筆記] 談談JavaScript中函式的參數(parameter),arguments和展開運算子(spread)</a></li>
+</ol>
+</blockquote>
 ]]></content>
       <categories>
         <category>JavaScript</category>
@@ -944,14 +944,7 @@ $$</p>
   <entry>
     <title>Learn Blockchain by Building One</title>
     <url>/2019/05/28/Learn%20Blockchain%20by%20Building%20One/</url>
-    <content><![CDATA[<blockquote>
-<p>Reference Websites:</p>
-<ol>
-<li><a href="https://hackernoon.com/learn-blockchains-by-building-one-117428612f46" target="_blank" rel="noopener">Learn Blockchains by Building One</a></li>
-</ol>
-</blockquote>
-<hr>
-<h2 id="Before-we-get-started…"><a class="header-anchor" href="#Before-we-get-started…"></a><strong>Before we get started…</strong></h2>
+    <content><![CDATA[<h2 id="Before-we-get-started…"><a class="header-anchor" href="#Before-we-get-started…"></a><strong>Before we get started…</strong></h2>
 <ul>
 <li>所謂的區塊鏈：<strong>不可變動</strong>、<strong>連續</strong>紀錄鏈結 (區塊)
 <ul>
@@ -1190,6 +1183,13 @@ Linux則可以使用<code>cURL</code>指令</p>
   <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># application.py</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route('/nodes/register', methods = ['POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">register_nodes</span><span class="params">()</span>:</span></span><br><span class="line">    values = request.get_json()</span><br><span class="line">    nodes = values.get(<span class="string">'nodes'</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> nodes <span class="keyword">in</span> nodes:</span><br><span class="line">        blockchain.register_node(node)</span><br><span class="line">        </span><br><span class="line">    response = &#123;</span><br><span class="line">        <span class="string">'message'</span>: <span class="string">'New nodes have been added'</span>, </span><br><span class="line">        <span class="string">'total_nodes'</span>: list(blockchain.nodes), </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> jsonify(response, <span class="number">201</span>)</span><br><span class="line">    </span><br><span class="line"><span class="meta">@app.route('/nodes/resolve', methods = ['GET'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">consensus</span><span class="params">()</span>:</span></span><br><span class="line">    replaced = blockchain.resolve_conflicts()</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> replaced:</span><br><span class="line">        response = &#123;</span><br><span class="line">            <span class="string">'message'</span>: Our chain was replaced<span class="string">', </span></span><br><span class="line"><span class="string">            '</span>new_chain<span class="string">': blockchain.chain</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    else:</span></span><br><span class="line"><span class="string">        response = &#123;</span></span><br><span class="line"><span class="string">            '</span>message<span class="string">': '</span>Our chain <span class="keyword">is</span> authoritative<span class="string">', </span></span><br><span class="line"><span class="string">            '</span>chain<span class="string">': blockchain.chain</span></span><br><span class="line"><span class="string">        &#125;</span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    return jsonify(response), 200</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
+<hr>
+<blockquote>
+<p>Reference Websites:</p>
+<ol>
+<li><a href="https://hackernoon.com/learn-blockchains-by-building-one-117428612f46" target="_blank" rel="noopener">Learn Blockchains by Building One</a></li>
+</ol>
+</blockquote>
 ]]></content>
       <categories>
         <category>Python</category>
@@ -2645,18 +2645,7 @@ Linux則可以使用<code>cURL</code>指令</p>
   <entry>
     <title>Begin with Flask</title>
     <url>/2019/02/24/Begin%20with%20Flask/</url>
-    <content><![CDATA[<blockquote>
-<p>Reference Website:</p>
-<ol>
-<li><a href="https://blog.techbridge.cc/2017/06/03/python-web-flask101-tutorial-introduction-and-environment-setup/" target="_blank" rel="noopener">Python Web Flask 實戰開發教學 - 簡介與環境建置</a></li>
-<li><a href="http://flask.pocoo.org/" target="_blank" rel="noopener">Flask</a></li>
-<li><a href="https://medium.com/pyladies-taiwan/%E5%BE%9E%E7%93%B6%E8%A3%A1%E5%80%92%E5%87%BA%E7%AC%AC%E4%B8%80%E6%BB%B4-flask-%E9%96%8B%E5%A7%8B%E5%8B%95%E6%89%8B%E7%8E%A9-95f85895fd64" target="_blank" rel="noopener">從瓶裡倒出第一滴 — Flask 開始動手玩</a></li>
-<li><a href="https://www.tutorialspoint.com/flask" target="_blank" rel="noopener">Learn Flask</a></li>
-<li><a href="http://flask.pocoo.org/docs/1.0/tutorial/" target="_blank" rel="noopener">Tutorial - Flask 1.0.2 document</a></li>
-</ol>
-</blockquote>
-<hr>
-<h2 id="What-is-Flask"><a class="header-anchor" href="#What-is-Flask"></a><strong>What is Flask?</strong></h2>
+    <content><![CDATA[<h2 id="What-is-Flask"><a class="header-anchor" href="#What-is-Flask"></a><strong>What is Flask?</strong></h2>
 <ul>
 <li>使用Python寫的輕量級Web應用框架。</li>
 <li>通常被稱為 “microframework(微框架)”，原因：
@@ -3179,6 +3168,17 @@ Linux則可以使用<code>cURL</code>指令</p>
   <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">digraph hierarchy &#123;</span><br><span class="line">        nodesep&#x3D;1.0</span><br><span class="line">        node [color&#x3D;Black,fontname&#x3D;Courier,shape&#x3D;box]</span><br><span class="line">        edge [color&#x3D;Blue, style&#x3D;dashed]</span><br><span class="line"></span><br><span class="line">        &quot;&#x2F;&quot;-&gt;&#123;venv templates &quot;web.py&quot;&#125;</span><br><span class="line">        venv-&gt;&quot;虛擬環境套件&quot;</span><br><span class="line">        templates-&gt;&#123;&quot;index.html&quot; &quot;base.html&quot; &quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">        &quot;base.html&quot;-&gt;&#123;&quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">        &#123;rank&#x3D;same;&quot;user.html&quot; &quot;404.html&quot; &quot;500.html&quot;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
+<hr>
+<blockquote>
+<p>Reference Website:</p>
+<ol>
+<li><a href="https://blog.techbridge.cc/2017/06/03/python-web-flask101-tutorial-introduction-and-environment-setup/" target="_blank" rel="noopener">Python Web Flask 實戰開發教學 - 簡介與環境建置</a></li>
+<li><a href="http://flask.pocoo.org/" target="_blank" rel="noopener">Flask</a></li>
+<li><a href="https://medium.com/pyladies-taiwan/%E5%BE%9E%E7%93%B6%E8%A3%A1%E5%80%92%E5%87%BA%E7%AC%AC%E4%B8%80%E6%BB%B4-flask-%E9%96%8B%E5%A7%8B%E5%8B%95%E6%89%8B%E7%8E%A9-95f85895fd64" target="_blank" rel="noopener">從瓶裡倒出第一滴 — Flask 開始動手玩</a></li>
+<li><a href="https://www.tutorialspoint.com/flask" target="_blank" rel="noopener">Learn Flask</a></li>
+<li><a href="http://flask.pocoo.org/docs/1.0/tutorial/" target="_blank" rel="noopener">Tutorial - Flask 1.0.2 document</a></li>
+</ol>
+</blockquote>
 ]]></content>
       <categories>
         <category>Python</category>
@@ -3193,16 +3193,7 @@ Linux則可以使用<code>cURL</code>指令</p>
   <entry>
     <title>Web-crawler in Python</title>
     <url>/2018/09/07/Web-crawler%20in%20Python/</url>
-    <content><![CDATA[<blockquote>
-<p>References：</p>
-<ol>
-<li><a href="https://www.slideshare.net/tw_dsconf/python-78691041" target="_blank" rel="noopener">Python爬蟲實戰</a></li>
-<li><a href="https://ithelp.ithome.com.tw/articles/10190994" target="_blank" rel="noopener">網路爬蟲Day1 - 概述</a></li>
-<li><a href="https://pala.tw/python-web-crawler/" target="_blank" rel="noopener">Python爬蟲新手日記</a></li>
-</ol>
-</blockquote>
-<hr>
-<h2 id="What-is-Web-crawler"><a class="header-anchor" href="#What-is-Web-crawler"></a><strong>What is Web-crawler?</strong></h2>
+    <content><![CDATA[<h2 id="What-is-Web-crawler"><a class="header-anchor" href="#What-is-Web-crawler"></a><strong>What is Web-crawler?</strong></h2>
 <ul>
 <li>一種機器人，自動爬取目標網頁並依需求蒐集目標資料</li>
 <li>步驟：
@@ -3287,7 +3278,15 @@ Linux則可以使用<code>cURL</code>指令</p>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">url = <span class="string">'https://mobile.dcard.tw/f/pet/p/228155814'</span></span><br><span class="line">fake_header = &#123;<span class="string">'User-Agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'</span>&#125;</span><br><span class="line">response = requests.get(url, headers = fake_header)</span><br><span class="line">soup = BeautifulSoup(response.text, <span class="string">'html.parser'</span>)</span><br><span class="line">picture = soup.find(<span class="string">'img'</span>, <span class="string">'GalleryImage__Image-iw2fq7-0 vXfwx'</span>)</span><br><span class="line">response_crawling = requests.get(picture[<span class="string">'src'</span>])</span><br><span class="line"></span><br><span class="line">print(response_crawling.content)</span><br><span class="line"></span><br><span class="line">file = open(<span class="string">'Lab3_img.jpg'</span>, <span class="string">'wb'</span>)</span><br><span class="line">file.write(response_crawling.content)</span><br></pre></td></tr></table></figure>
 <hr>
 <h3 id="Lab3-2-將所有網頁圖片存成檔案"><a class="header-anchor" href="#Lab3-2-將所有網頁圖片存成檔案"></a><strong>Lab3-2 - 將所有網頁圖片存成檔案</strong></h3>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">url = <span class="string">'https://mobile.dcard.tw/f/pet/p/228155814'</span></span><br><span class="line">header = &#123;<span class="string">'User-Agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'</span>&#125;</span><br><span class="line">req = requests.get(url, headers = header)</span><br><span class="line">soup = BeautifulSoup(req.text, <span class="string">'html.parser'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#pic = soup.find('img', 'GalleryImage_image_1I6fi')</span></span><br><span class="line"><span class="comment">#rr = requests.get(pic['src'])</span></span><br><span class="line"><span class="comment">#file = open('Lab3_img.jpg', 'wb')</span></span><br><span class="line"><span class="comment">#file.write(rr.content)</span></span><br><span class="line"></span><br><span class="line">cnt = <span class="number">0</span></span><br><span class="line">images = soup.find_all(<span class="string">'img'</span>, <span class="string">'GalleryImage__Image-iw2fq7-0 vXfwx'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> images:</span><br><span class="line">	route = <span class="string">'Lab3-allimg/'</span></span><br><span class="line">	filename = <span class="string">'Lab_img'</span> + str(cnt) + <span class="string">'.jpg'</span></span><br><span class="line">	rr = requests.get(i[<span class="string">'src'</span>])</span><br><span class="line">	file = open(route + filename, <span class="string">'wb'</span>)</span><br><span class="line">	file.write(rr.content)</span><br><span class="line">	cnt += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">file.flush()</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure>
+<h2 id="￼9"><a class="header-anchor" href="#￼9"></a><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line">url = <span class="string">'https://mobile.dcard.tw/f/pet/p/228155814'</span></span><br><span class="line">header = &#123;<span class="string">'User-Agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:56.0) Gecko/20100101 Firefox/56.0'</span>&#125;</span><br><span class="line">req = requests.get(url, headers = header)</span><br><span class="line">soup = BeautifulSoup(req.text, <span class="string">'html.parser'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">#pic = soup.find('img', 'GalleryImage_image_1I6fi')</span></span><br><span class="line"><span class="comment">#rr = requests.get(pic['src'])</span></span><br><span class="line"><span class="comment">#file = open('Lab3_img.jpg', 'wb')</span></span><br><span class="line"><span class="comment">#file.write(rr.content)</span></span><br><span class="line"></span><br><span class="line">cnt = <span class="number">0</span></span><br><span class="line">images = soup.find_all(<span class="string">'img'</span>, <span class="string">'GalleryImage__Image-iw2fq7-0 vXfwx'</span>)</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> images:</span><br><span class="line">	route = <span class="string">'Lab3-allimg/'</span></span><br><span class="line">	filename = <span class="string">'Lab_img'</span> + str(cnt) + <span class="string">'.jpg'</span></span><br><span class="line">	rr = requests.get(i[<span class="string">'src'</span>])</span><br><span class="line">	file = open(route + filename, <span class="string">'wb'</span>)</span><br><span class="line">	file.write(rr.content)</span><br><span class="line">	cnt += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">file.flush()</span><br><span class="line">file.close()</span><br></pre></td></tr></table></figure></h2>
+<blockquote>
+<p>References：</p>
+<ol>
+<li><a href="https://www.slideshare.net/tw_dsconf/python-78691041" target="_blank" rel="noopener">Python爬蟲實戰</a></li>
+<li><a href="https://ithelp.ithome.com.tw/articles/10190994" target="_blank" rel="noopener">網路爬蟲Day1 - 概述</a></li>
+<li><a href="https://pala.tw/python-web-crawler/" target="_blank" rel="noopener">Python爬蟲新手日記</a></li>
+</ol>
+</blockquote>
 ]]></content>
       <categories>
         <category>Python</category>
