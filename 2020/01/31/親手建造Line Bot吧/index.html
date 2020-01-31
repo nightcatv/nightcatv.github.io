@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    親手建造Line Bot吧 |  Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-親手建造Line Bot吧" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  親手建造Line Bot吧
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/01/31/%E8%A6%AA%E6%89%8B%E5%BB%BA%E9%80%A0Line%20Bot%E5%90%A7/" class="article-date">
+  <time datetime="2020-01-31T04:16:00.000Z" itemprop="datePublished">2020-01-31</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字數統計:</span>
+            <span class="post-count">2.2k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 閱讀時長≈</span>
+            <span class="post-count">9分鐘</span>
+        </span>
+    </span>
+</div>
+
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h2 id="Step-1-申請Line-Developers的帳號"><a class="header-anchor" href="#Step-1-申請Line-Developers的帳號"></a><strong>Step 1. 申請Line Developers的帳號</strong></h2>
+<ul>
+<li>
+<p>這一步其實非常簡單，首先到<a href="https://developers.line.biz/zh-hant/" target="_blank" rel="noopener">Line Developers</a>的網站上，首先登入自己的Line帳號<br>
+<img src="https://i.imgur.com/Gs1CZRx.jpg" alt=""></p>
+</li>
+<li>
+<p>接著在Provider的位置點擊 <code>Create</code>，然後輸入名字<br>
+<img src="https://i.imgur.com/bU4cqw1.png" alt=""></p>
+</li>
+</ul>
+<a id="more"></a>
+<ul>
+<li>
+<p>然後點進Provider頁面後，由於本次主要做的是個訊息回覆機器人，所以點擊<code>Message API</code>來進行一連串的設定<br>
+<img src="https://i.imgur.com/IcNZu4M.png" alt=""><br>
+<img src="https://i.imgur.com/4pZjrU4.png" alt=""></p>
+</li>
+<li>
+<p>設定好之後，應該會有下列的畫面<br>
+<img src="https://i.imgur.com/fKXYH1J.png" alt=""></p>
+</li>
+<li>
+<p>等等會有兩個值會需要使用到：</p>
+<ul>
+<li><code>Basic Setting</code>裡的<code>Channel Secret</code></li>
+<li><code>Message API</code>裡的<code>Channel access token</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="Step-2-Line-Bot事件的元件"><a class="header-anchor" href="#Step-2-Line-Bot事件的元件"></a><strong>Step 2. Line Bot事件的元件</strong></h2>
+<ul>
+<li>Line Bot的事件最常使用大約有五個要素：
+<ul>
+<li>Callback URL</li>
+<li>Web Hook</li>
+<li>Reply Message</li>
+<li>Push Message</li>
+<li>Profile</li>
+</ul>
+</li>
+</ul>
+<h4 id="Callback-URL"><a class="header-anchor" href="#Callback-URL"></a>Callback URL</h4>
+<ul>
+<li>這邊較麻煩，因為這邊需要提供Line Bot回傳的網址 =&gt; 需要簡易的Server處理Line Server傳來的資訊
+<ul>
+<li><mark>這個URL只支持HTTP！！很重要</mark></li>
+<li>而且憑證要是有問題也不會接受</li>
+</ul>
+</li>
+</ul>
+<h4 id="Web-Hook"><a class="header-anchor" href="#Web-Hook"></a>Web Hook</h4>
+<ul>
+<li>發生事件都會發出這個Web Hook，同時程式也會收到event的JSON檔</li>
+<li>這JSON<strong>非常重要</strong>：
+<ul>
+<li>userId 紀錄使用Bot的使用者</li>
+<li>groupId 紀錄被加到哪個群組</li>
+<li>replyToken 可不管ID直接回覆給呼叫的人</li>
+<li>message 可看到對方傳的指令</li>
+<li>etc…</li>
+</ul>
+</li>
+<li>可以到<a href="https://developers.line.biz/en/docs/#webhook-event-object" target="_blank" rel="noopener">官方的文件</a>看詳細的內容</li>
+</ul>
+<h4 id="Reply-Message"><a class="header-anchor" href="#Reply-Message"></a>Reply Message</h4>
+<ul>
+<li>使用replyToken這個key裡的資訊來回覆訊息
+<ul>
+<li>這樣就不用使用到userId</li>
+</ul>
+</li>
+<li>簡單一行程式即可：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">line_bot_api.reply_message(event.reply_token, TextSendMessage(text=msg))</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="Push-Message"><a class="header-anchor" href="#Push-Message"></a>Push Message</h4>
+<ul>
+<li><strong>不是每個Bot都有開放這個主動推訊息出去的功能！！</strong></li>
+<li>Reply跟Push之間不同的就是：
+<ul>
+<li>Reply是被動送出訊息</li>
+<li>Push主動以條件判斷通知使用者</li>
+</ul>
+</li>
+<li>寫法大概如下  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">line_bot_api.push_message(id, TextSendMessage(text=msg))</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="Profile"><a class="header-anchor" href="#Profile"></a>Profile</h4>
+<ul>
+<li>當需要了解使用者的訊息時才需要
+<ul>
+<li>前述的userId、groupId是伺服器存的ID</li>
+</ul>
+</li>
+<li>若要紀錄使用者名稱：  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">profile = line_bot_api.get_profile(<span class="string">''</span>)</span><br><span class="line">print(profile.display_name)</span><br><span class="line">print(profile.user_id)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<hr>
+<h2 id="Step-3-架設回應的伺服器"><a class="header-anchor" href="#Step-3-架設回應的伺服器"></a><strong>Step 3. 架設回應的伺服器</strong></h2>
+<blockquote>
+<p>使用的環境與套件：</p>
+<ul>
+<li>Pipenv</li>
+<li>Flask</li>
+<li>Line Bot api</li>
+</ul>
+</blockquote>
+<h3 id="架設Pipenv"><a class="header-anchor" href="#架設Pipenv"></a><em>架設Pipenv</em></h3>
+<ul>
+<li><code>pipenv</code>是目前官方推薦的套件管理工具，主要提供下列特點：
+<blockquote>
+<p><s>推薦個鬼，如果功能沒有用到那麼多的話，根本就超級難用的</s></p>
+</blockquote>
+<ul>
+<li>只需要<code>pipenv</code>，無需分別使用<code>pip</code>、<code>virtualenv</code></li>
+<li>自動產生與更新<code>Pipfile</code>、<code>Pipfile.lock</code>，解決維護<code>requirement.txt</code>的問題</li>
+<li>透過套件Hash安全性檢查確認</li>
+<li>可產生dependency樹狀圖 (<code>$ pipenv graph</code>)</li>
+<li>可透過<code>.env</code>自動載入不同環境變數</li>
+</ul>
+</li>
+<li>安裝<code>pipenv</code>的方法有二：
+<ul>
+<li>透過pip安裝  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install pipenv</span><br></pre></td></tr></table></figure>
+</li>
+<li>透過Homebrew安裝 (如果是MacOS的話)  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ brew install pipenv</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>首先創立一個專案目錄，並且在目錄下創建虛擬環境  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir [Project Directory] &amp;&amp; <span class="built_in">cd</span> [ProjectDirectory]</span><br><span class="line">$ pipenv --three <span class="comment"># 產生 Python 3 虛擬環境</span></span><br><span class="line">$ pipenv --two   <span class="comment"># 產生 Python 2 虛擬環境</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>接著安裝套件，目前以<code>requests</code>的套件作為示範  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pipenv install requests</span><br></pre></td></tr></table></figure>
+<ul>
+<li>若目錄下沒有<code>Pipfile</code>，則會自動產生一個，同時產生帶有hash資訊的<code>Pipfile.lock</code></li>
+<li>若想移除套件  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pipenv uninstall [package name]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>要在虛擬環境中下指令方法有兩種：
+<ul>
+<li>在不進入虛擬環境下，根據<code>virtualenv</code>執行指令  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pipenv run python text.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>進入虛擬環境  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pipenv shell</span><br></pre></td></tr></table></figure>
+<ul>
+<li>若要離開虛擬環境</li>
+</ul>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">exit</span> <span class="comment"># 或是按 "CTRL + D"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="架設Flask"><a class="header-anchor" href="#架設Flask"></a><em>架設Flask</em></h3>
+<ul>
+<li>首先在<code>pipenv</code>中安裝Flask的套件  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pipenv install flask</span><br></pre></td></tr></table></figure>
+</li>
+<li>然後在專案資料夾裡建立一個<code>app.py</code>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ touch app.py    <span class="comment"># Linux / MacOS</span></span><br><span class="line">$ fsutil file createnew app.py</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<div class="info">
+<ul>
+<li>架設Flask非常的簡單，僅僅三個步驟：
+<ul>
+<li>Import &amp; Setting</li>
+<li>Add View</li>
+<li>Run Server</li>
+</ul>
+</li>
+</ul>
+</div>
+<h4 id="Import-Setting"><a class="header-anchor" href="#Import-Setting"></a>Import &amp; Setting</h4>
+<ul>
+<li>這裡簡單宣告一個Flask的app實例  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>接著如果需要任何設定都可在<code>app.config</code>調整
+<blockquote>
+<p><code>app.config</code>內的設定參數可參考<a href="https://flask.palletsprojects.com/en/1.1.x/config/" target="_blank" rel="noopener">網站官方文件</a></p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Add-View"><a class="header-anchor" href="#Add-View"></a>Add View</h4>
+<ul>
+<li>在Flask裡，可使用<code>app.route</code>的裝飾器(decorator)來為路徑設定服務的function  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route("/")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Hello Stranger~"</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="Run-Server"><a class="header-anchor" href="#Run-Server"></a>Run Server</h4>
+<ul>
+<li>Server的基本設定已經完成，在Flask的套件裡啟動的方法都差不多，都是用<code>app.run(host, post, ...)</code>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    app.run(<span class="string">"0.0.0.0"</span>, <span class="number">5000</span>, debug = <span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li>接著直接用python運行  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python app.py</span><br></pre></td></tr></table></figure>
+<ul>
+<li>基本上Flask的Server都會預設在本機端的port 5000，所以就算沒有設定<code>app.run()</code>的狀態也會在<code>127.0.0.1:5000</code>上運行</li>
+</ul>
+</li>
+</ul>
+<h4 id="Complete-Code"><a class="header-anchor" href="#Complete-Code"></a>Complete Code</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route("/")</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">"Hello Stranger~"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    app.run(<span class="string">"0.0.0.0"</span>, <span class="number">5000</span>, debug = <span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Step-4-結合Flask-Server與Line-Bot-api"><a class="header-anchor" href="#Step-4-結合Flask-Server與Line-Bot-api"></a><strong>Step 4. 結合Flask Server與Line Bot api</strong></h2>
+<ul>
+<li>先是要安裝Line Bot相關的套件  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pipenv install line-bot-sdk</span><br></pre></td></tr></table></figure>
+</li>
+<li>在開始整合之前，要將環境進行設定
+<ul>
+<li>新增一個<code>.env</code>檔案  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ touch .env</span><br><span class="line">$ fsutil file createnew .env</span><br></pre></td></tr></table></figure>
+</li>
+<li>到Line Developers剛剛設立的Message API中找到兩個值
+<ul>
+<li><code>Basic Setting</code>裡的<code>Channel Secret</code></li>
+<li><code>Message API</code>裡的<code>Channel access token</code></li>
+</ul>
+</li>
+<li>將這兩個值寫入<code>.env</code>檔案中  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CHANNEL_SECRET=[YOUR CHANNEL SECRET]</span><br><span class="line">CHANNEL_ACCESS_TOKEN=[YOUR CHANNEL ACCESS TOKEN]</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>接著就按照先前所述的Flask架設的三個步驟一一來執行吧～
+<blockquote>
+<p>這邊要將<code>app.py</code>全部重新寫過</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="Import-Setting-v2"><a class="header-anchor" href="#Import-Setting-v2"></a>Import &amp; Setting</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, abort</span><br><span class="line"><span class="keyword">from</span> linebot.exceptions <span class="keyword">import</span> (</span><br><span class="line">    LineBotApi, WebhookHandler</span><br><span class="line">)</span><br><span class="line"><span class="keyword">from</span> linebot.models <span class="keyword">import</span> (</span><br><span class="line">    InvalidSignatureError</span><br><span class="line">)</span><br><span class="line"><span class="keyword">from</span> linebot.models <span class="keyword">import</span> (</span><br><span class="line">    MessageEvent, TextMessage, TextSendMessage,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">line_bot_api = LineBotApi(<span class="string">'CHANNEL_ACCESS_TOKEN'</span>)</span><br><span class="line">handler = WebhookHandler(<span class="string">'CHANNEL_SECRET'</span>)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>line_bot_api</code> =&gt; 負責與Line本身的API做溝通</li>
+<li><code>handler</code> =&gt; 負責處理送過來的資料</li>
+</ul>
+<h4 id="Add-View-v2"><a class="header-anchor" href="#Add-View-v2"></a>Add View</h4>
+<ul>
+<li>先處理<code>handler</code>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@handler.add(MessageEvent, message = TextMessage)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_message</span><span class="params">(event)</span>:</span></span><br><span class="line">    line_bot_api.reply_message(</span><br><span class="line">        event.reply_token,</span><br><span class="line">        TextSendMessage(text = event.message.text)</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<ul>
+<li>利用這個<code>handler.add</code>來包裝自己處理line回傳的json資料
+<blockquote>
+<p>在官方的<a href="https://developers.line.me/en/docs/messaging-api/reference" target="_blank" rel="noopener">line bot api response</a>有完整json資料</p>
+</blockquote>
+</li>
+<li><code>MessageEvent</code> =&gt; 收到文字訊息時啟動</li>
+</ul>
+</li>
+<li>接著處理一個接收json的api  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@app.route("/callback", methods=["POST"])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># get X-Line-Signature header value</span></span><br><span class="line">    signature = request.header[<span class="string">"X-Line-Signature"</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get request body as text</span></span><br><span class="line">    body = request.get_data(as_text = <span class="literal">True</span>)</span><br><span class="line">    app.logger.info(<span class="string">"Request body: "</span> + body)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># handle webhook body</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        handler.handle(body, signature)</span><br><span class="line">    <span class="keyword">except</span> InvalidSignatureError:</span><br><span class="line">        abort(<span class="number">400</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="string">"OK"</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>handler.handle(body, signature)</code> =&gt; 判斷要用剛剛設定的哪個event來回應</li>
+<li><code>InvalidSignatureError</code> =&gt; Line sdk 會檢查資料是否正確(用CHANNEL_ACCESS_TOKEN)</li>
+</ul>
+</li>
+</ul>
+<h4 id="Run-Server-v2"><a class="header-anchor" href="#Run-Server-v2"></a>Run Server</h4>
+<ul>
+<li>一樣先將Flask運行起來  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python app.py</span><br></pre></td></tr></table></figure>
+</li>
+<li>為了讓Line有辦法在本地端先進行測試，我們使用<code>ngrok</code>這項工具來產生網址
+<ul>
+<li>利用<code>ngrok</code>產生網址  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ngrok http 5000</span><br></pre></td></tr></table></figure>
+<img src="https://i.imgur.com/3dpEZB4.png" alt=""></li>
+<li>將得到的網址中將https的那段網址送到Line Developers的Webhook URL (在Messaging API中)<br>
+<img src="https://i.imgur.com/B1NDfLY.png" alt="">
+<ul>
+<li>接著打開&quot;Use Webhook&quot;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如此利用手機掃描Messaging API中的二維碼加入好友，便能夠得到一個回聲機器人</li>
+</ul>
+<h4 id="Complete-Code-v2"><a class="header-anchor" href="#Complete-Code-v2"></a>Complete Code</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, request, abort</span><br><span class="line"><span class="keyword">from</span> linebot <span class="keyword">import</span> (</span><br><span class="line">    LineBotApi, WebhookHandler</span><br><span class="line">)</span><br><span class="line"><span class="keyword">from</span> linebot.exceptions <span class="keyword">import</span> (</span><br><span class="line">    InvalidSignatureError</span><br><span class="line">)</span><br><span class="line"><span class="keyword">from</span> linebot.models <span class="keyword">import</span> (</span><br><span class="line">    MessageEvent, TextMessage, TextSendMessage,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line">line_bot_api = LineBotApi(<span class="string">'CHANNEL_ACCESS_TOKEN'</span>)</span><br><span class="line">handler = WebhookHandler(<span class="string">'CHANNEL_SECRET'</span>)</span><br><span class="line"></span><br><span class="line"><span class="meta">@app.route("/callback", methods=['POST'])</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">calback</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="comment"># get X-Line-Signature header value</span></span><br><span class="line">    signature = request.headers[<span class="string">'X-Line-Signature'</span>]</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># get request body as text</span></span><br><span class="line">    body = request.get_data(as_text = <span class="literal">True</span>)</span><br><span class="line">    app.logger.info(<span class="string">"Request body: "</span> + body)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># handle webhook body</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        handler.handle(body, signature)</span><br><span class="line">    <span class="keyword">except</span> InvalidSignatureError:</span><br><span class="line">        abort(<span class="number">400</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="string">"OK"</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@handler.add(MessageEvent, message = TextMessage)</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_message</span><span class="params">(event)</span>:</span></span><br><span class="line">    line_bot_api.reply_message(</span><br><span class="line">        event.reply_token, </span><br><span class="line">        TextSendMessage(text = event.message.text)</span><br><span class="line">    )</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    app.run()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Step-5-將爬蟲套用到Line-Bot中"><a class="header-anchor" href="#Step-5-將爬蟲套用到Line-Bot中"></a><strong>Step 5. 將爬蟲套用到Line Bot中</strong></h2>
+<blockquote>
+<p>範例網站：<a href="http://www.atmovies.com.tw/movie/new/" target="_blank" rel="noopener">開演電影網 - 本周新片</a></p>
+</blockquote>
+<h3 id="撰寫爬蟲"><a class="header-anchor" href="#撰寫爬蟲"></a><em>撰寫爬蟲</em></h3>
+<ul>
+<li>首先安裝所有爬蟲相關的套件  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> pipenv install requests</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pipenv install beautifulsoup4</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> pipenv install lxml</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>接著新增一個檔案<code>crawler.py</code>  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># crawler.py</span></span><br><span class="line"><span class="comment"># 引入所需的套件</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line"><span class="comment"># 設定各項參數</span></span><br><span class="line">url = <span class="string">"http://www.atmovies.com.tw/"</span></span><br><span class="line">response = requests.get(url + <span class="string">"movie/new"</span>)</span><br><span class="line">response.encoding = <span class="string">"utf-8"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 設定爬蟲相關參數</span></span><br><span class="line">soup = BeautifulSoup(response.text, <span class="string">"lxml"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定義一個串列來存取爬下來的資料</span></span><br><span class="line">content = []</span><br><span class="line"></span><br><span class="line"><span class="comment"># 爬取資料</span></span><br><span class="line"><span class="keyword">for</span> i, data <span class="keyword">in</span> emunerate(soup.select(<span class="string">"div.filmTitle a"</span>)):</span><br><span class="line">    <span class="keyword">if</span> i &gt; <span class="number">20</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">    content.append(data.text + <span class="string">"\n"</span> + url + data[<span class="string">"href"</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 輸出結果</span></span><br><span class="line">print(content)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="加入Line-Bot"><a class="header-anchor" href="#加入Line-Bot"></a><em>加入Line Bot</em></h3>
+<ul>
+<li>將爬蟲的部分加到Line Bot的程式碼中，主要兩個部分做更改：
+<ul>
+<li>引入的套件</li>
+<li>Message Handler</li>
+</ul>
+</li>
+<li>首先在開頭引入套件  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"></span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>將<code>Message Handler</code>的部分進行更改  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ...</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_message</span><span class="params">(event)</span>:</span></span><br><span class="line">    <span class="keyword">if</span> event.message.text == <span class="string">"本周新片"</span>:</span><br><span class="line">        url = <span class="string">"http://www.atmovies.com.tw/"</span></span><br><span class="line">        response = requests.get(url + <span class="string">"movie/new"</span>)</span><br><span class="line">        response.encoding = <span class="string">"utf-8"</span></span><br><span class="line"></span><br><span class="line">        soup = BeautifulSoup(response.text, <span class="string">"lxml"</span>)</span><br><span class="line">        content = []</span><br><span class="line">        <span class="keyword">for</span> i, data <span class="keyword">in</span> enumerate(soup.select(<span class="string">"div.filmTitle a"</span>)):</span><br><span class="line">            <span class="keyword">if</span> i &gt; <span class="number">20</span>:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            content.append(data.text + <span class="string">'\n'</span> + url + data[<span class="string">"href"</span>])</span><br><span class="line"></span><br><span class="line">        line_bot_api.reply_message(</span><br><span class="line">            event.reply_token,</span><br><span class="line">            TextSendMessage(text=content)</span><br><span class="line">        )</span><br><span class="line">    </span><br><span class="line"><span class="comment"># ...</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="Step-6-將Line-Bot發佈至Heroku"><a class="header-anchor" href="#Step-6-將Line-Bot發佈至Heroku"></a>Step 6. <strong>將Line Bot發佈至Heroku</strong></h2>
+<ul>
+<li>先到Heroku的頁面點<code>Create New App</code><br>
+<img src="https://i.imgur.com/2TnvDIq.png" alt=""><br>
+<img src="https://i.imgur.com/3dsxR9X.png" alt=""></li>
+<li>然後下載<a href="https://devcenter.heroku.com/articles/heroku-command-line" target="_blank" rel="noopener">Heroku CLI</a></li>
+<li>透過Command Line進行Heroku的登入  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> heroku login</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>到Line Bot的目錄中設定git  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> [ProjectDirectory]</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git init</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> heroku git:remote -a [AppName]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>接著將Line Bot發佈到Heroku上  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git add .</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git commit -am <span class="string">"update line bot"</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git push heroku master</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>之後若是需要進行專案更新便以這些指令來進行</li>
+</ul>
+</li>
+<li>回到Heroku頁面<code>Setting</code>，找到<code>Domain</code>的部分，將URL加到Line Developer的Webhook部分便可以透過Line連上了</li>
+</ul>
+<hr>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://missterhao.me/2017/08/18/line-bot-dev-2/" target="_blank" rel="noopener">【Python】 Line Bot 開發 -2 程式實戰!</a></li>
+<li><a href="https://missterhao.me/2018/02/18/%E3%80%90python%E3%80%91-line-bot-%E9%96%8B%E7%99%BC-3-flask-%E8%88%87-line-bot-%E7%9A%84%E7%95%B0%E5%9C%8B%E6%88%80%E6%83%85/" target="_blank" rel="noopener">【Python】 Line Bot 開發 -3 Flask 與 Line Bot 的異國戀情!</a></li>
+<li><a href="https://becoder.org/python-flask-requests-line-bot-api/" target="_blank" rel="noopener">[Python] Flask + Requests 試玩 Line Bot API</a></li>
+<li><a href="https://medium.com/@chihsuan/pipenv-%E6%9B%B4%E7%B0%A1%E5%96%AE-%E6%9B%B4%E5%BF%AB%E9%80%9F%E7%9A%84-python-%E5%A5%97%E4%BB%B6%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7-135a47e504f4" target="_blank" rel="noopener">Pipenv 更簡單、更快速的 Python 套件管理工具</a></li>
+<li><a href="https://github.com/line/line-bot-sdk-python" target="_blank" rel="noopener">line/line-bot-sdk-python</a></li>
+<li><a href="https://xiaosean.github.io/chatbot/2018-04-10-LineChatbot/" target="_blank" rel="noopener">透過Python Line Chatbot 建立聊天機器人 - 基礎篇。</a></li>
+<li><a href="https://xiaosean.github.io/chatbot/2018-04-19-LineChatbot_usage/" target="_blank" rel="noopener">透過Python Line Chatbot 建立聊天機器人 - 應用篇。</a></li>
+<li><a href="https://pipenv-fork.readthedocs.io/en/latest/" target="_blank" rel="noopener">Pipenv: Python Dev Workflow for Humans</a></li>
+</ol>
+</blockquote>
+
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2020/01/31/%E8%A6%AA%E6%89%8B%E5%BB%BA%E9%80%A0Line%20Bot%E5%90%A7/" data-id="ck61ns84v000hxhud0yk9e6of"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/line-bot/" rel="tag">line bot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">用Python編譯簡單UDP DoS工具</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '10625ff957aef51a06bf',
+    clientSecret: '314e364248568028064347a4a7df418bb734433f',
+    repo: 'nightcatv.github.io',
+    owner: 'nightcatv',
+    admin: ['nightcatv'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+			onClick: (e) => {
+      	document.getElementById(e.target.innerText).scrollIntoView()
+      	return false;
+    	}
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>
