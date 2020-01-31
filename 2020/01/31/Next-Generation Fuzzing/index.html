@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+    
+  <meta name="description" content="一介凡人做的平凡的隨筆部落格..." />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    Next-Generation Fuzzing |  Noir Espace
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-Next-Generation Fuzzing" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  Next-Generation Fuzzing
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/01/31/Next-Generation%20Fuzzing/" class="article-date">
+  <time datetime="2020-01-31T10:01:00.000Z" itemprop="datePublished">2020-01-31</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a> / <a class="article-category-link" href="/categories/Cyber-Security/Gray-Hat-Hacking/">Gray Hat Hacking</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字數統計:</span>
+            <span class="post-count">4.8k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 閱讀時長≈</span>
+            <span class="post-count">22分鐘</span>
+        </span>
+    </span>
+</div>
+
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <ul>
+<li>fuzzing，或稱fuzz testing，中譯為模糊測試，為一種滲透測試（軟體測試、漏洞挖掘）的技巧。</li>
+<li>fuzzing今昔比較：
+<ul>
+<li>原本是用隨機產生的資料來對黑箱的軟體或硬體進行測試</li>
+<li>如今的工具已經支援黑箱與白箱的測試方法，並且有許多可調整的參數</li>
+</ul>
+</li>
+<li>測試參數功能：
+<ul>
+<li>直接性影響fuzzing的過程</li>
+<li>針對特定問題對測試過程進行微調</li>
+</ul>
+</li>
+</ul>
+<h2 id="more"><a class="header-anchor" href="#more"></a><a id="more"></a></h2>
+<h2 id="Introduction-to-Fuzzing"><a class="header-anchor" href="#Introduction-to-Fuzzing"></a><strong>Introduction to Fuzzing</strong></h2>
+<ul>
+<li>傳統的黑箱軟體測試
+<ul>
+<li>從漏洞研究的觀點來看非常的有趣，因其完全不需要了解軟體的內部機制</li>
+<li>只需知道哪些介面能夠操作軟體、產生的資料從哪些介面送入</li>
+</ul>
+</li>
+<li>fuzzing / fuzz testing
+<ul>
+<li>傳統：
+<ul>
+<li>用隨機產生的資料測試某類型軟體或硬體</li>
+<li>產生的資料有個問題 =&gt; 太過簡化</li>
+<li>有時無需任何針對軟體運行機制或輸入資料架構的背景知識</li>
+</ul>
+</li>
+<li>如今：
+<ul>
+<li>不再引用隨機產生的資料</li>
+<li>使用不同方法來檢驗</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="Types-of-Fuzzers"><a class="header-anchor" href="#Types-of-Fuzzers"></a><strong>Types of Fuzzers</strong></h2>
+<ul>
+<li>fuzzing 其實並非一個精確的科學方法 =&gt; 可以多多測試不同的fuzzing跟其參數👍</li>
+<li>基於資料產生的演算法，fuzzing大致可分為：
+<ul>
+<li>Mutation fuzzer</li>
+<li>Generation fuzzer</li>
+<li>Genetic or evolutionary fuzzer</li>
+</ul>
+</li>
+</ul>
+<h3 id="Mutation-Fuzzers"><a class="header-anchor" href="#Mutation-Fuzzers"></a><em>Mutation Fuzzers</em></h3>
+<ul>
+<li>Mutation-based fuzzer，或稱dumb fuzzer</li>
+<li>最簡單的變種，最接近原本亂數資料輸入的概念
+<ul>
+<li>轉換輸入資料，通常亂數產生</li>
+<li>接著將資料送到目標軟體來試圖引發crash</li>
+</ul>
+</li>
+</ul>
+<h3 id="Generation-Fuzzers"><a class="header-anchor" href="#Generation-Fuzzers"></a><em>Generation Fuzzers</em></h3>
+<ul>
+<li>又稱grammar-based fuzzer，或是white box fuzz testing
+<ul>
+<li>需要對內部運作的協定有先備知識</li>
+</ul>
+</li>
+<li>基於假設有效率的測試需要對目標機器內部運作有一定了解
+<ul>
+<li>無需有效資料輸入的範例、協定表現</li>
+<li>能產生基於描述資料或協定結構之data model的測試例</li>
+<li>這些model通常寫成config檔 =&gt; 格式依不同工具而有所差別</li>
+</ul>
+</li>
+<li>主要問題：寫data model
+<ul>
+<li>若有些簡單的協定或資料結構有文件的話就不會有這個問題</li>
+<li>但！是！這！樣！的！案！例！非！常！罕！見！</li>
+<li>現實案例複雜的多
+<ul>
+<li>規格、文件的可得性還得經過相當的努力來轉換成fuzzing model</li>
+<li>要是公司沒有按照規格…或是有些微調整…甚至是規格書上沒說的新功能…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Genetic-Fuzzing"><a class="header-anchor" href="#Genetic-Fuzzing"></a><em>Genetic Fuzzing</em></h3>
+<ul>
+<li>也稱為evolutaionary fuzzing =&gt; 以工具決定最好的輸入測試資料
+<ul>
+<li>基於程式測試能包含處理的最大範圍</li>
+</ul>
+</li>
+<li>大多測試都會在變動輸入時弄個告示
+<ul>
+<li>在接觸到新的源碼區塊時</li>
+<li>儲存變動過的測試輸入</li>
+</ul>
+</li>
+<li>這樣fuzzing工具能夠找到「最佳存活」方法</li>
+</ul>
+<hr>
+<h2 id="Mutation-Fuzzing-with-Peach"><a class="header-anchor" href="#Mutation-Fuzzing-with-Peach"></a><strong>Mutation Fuzzing with Peach</strong></h2>
+<blockquote>
+<p>所有操作會在Lab統合操作</p>
+<p>所需工具：<br>
+<a href="https://www.peach.tech/resources/peachcommunity/" target="_blank" rel="noopener">Peach Community Edition</a><br>
+<a href="https://www.mono-project.com/download/stable/#download-mac" target="_blank" rel="noopener">Mono</a></p>
+</blockquote>
+<ul>
+<li><strong>Peach framework</strong> =&gt; 跨Windows、Linux、MacOS X
+<blockquote>
+<p>Linux、MacOS X =&gt; 一個跨平台的的 .NET 開發框架 <strong>Mono</strong> 必須要run<br>
+如果不同平台的話，操作步驟可能會有些許差異</p>
+</blockquote>
+</li>
+<li>Mutation fuzzing從使用者角度來說不太需要太多作業 =&gt; 選一組sample後送進變異程式便能開始fuzzing</li>
+<li>開始利用Peach來fuzzing
+<ul>
+<li>先創建<code>Pit</code>檔案 =&gt; XML文件，其中包括所有fuzzing session設定，幾個常見資訊：
+<ul>
+<li>General configuration
+<ul>
+<li>定義與fuzzing無關參數</li>
+</ul>
+</li>
+<li>Data model
+<ul>
+<li>定義資料結構 =&gt; 會被測試成Peach的特殊語法</li>
+</ul>
+</li>
+<li>State model
+<ul>
+<li>定義狀態機必須確認當前協定 =&gt; data model不足以抓到所有協定</li>
+</ul>
+</li>
+<li>Agents and monitors
+<ul>
+<li>定義方法：
+<ul>
+<li>分散fuzzing工作量</li>
+<li>監控目標軟體: 標示錯誤或漏洞</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Test configuration
+<ul>
+<li>定義讓Peach建立各個測試例，fuzzing策略能修改資料</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Mutation Pit
+<ul>
+<li>相當容易建立</li>
+<li>Peach提供不同模板因應不同場景來執行與修改</li>
+<li>設定檔可創建並用任何文字編輯器修改</li>
+</ul>
+</li>
+</ul>
+<div class="info">
+<ul>
+<li>rm_fuzz.xml</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Peach</span> <span class="attr">xmlns</span>=<span class="string">"http://peachfuzzer.com/2012/Peach"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://peachfuzzer.com/2012/Peach/peach/peach.xsd"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Create data model --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">name</span>=<span class="string">"TheDataModel"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Blob</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">DataModel</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- Create state model --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">StateModel</span> <span class="attr">name</span>=<span class="string">"TheState"</span> <span class="attr">initialState</span>=<span class="string">"Initial"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">State</span> <span class="attr">name</span>=<span class="string">"Initial"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"output"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">ref</span>=<span class="string">"TheDataModel"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">Data</span> <span class="attr">fileName</span>=<span class="string">"C:\peach3\rm_samples\*.rm"</span>/&gt;</span> <span class="comment">&lt;!-- Here should change to the route where peach is --&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">Action</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"close"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"call"</span> <span class="attr">method</span>=<span class="string">"ScoobySnacks"</span> <span class="attr">publisher</span>=<span class="string">"Peach.Agent"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">State</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">StateModel</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">&lt;!-- Configure Agent --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Agent</span> <span class="attr">name</span>=<span class="string">"TheAgent"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Monitor</span> <span class="attr">class</span>=<span class="string">"WindowsDebugger"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"CommandLine"</span> <span class="attr">value</span>=<span class="string">"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe fuzzed.rm"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"WinDbgPath"</span> <span class="attr">value</span>=<span class="string">"C:\Program Files (x86)\Windows Kits\10\Debuggers\x64"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"StartOnCall"</span> <span class="attr">value</span>=<span class="string">"ScoobySnacks"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Monitor</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Monitor</span> <span class="attr">class</span>=<span class="string">"PageHeap"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"Executable"</span> <span class="attr">value</span>=<span class="string">"vlc.exe"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"WinDbgPath"</span> <span class="attr">value</span>=<span class="string">"C:\Program Files (x86)\Windows Kits\10\Debuggers\x64"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Monitor</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Agent</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">Test</span> <span class="attr">name</span>=<span class="string">"Default"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Agent</span> <span class="attr">ref</span>=<span class="string">"TheAgent"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">StateModel</span> <span class="attr">ref</span>=<span class="string">"TheState"</span> /&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">&lt;!-- Configure a publisher --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Publisher</span> <span class="attr">class</span>=<span class="string">"File"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"FileName"</span> <span class="attr">value</span>=<span class="string">"fuzzed.rm"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Publisher</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="comment">&lt;!-- Configure a strategy --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Strategy</span> <span class="attr">class</span>=<span class="string">"RandomDeterministic"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Logger</span> <span class="attr">class</span>=<span class="string">"File"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"Path"</span> <span class="attr">value</span>=<span class="string">"logs"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Logger</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Test</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Peach</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- end --&gt;</span></span><br></pre></td></tr></table></figure>
+</div>
+<ul>
+<li>Pit檔包括許多重要的部分會影響並決定fuzzing的過程，下面說明這些部分怎麼影響fuzzing過程：（以上面程式碼為例）
+<ul>
+<li>DataModel  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">name</span>=<span class="string">"TheDataModel"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Blob</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">DataModel</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>定義會被fuzzing的資料結構
+<blockquote>
+<p>黑箱測試時通常都不知道</p>
+</blockquote>
+</li>
+<li>會額外使用單一資料項來表示<code>&lt;Blob /&gt;</code>
+<ul>
+<li>描述隨機二進位資料組</li>
+<li>不會執行任何資料限制</li>
+</ul>
+</li>
+<li>要是忽略資料結構
+<ul>
+<li>不會定資料型別及個別的大小 =&gt; 不精確的方法</li>
+<li>會縮短fuzzing的時間</li>
+</ul>
+</li>
+<li>黑箱fuzzing非常快、且設定的價格低廉<br>
+=&gt; 通常值得用好的資料結構</li>
+</ul>
+</li>
+<li>StateModel  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">StateModel</span> <span class="attr">name</span>=<span class="string">"TheState"</span> <span class="attr">initialState</span>=<span class="string">"Initial"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">State</span> <span class="attr">name</span>=<span class="string">"Initial"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"output"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">ref</span>=<span class="string">"TheDataModel"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Data</span> <span class="attr">filename</span>=<span class="string">"C:\Peach3\rm_samples\*.rm"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Action</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">State</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">StateModel</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>定義在進行fuzzing中資料的不同狀態
+<ul>
+<li>非常簡單 =&gt; 因為僅有單一檔案、僅為了測試</li>
+</ul>
+</li>
+<li>Fuzzing網路協定用來解釋state model
+<ul>
+<li>為在實現協定時運行不同狀態 =&gt; 必須正確走過狀態圖</li>
+</ul>
+</li>
+<li>定義<code>StateModel</code>的功用：
+<ul>
+<li>指示fuzzer走狀態圖</li>
+<li>能測試更多的原始碼跟功能</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Agent  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Agent</span> <span class="attr">name</span>=<span class="string">"TheAgent"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Monitor</span> <span class="attr">class</span>=<span class="string">"WindowsDebugger"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"CommandLine"</span> <span class="attr">value</span>=<span class="string">"C:\Program Files (x86)\VideoLAN\VLC\vlc.exe fuzzed.rm"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Param</span> <span class="attr">anem</span>=<span class="string">"WinDbgPath"</span> <span class="attr">value</span>=<span class="string">"C:\Program Files (x86)\Windows Kits\10\Debuggers\x64"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"StartOnCall"</span> <span class="attr">value</span>=<span class="string">"ScoobySnacks"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Monitor</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Monitor</span> <span class="attr">class</span>=<span class="string">"PageHeap"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"Executable"</span> <span class="attr">value</span>=<span class="string">"vlc.exe"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"WinDbgPath"</span> <span class="attr">value</span>=<span class="string">"C:\Program Files (x86)\Windows Kits\10\Debuggers\x64"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Monitor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Agent</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>定義debugger =&gt; 監控執行的目標程式、蒐集crash的資訊</li>
+<li>crash的資料之後手動檢視、分類(分成有關或無關)
+<ul>
+<li>有關的crash需重新檢查可突破狀況來給值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Test  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Text</span> <span class="attr">name</span>=<span class="string">"Default"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Agent</span> <span class="attr">ref</span>=<span class="string">"TheAgent"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">StateModel</span> <span class="attr">ref</span>=<span class="string">"TheState"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Publisher</span> <span class="attr">class</span>=<span class="string">"File"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"FileName"</span> <span class="attr">value</span>=<span class="string">"fuzzed.rm"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Publisher</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Strategy</span> <span class="attr">class</span>=<span class="string">"RandomDeterministic"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Logger</span> <span class="attr">class</span>=<span class="string">"File"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"Path"</span> <span class="attr">value</span>=<span class="string">"logs"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Logger</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>定義與fuzzing有關的狀態選項
+<ul>
+<li>以此例來說 =&gt; 定義<code>filename</code>來產生測試例<code>fuzzed.rm</code> -&gt; 定義<code>logs</code>當作程式crash資料的紀錄導引</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Peach有許多方法測試Pit的正確性
+<ul>
+<li>加上<code>--test</code>參數 =&gt; 會先parse整個Pit後回報錯誤  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; Peach.exe -t rm_fuzz.xml</span><br></pre></td></tr></table></figure>
+</li>
+<li>開始一個新的Peach session  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; Peach.exe rm_fuzz.xml Default</span><br></pre></td></tr></table></figure>
+</li>
+<li><code>Ctrl + C</code>停下fuzzer =&gt; 確定機器運行時的維護
+<ul>
+<li>終止session的結果會放在<code>log</code>目錄中
+<ul>
+<li>命名法則 =&gt; <code>[檔名]_[時間].txt</code></li>
+<li>包括session資訊(測試數量、crash資訊)</li>
+</ul>
+</li>
+<li>倘若session成功運行會多一個<code>Faults</code>目錄
+<ul>
+<li>包含針對各類crash分門別類的目錄，分別有一個以上的測試例</li>
+<li>包括下面資訊：
+<ul>
+<li>引發crash的變異測試例</li>
+<li>引發crash時程式階段的debug report =&gt; 有暫存器的狀態和值、部分的stack內容</li>
+<li>原本的測試例</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>session可以跳過已經測試過的測試例而直接回復</li>
+<li>其他方法去看fuzzer進展 =&gt; 在command-line的輸出，會放在一連串反覆數字的第一個
+<ul>
+<li>e.g. 第十三個測試例</li>
+</ul>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">[13, 131795, 1515:0:24:09.925] Performing iteration</span><br><span class="line">[*] Fuzzing: TheDataModel.DataElement_0</span><br><span class="line">[*] Mutator: BlobBitFlipperMutator</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+</li>
+<li><code>--skipto</code>可以跳到特定的測試例  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; Peach.exe --skipto 100 rm_fuzz.xml</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="LAB"><a class="header-anchor" href="#LAB"></a><ins><em>LAB</em></ins></h3>
+<ul>
+<li>按照下列步驟完成Lab (假設環境是Windows 10 64-bit)
+<ol>
+<li>從<a href="https://get.videolan.org/vlc/" target="_blank" rel="noopener">VLC官方下載頁面</a>下載、安裝VLC</li>
+<li>下載、安裝<a href="https://developer.microsoft.com/zh-tw/windows/downloads/windows-10-sdk" target="_blank" rel="noopener">Windows Debugger Tools</a></li>
+<li>下載<a href="https://www.peach.tech/resources/peachcommunity/" target="_blank" rel="noopener">Peach3</a>，將其解壓縮</li>
+<li>隨便從網路上下載六個<code>.rm</code>(RealMedia)測試檔，新增一個新的資料夾<code>rm_samples</code>
+<blockquote>
+<p>可以利用Google Search Query: <code>intitle: &quot;index of /&quot; .rm</code></p>
+</blockquote>
+</li>
+<li>新增一個完整<code>rm_fuzz.xml</code>，接著測試Peach Pit檔案 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; peach -t rm_fuzz.xml</span><br></pre></td></tr></table></figure>
+</li>
+<li>確認所有VLC等應用程式的路徑</li>
+<li>運行Peach Pit(以管理員執行的command line) <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; peach rm_fuzz.xml Default</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="Generation-Fuzzing-with-Peach"><a class="header-anchor" href="#Generation-Fuzzing-with-Peach"></a><strong>Generation Fuzzing with Peach</strong></h2>
+<blockquote>
+<p>所有操作會在Lab統合操作</p>
+</blockquote>
+<ul>
+<li>接著預期發現Stephen Bradshaw’s Vulnserver的漏洞
+<blockquote>
+<p>Vulnserver是一個為了學習fuzzing和exploit的server<br>
+<a href="https://github.com/stephenbradshaw/vulnserver" target="_blank" rel="noopener">stephenbradshaw/vulnserver</a><br>
+其中作者也有專門的部落格來說明：<a href="http://www.thegreycorner.com/" target="_blank" rel="noopener">The Grey Corner</a></p>
+</blockquote>
+<ul>
+<li>為預編譯的binary檔 =&gt; 在Windows上啟動</li>
+</ul>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\vulnserver\&gt; vulnserver.exe</span><br></pre></td></tr></table></figure>
+<ul>
+<li><mark>注意：這個server要跑在獨立的測試系統、或是host-only的虛擬機上</mark></li>
+<li>可以透過netcat來連到server</li>
+</ul>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nc localhost 9999</span></span><br></pre></td></tr></table></figure>
+<div class="info">
+<ul>
+<li>VulnServer有效的命令參數：
+<ul>
+<li>HELP</li>
+<li>STATS [stat_value]</li>
+<li>RTIME [rtime_value]</li>
+<li>LTIME [ltime_value]</li>
+<li>SRUN [srun_value]</li>
+<li>TRUN [trun_value]</li>
+<li>GMON [gmon_value]</li>
+<li>GDOG [gdog_value]</li>
+<li>KSTET [kstet_value]</li>
+<li>GTER [gter_value]</li>
+<li>HTER [hter_value]</li>
+<li>LTER [lter_value]</li>
+<li>KSTAN [kstan_value]</li>
+<li>EXIT</li>
+</ul>
+</li>
+</ul>
+</div>
+</li>
+<li>接著就是寫Peach Pit =&gt; 主要改的部分是<code>DataModel</code>的部分
+<ul>
+<li>顯示有效應用程式指令的架構</li>
+</ul>
+</li>
+<li>為了簡化測試，僅測試<code>TRUN</code>指令
+<ul>
+<li><s>原因居然是因為這個指令聽起來很帥</s></li>
+<li>這個Peach Pit是基於David Um的範例，其本身則是基於更早由Dejan Lukan的文章</li>
+</ul>
+</li>
+</ul>
+<div class="info">
+<ul>
+<li>TRUN_fuzz.xml</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Peach</span> <span class="attr">xmlns</span>=<span class="string">"http://peachfuzzer.com/2012/Peach"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://peachfuzzer.com/2012/Peach ../peach.xsd"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">name</span>=<span class="string">"DataTRUN"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">String</span> <span class="attr">value</span>=<span class="string">"TRUN"</span> <span class="attr">mutable</span>=<span class="string">"false"</span> <span class="attr">token</span>=<span class="string">"true"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">String</span> <span class="attr">value</span>=<span class="string">""</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">String</span> <span class="attr">value</span>=<span class="string">"\r\n"</span> <span class="attr">mutable</span>=<span class="string">"false"</span> <span class="attr">token</span>=<span class="string">"true"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">DataModel</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">StateModel</span> <span class="attr">name</span>=<span class="string">"StateTRUN"</span> <span class="attr">initialState</span>=<span class="string">"Initial"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">State</span> <span class="attr">name</span>=<span class="string">"Initial"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"input"</span>&gt;</span><span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">ref</span>=<span class="string">"DataResponse"</span> /&gt;</span><span class="tag">&lt;/<span class="name">Action</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"output"</span>&gt;</span><span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">ref</span>=<span class="string">"DataTRUN"</span> /&gt;</span><span class="tag">&lt;/<span class="name">Action</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"input"</span>&gt;</span><span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">ref</span>=<span class="string">"DataResponse"</span> /&gt;</span><span class="tag">&lt;/<span class="name">Action</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">State</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">StateModel</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">name</span>=<span class="string">"DataResponse"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">String</span> <span class="attr">value</span>=<span class="string">""</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">DataModel</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">Agent</span> <span class="attr">name</span>=<span class="string">"RemoteAgent"</span> <span class="attr">location</span>=<span class="string">"tcp://127.0.0.1:9001"</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- Run and attach windbg to a vulnerable server. --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Monitor</span> <span class="attr">class</span>=<span class="string">"WindowsDebugger"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"CommandLine"</span> <span class="attr">value</span>=<span class="string">"C:\users\test\downloads\vulserver.exe"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"WinDbgPath"</span> <span class="attr">value</span>=<span class="string">"C:\Program Files (x86)\Windows Kits\10\Debuggers\x64"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Monitor</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Agent</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">    <span class="tag">&lt;<span class="name">Test</span> <span class="attr">name</span>=<span class="string">"TestTRUN"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Agent</span> <span class="attr">ref</span>=<span class="string">"RemoteAgent"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">StateModel</span> <span class="attr">ref</span>=<span class="string">"StateTRUN"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Publisher</span> <span class="attr">class</span>=<span class="string">"TopClient"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"Host"</span> <span class="attr">value</span>=<span class="string">"127.0.0.1"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"Port"</span> <span class="attr">value</span>=<span class="string">"9999"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Publisher</span>&gt;</span></span><br><span class="line">        </span><br><span class="line">        <span class="tag">&lt;<span class="name">Logger</span> <span class="attr">class</span>=<span class="string">"File"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"Path"</span> <span class="attr">value</span>=<span class="string">"Logs"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">Logger</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Test</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Peach</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</div>
+<ul>
+<li>在這個generation-based的Peach Pit和前一個Mutation Peach Pit有下列主要的不同：
+<ul>
+<li>DataModel  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">name</span>=<span class="string">"DataTRUN"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">String</span> <span class="attr">value</span>=<span class="string">"TRUN"</span> <span class="attr">mutable</span>=<span class="string">"false"</span> <span class="attr">token</span>=<span class="string">"true"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">String</span> <span class="attr">value</span>=<span class="string">""</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">String</span> <span class="attr">value</span>=<span class="string">"\r\n"</span> <span class="attr">mutable</span>=<span class="string">"false"</span> <span class="attr">token</span>=<span class="string">"true"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">DataModel</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">StateModel</span> <span class="attr">name</span>=<span class="string">"StateTRUN"</span> <span class="attr">initialState</span>=<span class="string">"Initial"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">State</span> <span class="attr">name</span>=<span class="string">"Initial"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"input"</span>&gt;</span><span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">ref</span>=<span class="string">"DataResponse"</span> /&gt;</span><span class="tag">&lt;/<span class="name">Action</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"output"</span>&gt;</span><span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">ref</span>=<span class="string">"DataTRUN"</span> /&gt;</span><span class="tag">&lt;/<span class="name">Action</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Action</span> <span class="attr">type</span>=<span class="string">"input"</span>&gt;</span><span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">ref</span>=<span class="string">"DataResponse"</span> /&gt;</span><span class="tag">&lt;/<span class="name">Action</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">State</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">StateModel</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">DataModel</span> <span class="attr">name</span>=<span class="string">"DataResponse"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">String</span> <span class="attr">value</span>=<span class="string">""</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">DataModel</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>改為對<code>TRUN</code>指令語法的描述 =&gt; <code>TRUN \r\n</code></li>
+<li>其中空白的部分為可變的 (可被fuzzing)</li>
+</ul>
+</li>
+<li>Agent  <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">Agent</span> <span class="attr">name</span>=<span class="string">"RemoteAgent"</span> <span class="attr">location</span>=<span class="string">"tcp://127.0.0.1:9001"</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Run and attach windbg to a vulnerable server. --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Monitor</span> <span class="attr">class</span>=<span class="string">"WindowsDebugger"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"CommandLine"</span> <span class="attr">value</span>=<span class="string">"C:\users\test\downloads\vulserver.exe"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">Param</span> <span class="attr">name</span>=<span class="string">"WinDbgPath"</span> <span class="attr">value</span>=<span class="string">"C:\Program Files (x86)\Windows Kits\10\Debuggers\x64"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">Monitor</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">Agent</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>改為顯示遠端Peach代理監控應用程式的進程
+<ul>
+<li>如果有必要的話會重啟</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Publisher
+<ul>
+<li>改為顯示Peach的TCP連線能力</li>
+<li>給漏洞應用程式的位址、埠號</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>為了跑這個Peach Pit =&gt; 啟動Peach agent  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; peach -a tcp</span><br></pre></td></tr></table></figure>
+<ul>
+<li>跑Peach Pit  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; peach TRUN_fuzz.xml TestTRUN</span><br></pre></td></tr></table></figure>
+</li>
+<li>可能會出現以下情形  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">[185,-,-] Performing iteration</span><br><span class="line">[*] Fuzzing: DataTRUN.DataElement_1</span><br><span class="line">[*] Mutator: UnicodeBadUtf8Mutator</span><br><span class="line"></span><br><span class="line">    -- Caught fault at iteration 185, trying to reproduce --</span><br><span class="line">    </span><br><span class="line">[185,-,-] Performing iteration</span><br><span class="line">[*] Fuzzing: DataTRUN.DataElement_1</span><br><span class="line">[*] Mutator: UnicodeBadUtf8Mutator</span><br><span class="line"></span><br><span class="line">    -- Reproduced Fault at iteration 185 --</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<ul>
+<li>fuzzer會找到exception並重做一次</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Crash-Analysis"><a class="header-anchor" href="#Crash-Analysis"></a><em>Crash Analysis</em></h3>
+<ul>
+<li>在fuzzing過程要是都順利的話，理應出現目標應用程式crash的log</li>
+<li>幾個常見crash的痕跡：
+<ul>
+<li>紀錄簡單檔案或資料 =&gt; 先做紀錄，能夠用以重現crash
+<ul>
+<li>file fuzzer ~ 一個簡單的測試檔案會被儲存、標示，用以做回顧</li>
+<li>network application fuzzer ~ 一個PCAP檔可能會在應用程式偵測到crash時被紀錄、儲存</li>
+<li>紀錄簡單檔案或資料是最基本追蹤應用程式crash的方法</li>
+<li>未提供crash的上下文</li>
+</ul>
+</li>
+<li>應用程式crash的log檔可以透過各種方法來蒐集
+<ul>
+<li>一般debugger就是用以監控目標應用程式狀態、偵測任何crash的痕跡</li>
+<li>若偵測到crash -&gt; 會蒐集CPU環境資訊(e.g. 暫存器狀態、記憶體堆疊) -&gt; 存成獨立crash sample檔</li>
+<li>crash log在理解crash類型上很好用
+<ul>
+<li>在沒有環境資訊的狀態下很難判斷有幾種不同的漏洞 =&gt; 因為一個程式可能因為同一個bug報錯數百遍</li>
+<li>log給的就是初步去篩選、分類出不同的漏洞</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>偵測到crash時，有很多客製化的腳本(蒐集了許特定種類的資訊)可以運行
+<ul>
+<li>最簡單：運行debugger的套件
+<ul>
+<li>e.g. !Exploitable是一個挺好用的debugger套件(for Microsoft WinDbg)，用來確認一個crash可exploit否</li>
+<li>雖然套件好用，能給crash資訊並分類，但不能盡信</li>
+</ul>
+</li>
+<li>要全面性的確認crash能不能exploit =&gt; 手動分析
+<ul>
+<li>因為有時候仰賴研究員來決定漏洞的價值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Peach用WinDbg、!Exploitable =&gt; 蒐集具上下文的crash資訊、顯示crash串列
+<ul>
+<li>會將所有crash資訊放在<code>Fault</code>目錄下  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; cd logs</span><br><span class="line">C:\Peach3\Logs&gt; dir</span><br><span class="line"></span><br><span class="line">05/29/2017  04:46 PM &lt;DIR&gt; .</span><br><span class="line">05/29/2017  04:46 PM &lt;DIR&gt; ..</span><br><span class="line">05/29/2017  04:46 PM &lt;DIR&gt; TRUN_fuzz.xml_TestTRUN_20170529164646</span><br></pre></td></tr></table></figure>
+</li>
+<li>進一步到測試目錄中，會發現幾個資料夾列在<code>Fault</code>目錄中  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3\Logs\TRUN_fuzz.xml_TestTRUN_20170529164646\Faults&gt; dir</span><br><span class="line"></span><br><span class="line">05/29/2017  04:47 PM &lt;DIR&gt; .</span><br><span class="line">05/29/2017  04:47 PM &lt;DIR&gt; ..</span><br><span class="line">05/29/2017  04:47 PM &lt;DIR&gt; EXPLOITABLE_0x1b1e681f_0x191a342e</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+</li>
+<li>再更進一步會發現到真實測試例ID以及其內容
+<blockquote>
+<p>範例ID為185</p>
+</blockquote>
+  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3\Logs\TRUN_fuzz.xml_TestTRUN_20170529164646\Faults\EXPLOITABLE_0x1b1e681f_0x191a342e\185&gt; dir</span><br><span class="line"></span><br><span class="line">05/29/2017  04:47 PM &lt;DIR&gt; .</span><br><span class="line">05/29/2017  04:47 PM &lt;DIR&gt; ..</span><br><span class="line">05/29/2017  04:47 PM       1. Initial.Action.bin</span><br><span class="line">05/29/2017  04:47 PM       2. Initial.Action_1.bin</span><br><span class="line">05/29/2017  04:47 PM       3. Initial.Action_2.bin</span><br><span class="line">05/29/2017  04:47 PM &lt;DIR&gt; Initial</span><br><span class="line">05/29/2017  04:47 PM       RemoteAgent.Monitor.WindowsDebugEngine.description.txt</span><br><span class="line">05/29/2017  04:47 PM       RemoteAgent.Monitor.WindowsDebugEngine.description.StackTrace.txt</span><br></pre></td></tr></table></figure>
+<ul>
+<li>其中<code>RemoteAgent.Monitor.WindowsDebugEngine.description.txt</code>包括crash最好的資訊，其中有兩個主要部分：
+<ul>
+<li>debugger蒐集的crash資訊：
+<ul>
+<li>讀取模組名稱</li>
+<li>CPU暫存器資訊</li>
+<li>記憶體片段</li>
+</ul>
+</li>
+<li>!Exploitable回報的crash資訊、分類
+<ul>
+<li>有更多crash的上下文：
+<ul>
+<li>exception code</li>
+<li>stack frames資訊</li>
+<li>bug title</li>
+<li>分類
+<ul>
+<li>!Exploitable推斷crash潛在的可突破性</li>
+<li>四種可能的值：Exploitable, Probably Exploitable, Probably Not Exploitable, Unknown</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="LAB-v2"><a class="header-anchor" href="#LAB-v2"></a><ins><em>LAB</em></ins></h3>
+<ul>
+<li>按照下列步驟完成Lab (假設環境是Windows 10 64-bit)：
+<ol>
+<li>下載<a href="https://github.com/stephenbradshaw/vulnserver" target="_blank" rel="noopener">vulnserver</a>到測試機，放在<code>C:\vulnserver</code></li>
+<li>啟動vulnserver <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\vulnserver&gt; vulnserver.exe</span><br></pre></td></tr></table></figure>
+</li>
+<li>下載、安裝<a href="https://joncraton.org/blog/46/netcat-for-windows" target="_blank" rel="noopener">netcat</a>安全版本</li>
+<li>開其他cmd來測試連線 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\&gt; nc 127.0.0.1 9999</span><br></pre></td></tr></table></figure>
+</li>
+<li>複製完整的<code>TRUN_fuzz.xml</code></li>
+<li>以管理員身份開cmd後啟動Peach agent <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; peach -a tcp</span><br></pre></td></tr></table></figure>
+</li>
+<li>開另一個新的管理員身份cmd啟動Peach Pit <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Peach3&gt; peach TRUN_fuzz.xml TestTRUN</span><br></pre></td></tr></table></figure>
+</li>
+<li>監控並回顧<code>Logs</code>目錄(<code>C:\Peach3\logs</code>)</li>
+</ol>
+</li>
+</ul>
+<hr>
+<h2 id="Genetic-or-Evolutionary-Fuzzing-with-AFL"><a class="header-anchor" href="#Genetic-or-Evolutionary-Fuzzing-with-AFL"></a><strong>Genetic or Evolutionary Fuzzing with AFL</strong></h2>
+<ul>
+<li>genetic / evolutionary fuzzing最好的公具 =&gt; AFL
+<ul>
+<li>一般都用C / C++寫的(for file-based parser)</li>
+</ul>
+</li>
+<li>當一個應用程式充滿了if/else，通常很難(假設是有可能的)用mutation fuzzer去跑，恐怕需要一輩子的時間才跑得完
+<ul>
+<li>e.g.
+<ul>
+<li>file.txt  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aaaaaaaa</span><br></pre></td></tr></table></figure>
+</li>
+<li>asdf3.c  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> **argv)</span></span>&#123;</span><br><span class="line">    FILE *f = fopen(argv[<span class="number">1</span>], <span class="string">"rb"</span>);</span><br><span class="line">    <span class="keyword">if</span>(!f)&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">char</span> buf[<span class="number">16</span>] = &#123;<span class="number">0</span>&#125;;</span><br><span class="line">    fread(buf, <span class="number">1</span>, <span class="number">16</span>, f);</span><br><span class="line">    fclose(f);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span>(buf[<span class="number">0</span>] == <span class="string">'a'</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span>(buf[<span class="number">1</span>] == <span class="string">'b'</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(buf[<span class="number">2</span>] == <span class="string">'c'</span>)&#123;</span><br><span class="line">                <span class="keyword">if</span>(buf[<span class="number">3</span>] == <span class="string">'d'</span>)&#123;</span><br><span class="line">                    <span class="keyword">if</span>(buf[<span class="number">4</span>] == <span class="string">'e'</span>)&#123;</span><br><span class="line">                        <span class="keyword">if</span>(buf[<span class="number">5</span>] == <span class="string">'f'</span>)&#123;</span><br><span class="line">                            <span class="keyword">if</span>(buf[<span class="number">6</span>] == <span class="string">'g'</span>)&#123;</span><br><span class="line">                                <span class="keyword">if</span>(buf[<span class="number">7</span>] == <span class="string">'h'</span>)&#123;</span><br><span class="line">                                    <span class="built_in">abort</span>();</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>abort()</code>會造成程式crash，但問題就在於fuzzer有沒有辦法找到這個錯誤</li>
+</ul>
+</li>
+<li>用mutation fuzzer =&gt; 送一個檔案，有1 / 256<sup>8</sup>的機會能觸到最中心的程式碼
+<ul>
+<li>假設電腦每秒處理1000個檔案，跑完所有可能性的上限 = (<code>256**8/1000/86400/365</code>) 584942417L</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>下面用AFL來處理這個問題
+<ul>
+<li>先用AFL工具編譯  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./afl-clang ./asdf3.c -o asdf3</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>接著開始fuzzing  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./afl-fuzz -i input/ -o output -d ./asdf3</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>可以看到AFL出現一個information-packed的介面  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">                        american fuzzy lop 2.56b (asdf3)</span><br><span class="line"></span><br><span class="line">┌─ process timing ─────────────────────────────────────┬─ overall results ─────┐</span><br><span class="line">│        run time : 0 days, 0 hrs, 1 min, 27 sec       │  cycles done : 314    │</span><br><span class="line">│   last new path : none yet (odd, check syntax!)      │  total paths : 1      │</span><br><span class="line">│ last uniq crash : none seen yet                      │ uniq crashes : 0      │</span><br><span class="line">│  last uniq hang : none seen yet                      │   uniq hangs : 0      │</span><br><span class="line">├─ cycle progress ────────────────────┬─ map coverage ─┴───────────────────────┤</span><br><span class="line">│  now processing : 0 (0.00%)         │    map density : 0.00% &#x2F; 0.00%         │</span><br><span class="line">│ paths timed out : 0 (0.00%)         │ count coverage : 1.00 bits&#x2F;tuple       │</span><br><span class="line">├─ stage progress ────────────────────┼─ findings in depth ────────────────────┤</span><br><span class="line">│  now trying : havoc                 │ favored paths : 1 (100.00%)            │</span><br><span class="line">│ stage execs : 240&#x2F;256 (93.75%)      │  new edges on : 1 (100.00%)            │</span><br><span class="line">│ total execs : 80.6k                 │ total crashes : 0 (0 unique)           │</span><br><span class="line">│  exec speed : 1017&#x2F;sec              │  total tmouts : 0 (0 unique)           │</span><br><span class="line">├─ fuzzing strategy yields ───────────┴───────────────┬─ path geometry ────────┤</span><br><span class="line">│   bit flips : n&#x2F;a, n&#x2F;a, n&#x2F;a                         │    levels : 1          │</span><br><span class="line">│  byte flips : n&#x2F;a, n&#x2F;a, n&#x2F;a                         │   pending : 0          │</span><br><span class="line">│ arithmetics : n&#x2F;a, n&#x2F;a, n&#x2F;a                         │  pend fav : 0          │</span><br><span class="line">│  known ints : n&#x2F;a, n&#x2F;a, n&#x2F;a                         │ own finds : 0          │</span><br><span class="line">│  dictionary : n&#x2F;a, n&#x2F;a, n&#x2F;a                         │  imported : n&#x2F;a        │</span><br><span class="line">│       havoc : 0&#x2F;80.4k, 0&#x2F;0                          │ stability : 100.00%    │</span><br><span class="line">│        trim : 55.56%&#x2F;2, n&#x2F;a                         ├────────────────────────┘</span><br><span class="line">^C────────────────────────────────────────────────────┘             [cpu: 80%]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>最後fuzzer會找到一個crash (聽說大概會花五分多鐘<s>的話，那麼可以確定那台電腦很貴</s>)</li>
+<li>AFL也提供crash log  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> cat <span class="string">"output/crashes/id:000000,sig:06,src:000007,op:havoc,rep2abcdefghbcdeS"</span></span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>如同預期的，前八碼<code>abcdefgh</code>觸及核心源碼塊，觸發程式abort</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="LAB-v3"><a class="header-anchor" href="#LAB-v3"></a><ins><em>LAB</em></ins></h3>
+<ul>
+<li>按照下列步驟完成Lab：
+<ol>
+<li>下載Kali Linux (2GB RAM、雙核心)並裝在虛擬機上</li>
+<li>下載、安裝AFL <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget lcamtuf.coredump.cx/afl/releases/afl-latest.tgz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> tar -xzvf afl-latest.tgz</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> [AFL-Diretory]</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>MacOS可直接用<code>brew install afl-fuzz</code>安裝</p>
+</blockquote>
+</li>
+<li>複製完整的<code>asdf3.c</code>檔案</li>
+<li>用AFL編譯 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./afl-clang ./asdf3.c -o asdf3</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>新增一個<code>input</code>目錄到<code>[AFL-Diretory]</code>下</li>
+<li>在裡頭複製完整的<code>file.txt</code>檔案</li>
+<li>開始在<code>[AFL-Diretory]</code>裡fuzzing <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./afl-fuzz -i input/ -o output -d ./asdf3</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>MacOS在跑的時候可能會遇到Crash回報，所以需要執行下列指令來避免  <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> SL=/System/Library; PL=com.apple.ReportCrash</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> launchctl unload -w <span class="variable">$&#123;SL&#125;</span>/LaunchAgents/<span class="variable">$&#123;PL&#125;</span>.plist</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo launchctl unload -w <span class="variable">$&#123;SL&#125;</span>/LaunchDaemons/<span class="variable">$&#123;PL&#125;</span>.Root.plist</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li>檢視前述crash的GUI、crash log</li>
+</ol>
+</li>
+</ul>
+<hr>
+<div class="info">
+<h2 id="For-Further-Reading"><a class="header-anchor" href="#For-Further-Reading"></a><strong>For Further Reading</strong></h2>
+<ul>
+<li><a href="https://archive.codeplex.com/" target="_blank" rel="noopener">!exploitable WinDbg plug-in</a></li>
+<li><a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=4&amp;cad=rja&amp;uact=8&amp;ved=2ahUKEwj1tbu40oXnAhViG6YKHeYVCZgQFjADegQIBRAC&amp;url=https%3A%2F%2Fwww.defcon.org%2Fimages%2Fdefcon-15%2Fdc15-presentations%2FMiller%2FWhitepaper%2Fdc-15-miller-WP.pdf&amp;usg=AOvVaw1whDxPEcuVAymKqlicZvAK" target="_blank" rel="noopener">“Analysis of Mutation and Generation-Based Fuzzing” (C. Miller and Z. N. J. Peterson)</a></li>
+<li><a href="https://fuzzinginfo.files.wordpress.com/2012/05/cmiller-csw-2010.pdf" target="_blank" rel="noopener">“Babysitting an Army of Monkeys” (C. Miller)</a></li>
+<li><a href="https://media.blackhat.com/us-13/us-13-Jurczyk-Bochspwn-Identifying-0-days-via-System-wide-Memory-Access-Pattern-Analysis-Slides.pdf" target="_blank" rel="noopener">Bochspwn Blackhat presentation (Gynvael and Mateusz Jurczyk)</a></li>
+<li><a href="https://github.com/jtpereyda/boofuzz" target="_blank" rel="noopener">Boofuzz (Joshua Pereyda)</a></li>
+<li><a href="https://www.youtube.com/watch?v=TDM-7xUPzqA" target="_blank" rel="noopener">“Fuzzing, Panel”, Youtube (Mike Eddington, Jared DeMott, Ari Takanen)</a></li>
+<li><a href="http://www.rockfishsec.com/2014/01/fuzzing-vulnserver-with-peach-3.html" target="_blank" rel="noopener">“Fuzzing Vulnserver with Peach 3” (David Um)</a></li>
+<li><a href="http://www.rockfishsec.com/2014/01/fuzzing-vulnserver-with-peach-3.html" target="_blank" rel="noopener">“Fuzzing Vulnserver with Peach: Part 2” (Dejan Lukan)</a></li>
+<li><a href="https://foxglovesecurity.com/2016/03/15/fuzzing-workflows-a-fuzz-job-from-start-to-finish/" target="_blank" rel="noopener">“Fuzzing Workflows; a FuzzJob from Start to End” (Brandon Perry)</a></li>
+<li><a href="https://www.iana.org/assignments/media-types/media-types.xhtml" target="_blank" rel="noopener">IANA media types</a></li>
+<li><a href="https://www.visualstudio.com" target="_blank" rel="noopener">Microsoft Visual Studio Express</a></li>
+<li><a href="https://notepad-plus-plus.org" target="_blank" rel="noopener">NotePad++ editor</a></li>
+<li><a href="https://peachfuzzer.com" target="_blank" rel="noopener">Peach fuzzing framework</a></li>
+<li><a href="https://www.python.org" target="_blank" rel="noopener">Python language</a></li>
+<li><a href="https://github.com/aoh/radamsa" target="_blank" rel="noopener">Radamsa fuzzer</a></li>
+<li><a href="http://www.cipherdyne.org/blog/2014/12/ram-disks-and-saving-your-ssd-from-afl-fuzzing.html" target="_blank" rel="noopener">“RAM Disks and Saving Your SSD from AFL Fuzzing” (Michael Rash)</a></li>
+<li><a href="http://samples.mplayerhq.hu/" target="_blank" rel="noopener">Repository for multimedia samples</a></li>
+<li><a href="http://thecyberrecce.net/2017/03/20/software-exploit-development-fuzzing-with-afl/" target="_blank" rel="noopener">“Software Exploit Development - Fuzzing with AFL” (Jonathan Racicot)</a></li>
+<li><a href="https://fuzzing-project.org/tutorial1.html" target="_blank" rel="noopener">“Tutorial - Beginner’s Guide to Fuzzing” (Hanno Bock)</a></li>
+<li><a href="https://www.youtube.com/watch?v=JhsHGms_7JQ" target="_blank" rel="noopener">Vblog by Gynvael</a> and its <a href="https://github.com/gynvael/stream-en/tree/master/019-genetic-fuzzing" target="_blank" rel="noopener">github</a></li>
+<li><a href="https://github.com/stephenbradshaw/vulnserver" target="_blank" rel="noopener">Vulnserver (Stephen Bradshaw)</a></li>
+</ul>
+</div>
+
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2020/01/31/Next-Generation%20Fuzzing/" data-id="ck61zzssl00059yud9u1oare9"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fuzz-testing/" rel="tag">fuzz testing</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fuzzing/" rel="tag">fuzzing</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2020/01/31/%E8%A6%AA%E6%89%8B%E5%BB%BA%E9%80%A0Line%20Bot%E5%90%A7/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">親手建造Line Bot吧</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+
+  
+  
+<div class="gitalk" id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1.5.0/dist/gitalk.min.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/blueimp-md5@2.10.0/js/md5.min.js"></script>
+
+<script type="text/javascript">
+  var gitalk = new Gitalk({
+    clientID: '10625ff957aef51a06bf',
+    clientSecret: '314e364248568028064347a4a7df418bb734433f',
+    repo: 'nightcatv.github.io',
+    owner: 'nightcatv',
+    admin: ['nightcatv'],
+    // id: location.pathname,      // Ensure uniqueness and length less than 50
+    id: md5(location.pathname),
+    distractionFreeMode: false,  // Facebook-like distraction free mode
+    pagerDirection: 'last'
+  })
+
+  gitalk.render('gitalk-container')
+</script>
+
+  
+
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        NIghT cAt
+      </li>
+      <li>
+        
+          Powered by
+        
+        
+        <a href="https://hexo.io" target="_blank">Hexo</a> Theme <a href="https://github.com/Shen-Yu/hexo-theme-ayer" target="_blank">Ayer</a>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <ul class="list-inline">
+  <li>訪客數：<span id="busuanzi_value_page_pv"></span> 人</li>
+  <span> | </span>
+  <li>總訪問次數：<span id="busuanzi_value_site_uv"></span> 次</li>
+</ul>
+
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+    
+    <aside class="sidebar">
+      
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Noir Espace"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">目錄</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="搜尋">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i></p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+
+
+  
+<script src="/js/tocbot.min.js"></script>
+
+  <script>
+    // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+    tocbot.init({
+      tocSelector: '.tocbot',
+      contentSelector: '.article-entry',
+      headingSelector: 'h1, h2, h3, h4, h5, h6',
+      hasInnerContainers: true,
+      scrollSmooth: true,
+      positionFixedSelector: '.tocbot',
+      positionFixedClass: 'is-position-fixed',
+      fixedSidebarOffset: 'auto',
+			onClick: (e) => {
+      	document.getElementById(e.target.innerText).scrollIntoView()
+      	return false;
+    	}
+    });
+  </script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: true
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  
+  
+
+  </div>
+</body>
+
+</html>
