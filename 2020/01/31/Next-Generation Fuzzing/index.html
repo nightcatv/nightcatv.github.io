@@ -713,7 +713,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2020/01/31/Next-Generation%20Fuzzing/" data-id="ck63eicqn000cnfud8ap55d2w"
+      <a data-url="https://nightcatv.github.io/2020/01/31/Next-Generation%20Fuzzing/" data-id="ck63ff3va0015x8uddbur6vcq"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fuzz-testing/" rel="tag">fuzz testing</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fuzzing/" rel="tag">fuzzing</a></li></ul>
@@ -814,9 +814,7 @@
 </div>
       </div>
     </main>
-    
-    <aside class="sidebar">
-      
+      <aside class="sidebar">
         <button class="navbar-toggle"></button>
 <nav class="navbar">
   
@@ -893,20 +891,6 @@
 
 
 
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js"></script>
-<script>
-  var typed = new Typed("#subtitle", {
-    strings: ['未眠於夜，流淌於咖啡的餘韻','無語於夜，沈淪在寂靜的喧囂',''],
-	startDelay: 0,
-	typeSpeed: 100,
-	loop: true,
-	backSpeed: 100,
-	showCursor: true
-  });
-</script>
-
-
-
   
 <script src="/js/tocbot.min.js"></script>
 
@@ -918,12 +902,15 @@
       headingSelector: 'h1, h2, h3, h4, h5, h6',
       hasInnerContainers: true,
       scrollSmooth: true,
+	  scrollContainer:'main',
       positionFixedSelector: '.tocbot',
       positionFixedClass: 'is-position-fixed',
       fixedSidebarOffset: 'auto',
 			onClick: (e) => {
-      	document.getElementById(e.target.innerText).scrollIntoView()
-      	return false;
+      	$('.toc-link').removeClass('is-active-link');
+		$(`a[href=${e.target.hash}]`).addClass('is-active-link');
+		$(e.target.hash).scrollIntoView();
+		return false;
     	}
     });
   </script>
