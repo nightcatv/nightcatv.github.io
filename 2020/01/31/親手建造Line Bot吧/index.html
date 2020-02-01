@@ -432,7 +432,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2020/01/31/%E8%A6%AA%E6%89%8B%E5%BB%BA%E9%80%A0Line%20Bot%E5%90%A7/" data-id="ck63g5szb000hjuudgo4z9mzy"
+      <a data-url="https://nightcatv.github.io/2020/01/31/%E8%A6%AA%E6%89%8B%E5%BB%BA%E9%80%A0Line%20Bot%E5%90%A7/" data-id="ck63glazo000z8hud5zqr2pmn"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/line-bot/" rel="tag">line bot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
@@ -632,16 +632,13 @@
       headingSelector: 'h1, h2, h3, h4, h5, h6',
       hasInnerContainers: true,
       scrollSmooth: true,
-	  scrollContainer:'main',
       positionFixedSelector: '.tocbot',
       positionFixedClass: 'is-position-fixed',
       fixedSidebarOffset: 'auto',
-			onClick: (e) => {
-      	$('.toc-link').removeClass('is-active-link');
-		$(`a[href=${e.target.hash}]`).addClass('is-active-link');
-		$(e.target.hash).scrollIntoView();
+	  onClick: (e) => {
+		document.getElementById(e.target.innerText).scrollIntoView()
 		return false;
-    	}
+      }
     });
   </script>
 
