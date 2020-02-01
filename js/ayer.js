@@ -179,12 +179,12 @@
     $sidebar = $('.sidebar');
 
   $('.navbar-toggle').on('click', function () {
-    $content.toggleClass('on');
+	$content.toggleClass('on');
     $sidebar.toggleClass('on');
   });
 
   $($content).on('click', function () {
-    $content.removeClass('on');
+	$content.removeClass('on');
     $sidebar.removeClass('on');
   });
 
