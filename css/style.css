@@ -6427,7 +6427,7 @@ img {
   text-shadow: 0 1px #be3221;
 }
 .tocbot {
-  position: fixed;
+  position: absolute;
   top: 14rem;
   left: calc((100vw - 70rem) / 2 + 70rem);
   font-size: 80%;
@@ -6471,6 +6471,12 @@ a.toc-link {
   margin-top: -1px;
   position: absolute;
   width: 2px;
+}
+.is-active-link::before {
+  background-color: #000;
+}
+.is-active-link {
+  font-weight: 700;
 }
 .article-gallery {
   position: relative;

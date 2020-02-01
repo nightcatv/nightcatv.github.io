@@ -800,7 +800,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2019/03/26/Flask%20-%20Database/" data-id="ck63glaze000o8hud29ih3upg"
+      <a data-url="https://nightcatv.github.io/2019/03/26/Flask%20-%20Database/" data-id="ck63hcsky0000mqud8pzw7h2r"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/database/" rel="tag">database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sqlalchemy/" rel="tag">sqlalchemy</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li></ul>
@@ -910,9 +910,7 @@
 </div>
       </div>
     </main>
-	
-	<aside="sidebar">
-	  
+      <aside class="sidebar">
         <button class="navbar-toggle"></button>
 <nav class="navbar">
   
@@ -1000,11 +998,14 @@
       headingSelector: 'h1, h2, h3, h4, h5, h6',
       hasInnerContainers: true,
       scrollSmooth: true,
+	  scrollContainer:'main',
       positionFixedSelector: '.tocbot',
       positionFixedClass: 'is-position-fixed',
       fixedSidebarOffset: 'auto',
 	  onClick: (e) => {
-		document.getElementById(e.target.innerText).scrollIntoView()
+		$('.toc-link').removeClass('is-active-link');
+		$(`a[href=$(e.target.hash}]`).addClass('is-active-link');
+		$(e.target.hash).scrollIntoView();
 		return false;
       }
     });

@@ -353,7 +353,7 @@ Linux則可以使用<code>cURL</code>指令</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" data-id="ck63glazu00178hud7lzbawx4"
+      <a data-url="https://nightcatv.github.io/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" data-id="ck63hcsla0008mqudhovugrlg"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blockchain/" rel="tag">blockchain</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
@@ -463,9 +463,7 @@ Linux則可以使用<code>cURL</code>指令</p>
 </div>
       </div>
     </main>
-	
-	<aside="sidebar">
-	  
+      <aside class="sidebar">
         <button class="navbar-toggle"></button>
 <nav class="navbar">
   
@@ -553,11 +551,14 @@ Linux則可以使用<code>cURL</code>指令</p>
       headingSelector: 'h1, h2, h3, h4, h5, h6',
       hasInnerContainers: true,
       scrollSmooth: true,
+	  scrollContainer:'main',
       positionFixedSelector: '.tocbot',
       positionFixedClass: 'is-position-fixed',
       fixedSidebarOffset: 'auto',
 	  onClick: (e) => {
-		document.getElementById(e.target.innerText).scrollIntoView()
+		$('.toc-link').removeClass('is-active-link');
+		$(`a[href=$(e.target.hash}]`).addClass('is-active-link');
+		$(e.target.hash).scrollIntoView();
 		return false;
       }
     });
