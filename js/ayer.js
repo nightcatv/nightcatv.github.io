@@ -176,14 +176,30 @@
 
   // Mobile nav
   var $content = $('.content'),
-    $sidebar = $('.sidebar');
+    $sidebar = $('.sidebar'),
+	isMobileNavAnim = false,
+	mobileNavAnimDuration = 200;
+
+  var startMobileNavAnim = function () {
+	isMobileNavAnim = true;
+  };
+
+  var stopMobileNavAnim = function () {
+	setTimeout(function () {
+	  isMobileNavAnim = false;
+	}, mobileNavAnimDuration);
+  };
 
   $('.navbar-toggle').on('click', function () {
+	if (isMobileNavAnim) return;
+	startMobileNavAnim();
 	$content.toggleClass('on');
     $sidebar.toggleClass('on');
+	stopMobileNavAnimj();
   });
 
   $($content).on('click', function () {
+	if (isMobielNavAnim || !$content.hasClass('on')) return;
 	$content.removeClass('on');
     $sidebar.removeClass('on');
   });
