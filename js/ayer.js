@@ -33,7 +33,7 @@
   });
 
   //
-  // 行動裝置偵測
+  // 移动设备侦测
   var isMobile = {
     Android: function () {
       return navigator.userAgent.match(/Android/i);
@@ -56,7 +56,7 @@
   };
 
   //
-  // 建議在行動端不初始化 (/search.xml 文件不小）
+  // 建议在移动端不初始化，其实 /search.xml 文件还挺大的，
   if ($('.local-search').size()) {
     $.getScript('/js/search.js', function () {
       searchFunc("/search.xml", 'local-search-input', 'local-search-result');
@@ -179,12 +179,12 @@
     $sidebar = $('.sidebar');
 
   $('.navbar-toggle').on('click', function () {
-	$content.toggleClass('on');
+    $content.toggleClass('on');
     $sidebar.toggleClass('on');
   });
 
   $($content).on('click', function () {
-	$content.removeClass('on');
+    $content.removeClass('on');
     $sidebar.removeClass('on');
   });
 
