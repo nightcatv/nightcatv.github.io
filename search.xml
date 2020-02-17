@@ -2483,7 +2483,7 @@ Linux則可以使用<code>cURL</code>指令</p>
 </table>
 </div>
 <ul>
-<li>URL中；
+<li>URL中：
 <ul>
 <li><code>hostname</code>：承載資料庫服務的伺服器</li>
 <li><code>database</code>：想使用的資料庫名稱</li>
@@ -2495,7 +2495,7 @@ Linux則可以使用<code>cURL</code>指令</p>
 </li>
 <li>用<code>SQLALCHEMY_DATABASE_URI</code>來設置app資料庫的URL；將<code>SQLALCHEMY_TRACK_MODIFICATIONS</code>設為<code>False</code> (使用較少的記憶體)</li>
 </ul>
-  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> flask_sqlalchemy <span class="keyword">import</span> SALAlchemy</span><br><span class="line"></span><br><span class="line">basedir = os.path.abspath(os.path.dirname(__file__))</span><br><span class="line"></span><br><span class="line">app = flask(__name__)</span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_DATABASE_URI'</span>] =\</span><br><span class="line">    <span class="string">'sqlite:///'</span> + os.path.join(basedir, <span class="string">'data.sqlite'</span>)</span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_TRACK_MODIFICATIONS'</span>] = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">db = SQLAlchemy(app)</span><br></pre></td></tr></table></figure>
+  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># app.py</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">from</span> flask_sqlalchemy <span class="keyword">import</span> SQLAlchemy</span><br><span class="line"></span><br><span class="line">basedir = os.path.abspath(os.path.dirname(__file__))</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_DATABASE_URI'</span>] =\</span><br><span class="line">    <span class="string">'sqlite:///'</span> + os.path.join(basedir, <span class="string">'data.sqlite'</span>)</span><br><span class="line">app.config[<span class="string">'SQLALCHEMY_TRACK_MODIFICATIONS'</span>] = <span class="literal">False</span></span><br><span class="line"></span><br><span class="line">db = SQLAlchemy(app)</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h3 id="Model-Definition"><a class="header-anchor" href="#Model-Definition"></a><em>Model Definition</em></h3>
@@ -2756,7 +2756,7 @@ Linux則可以使用<code>cURL</code>指令</p>
 </ul>
 <h3 id="Insert-Data"><a class="header-anchor" href="#Insert-Data"></a><em>Insert Data</em></h3>
 <ul>
-<li>建立一些角色與使用者：  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> app <span class="keyword">import</span> Role, User</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_admin = Role(name = <span class="string">'Admin'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_mod = Role(name = <span class="string">'Moderator'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_user = Role(name = <span class="string">'User'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_root = User(username = <span class="string">'root'</span>, role = role_admin)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_vincent = User(username = <span class="string">'Vincent'</span>, role = role_user)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_karen = User(username = <span class="string">'Karen'</span>, role = role_user)</span><br></pre></td></tr></table></figure>
+<li>建立一些角色與使用者：  <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> app <span class="keyword">import</span> Role, User</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_admin = Role(name = <span class="string">'Admin'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_mod = Role(name = <span class="string">'Moderator'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>role_user = Role(name = <span class="string">'User'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_root = User(username = <span class="string">'root'</span>, role = role_admin)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_Vincent = User(username = <span class="string">'Vincent'</span>, role = role_user)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>user_Karen = User(username = <span class="string">'Karen'</span>, role = role_user)</span><br></pre></td></tr></table></figure>
 <div class="warning">
 <p>可以使用<code>role</code>屬性 (儘管不是真正的資料庫欄位)是一對多關係的高階表示法</p>
 </div>
@@ -2844,7 +2844,7 @@ Linux則可以使用<code>cURL</code>指令</p>
 </tr>
 <tr>
 <td style="text-align:left">filter_by()</td>
-<td style="text-align:left">將一個<strong>相等過濾器</strong>家道原始查詢指令</td>
+<td style="text-align:left">將一個<strong>相等過濾器</strong>加到原始查詢指令</td>
 </tr>
 <tr>
 <td style="text-align:left">limit()</td>
