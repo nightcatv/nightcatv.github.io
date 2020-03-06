@@ -7,27 +7,49 @@
 <li>一般的 Cyber Kill Chain (資安攻擊鏈) 會有幾個核心的階段，所有常見的攻擊向量都會引發攻擊鏈中的其中一環</li>
 <li>Kill Chain 這個概念類似軍事的模型，主要定義資安攻擊的步驟，最初的定義是在2011年的時候出現，而後便有許許多多的版本陸續出現</li>
 <li>整個攻擊鏈大概有下列幾個階段(無論內部或外部攻擊)：<br>
-<img src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Intrusion_Kill_Chain_-_v2.png" alt=""></li>
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Intrusion_Kill_Chain_-_v2.png" alt="">  <a id="more"></a>
+<ul>
+<li>Reconnaissance
+<ul>
+<li>監控階段：攻擊者通常會由外而內的評估狀況，為了釐清攻擊的目標跟策略</li>
+<li>蒐集、辨識、選擇目標等等是這個階段主要目的</li>
 </ul>
-<a id="more"></a>
-<pre><code>* Reconnaissance
-    * 監控階段：攻擊者通常會由外而內的評估狀況，為了釐清攻擊的目標跟策略
-    * 蒐集、辨識、選擇目標等等是這個階段主要目的
-* Weaponization
-    * 在這個階段，會將惡意程式碼傳送到系統以創造讓攻擊者更好操作的平台環境
-    * 配合遠端訪問的惡意程式來開發能夠進行傳送功能惡意程式碼
-* Delivery
-    * 將所需的工具(武器)傳送到目標上
-* Exploitation
-    * 一但完成傳送後便會引發武器的程式碼，近一步的挖掘有漏洞的應用程式或系統
-    * 如此能夠取得更多跳板 (更高的權限、更多的資料、更好進到系統的途徑)
-* Installation
-    * 武器會安裝後門在目標程式，如此能夠允許日後持續的訪問
-* Command &amp; Control
-    * 在 server 外的通訊會由武器提供“實際操作訪問”來進到目標的網路
-* Actions on Objective
-    * 攻擊者於此階段已經達到入侵的目的，其中包括滲透出資料、破壞資料、入侵其他目標等
-</code></pre>
+</li>
+<li>Weaponization
+<ul>
+<li>在這個階段，會將惡意程式碼傳送到系統以創造讓攻擊者更好操作的平台環境</li>
+<li>配合遠端訪問的惡意程式來開發能夠進行傳送功能惡意程式碼</li>
+</ul>
+</li>
+<li>Delivery
+<ul>
+<li>將所需的工具(武器)傳送到目標上</li>
+</ul>
+</li>
+<li>Exploitation
+<ul>
+<li>一但完成傳送後便會引發武器的程式碼，近一步的挖掘有漏洞的應用程式或系統</li>
+<li>如此能夠取得更多跳板 (更高的權限、更多的資料、更好進到系統的途徑)</li>
+</ul>
+</li>
+<li>Installation
+<ul>
+<li>武器會安裝後門在目標程式，如此能夠允許日後持續的訪問</li>
+</ul>
+</li>
+<li>Command &amp; Control
+<ul>
+<li>在 server 外的通訊會由武器提供“實際操作訪問”來進到目標的網路</li>
+</ul>
+</li>
+<li>Actions on Objective
+<ul>
+<li>攻擊者於此階段已經達到入侵的目的，其中包括滲透出資料、破壞資料、入侵其他目標等</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <hr>
 <h2 id="7-Phases-of-The-Cyber-Kill-Chain"><a class="header-anchor" href="#7-Phases-of-The-Cyber-Kill-Chain"></a><strong>7 Phases of The Cyber Kill Chain</strong></h2>
 <p><img src="https://www.lockheedmartin.com/content/dam/lockheed-martin/rms/photo/cyber/THE-CYBER-KILL-CHAIN-body.png.pc-adaptive.768.medium.png" alt=""></p>
