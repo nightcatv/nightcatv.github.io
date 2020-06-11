@@ -886,7 +886,8 @@ $$</p>
 </ul>
 <h3 id="矩陣"><a class="header-anchor" href="#矩陣"></a><em>矩陣</em></h3>
 <ul>
-<li>需要使用 matrix 的環境，在起始標籤、結束標籤中加入 matrix
+<li>
+<p>需要使用 matrix 的環境，在起始標籤、結束標籤中加入 matrix</p>
 <ul>
 <li>起始標籤 <code>\begin{matrix}</code>、結束標籤 <code>\end{matrix}</code></li>
 <li>每一行以 <code>&amp;</code> 分隔元素</li>
@@ -904,17 +905,41 @@ $$<br>
 $$</p>
 </blockquote>
 </li>
-<li>矩陣的邊框：
+<li>
+<p>矩陣的邊框：</p>
 <blockquote>
-<p>取代掉 matrix 環境<br>
-| 語法 | 類型 |<br>
-| — | — |<br>
-| pmatrix | 圓括號邊框 |<br>
-| bmatrix | 方括號邊框 |<br>
-| Bmatrix | 大括號邊框 |<br>
-| vmatrix | 單線邊框 |<br>
-| Vmatrix | 雙線邊框 |</p>
+<p>取代掉 matrix 環境</p>
 </blockquote>
+<table>
+<thead>
+<tr>
+<th>語法</th>
+<th>類型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pmatrix</td>
+<td>圓括號邊框</td>
+</tr>
+<tr>
+<td>bmatrix</td>
+<td>方括號邊框</td>
+</tr>
+<tr>
+<td>Bmatrix</td>
+<td>大括號邊框</td>
+</tr>
+<tr>
+<td>vmatrix</td>
+<td>單線邊框</td>
+</tr>
+<tr>
+<td>Vmatrix</td>
+<td>雙線邊框</td>
+</tr>
+</tbody>
+</table>
 </li>
 </ul>
 ]]></content>
