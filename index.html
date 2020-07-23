@@ -66,6 +66,104 @@
     
     
     
+    <article id="post-OWASP API Security Top 10 (2019)" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/07/23/OWASP%20API%20Security%20Top%2010%20(2019)/"
+    >OWASP API Security Top 10 (2019)</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/07/23/OWASP%20API%20Security%20Top%2010%20(2019)/" class="article-date">
+  <time datetime="2020-07-23T08:35:00.000Z" itemprop="datePublished">2020-07-23</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a> / <a class="article-category-link" href="/categories/Cyber-Security/API-Security/">API Security</a>
+  </div>
+
+      
+      
+
+      
+    </div>
+    
+
+    
+
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <ul>
+<li>REST API 跟 web applications 有相當多的相似點，但根本上還是有差別</li>
+<li><ins><strong>web application</strong></ins>
+<ul>
+<li>資料處理會在 server 端；網頁之後轉譯送到 client 瀏覽器</li>
+<li>商業網路的端點關聯性少、保護相當簡單（僅設置 WAF）
+<blockquote>
+<p>WAF = Web-Application Firewall</p>
+</blockquote>
+</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">                                    -Get&gt;    </span><br><span class="line">Users &lt;-----------&gt; Browser &lt;------------&gt; Server &lt;----------------&gt; Database</span><br><span class="line">                             &lt;HTML-</span><br></pre></td></tr></table></figure>
+</li>
+<li><ins><strong>API-based application</strong></ins>
+<ul>
+<li>UI 使用 API 從後端 server 收送資料，提供應用程式的 function</li>
+<li>client 自行轉意、維護該狀態</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">                                --------&gt;</span><br><span class="line">                                -API Get&gt;</span><br><span class="line">                                --------&gt;</span><br><span class="line">Users &lt;-----------&gt; Browser &lt;------------&gt; Server &lt;----------------&gt; Database</span><br><span class="line">                             &lt;----</span><br><span class="line">                             &lt;Raw-</span><br><span class="line">                             &lt;----</span><br></pre></td></tr></table></figure>
+</li>
+<li>本質上，API 和 Personally Identifiable Information (PII) 揭露程式邏輯、機敏資料類似
+<ul>
+<li>也因此逐漸成了攻擊者的目標</li>
+<li>API 保護契約，但不包含足夠的方法確保契約的維護、背後服務的安全性</li>
+</ul>
+</li>
+<li>如此表示需要專屬 API security 的分支來了解、解決 API 獨特的漏洞和資安風險</li>
+</ul>
+<h2 id="more"><a class="header-anchor" href="#more"></a>
+      
+      <a class="article-more-link" href="/2020/07/23/OWASP%20API%20Security%20Top%2010%20(2019)/">More...</a>
+      
+      
+      <!-- 打賞 -->
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://nightcatv.github.io/2020/07/23/OWASP%20API%20Security%20Top%2010%20(2019)/" data-id="ckcyjrtkt000gd6acfc0rah6y"
+        class="article-share-link">分享</a>
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/api-security/" rel="tag">api security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/owasp/" rel="tag">owasp</a></li></ul>
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+
+    
     <article id="post-MathJax 語法補帖" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
@@ -121,7 +219,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2020/06/05/MathJax%20%E8%AA%9E%E6%B3%95%E8%A3%9C%E5%B8%96/" data-id="ckbafne9i0006hzacfg810tc0"
+      <a data-url="https://nightcatv.github.io/2020/06/05/MathJax%20%E8%AA%9E%E6%B3%95%E8%A3%9C%E5%B8%96/" data-id="ckcyjrtko000bd6aca9asad03"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/markdown/" rel="tag">markdown</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mathjax/" rel="tag">mathjax</a></li></ul>
@@ -195,7 +293,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2020/03/06/What%20is%20The%20Cyber%20Kill%20Chain/" data-id="ckbafne9o000ehzacdnkgb40z"
+      <a data-url="https://nightcatv.github.io/2020/03/06/What%20is%20The%20Cyber%20Kill%20Chain/" data-id="ckcyjrtkv000kd6ac5hjdcbts"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/apt/" rel="tag">apt</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kill-chain/" rel="tag">kill chain</a></li></ul>
@@ -280,7 +378,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2020/01/31/Next-Generation%20Fuzzing/" data-id="ckbafne9p000hhzac2xxk6o3i"
+      <a data-url="https://nightcatv.github.io/2020/01/31/Next-Generation%20Fuzzing/" data-id="ckcyjrtkq000cd6ac3bpjbrj7"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fuzz-testing/" rel="tag">fuzz testing</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fuzzing/" rel="tag">fuzzing</a></li></ul>
@@ -360,7 +458,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2020/01/31/%E8%A6%AA%E6%89%8B%E5%BB%BA%E9%80%A0Line%20Bot%E5%90%A7/" data-id="ckbafnebc003vhzac0rzw7giv"
+      <a data-url="https://nightcatv.github.io/2020/01/31/%E8%A6%AA%E6%89%8B%E5%BB%BA%E9%80%A0Line%20Bot%E5%90%A7/" data-id="ckcyjrtl0000td6ac8ab7gb6g"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/line-bot/" rel="tag">line bot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
@@ -454,7 +552,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/" data-id="ckbafne9s000ohzac2on5dcyh"
+      <a data-url="https://nightcatv.github.io/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/" data-id="ckcyjrtkx000md6acg9n8gu8t"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security-tool/" rel="tag">cyber security - tool</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dos/" rel="tag">dos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/udp/" rel="tag">udp</a></li></ul>
@@ -532,7 +630,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/" data-id="ckbafne9f0003hzac1v7xhzu5"
+      <a data-url="https://nightcatv.github.io/2019/10/07/Data%20Structures%20in%20JavaScript:%20Objects%20and%20Arrays/" data-id="ckcyjrtkf0002d6ac8ruj14ed"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/array/" rel="tag">array</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/data-structure/" rel="tag">data structure</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/function/" rel="tag">function</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/" rel="tag">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/method/" rel="tag">method</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/object/" rel="tag">object</a></li></ul>
@@ -625,7 +723,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2019/09/12/Zip%20Cracker/" data-id="ckbafne9r000jhzac85co799m"
+      <a data-url="https://nightcatv.github.io/2019/09/12/Zip%20Cracker/" data-id="ckcyjrtkz000rd6ac5mnf8j4f"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/brute-force-attack/" rel="tag">brute-force attack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/crack/" rel="tag">crack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security-tool/" rel="tag">cyber security - tool</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/zip/" rel="tag">zip</a></li></ul>
@@ -717,7 +815,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" data-id="ckbafne9l000ahzac1gxy80zy"
+      <a data-url="https://nightcatv.github.io/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" data-id="ckcyjrtkm0008d6acbe1ncs20"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blockchain/" rel="tag">blockchain</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
@@ -845,95 +943,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2019/05/05/Flask%20-%20Email/" data-id="ckbafne9c0001hzac4ao4eivp"
+      <a data-url="https://nightcatv.github.io/2019/05/05/Flask%20-%20Email/" data-id="ckcyjrtkj0005d6ach56p634m"
         class="article-share-link">分享</a>
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/email/" rel="tag">email</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
-
-    </footer>
-
-  </div>
-
-  
-
-  
-
-  
-
-</article>
-
-    
-    <article id="post-Flask - Database" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/2019/03/26/Flask%20-%20Database/"
-    >Flask - Database</a
-  >
-</h2>
-  
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/2019/03/26/Flask%20-%20Database/" class="article-date">
-  <time datetime="2019-03-26T11:30:00.000Z" itemprop="datePublished">2019-03-26</time>
-</a>
-      
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Python/">Python</a> / <a class="article-category-link" href="/categories/Python/Flask/">Flask</a>
-  </div>
-
-      
-      
-
-      
-    </div>
-    
-
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
-
-
-      
-
-      
-      <ul>
-<li>web app最常用的資料庫：關聯式模型
-<ul>
-<li>又稱為 <mark>SQL資料庫</mark>
-<blockquote>
-<p>SQL：Structured Query Language，結構化查詢語言</p>
-</blockquote>
-</li>
-<li>流行的替代方案：<mark>NoSQL資料庫</mark>
-<blockquote>
-<p>即文件導向(document-oriented)、鍵值(key-value)資料庫</p>
-</blockquote>
-</li>
-</ul>
-</li>
-</ul>
-      
-      <a class="article-more-link" href="/2019/03/26/Flask%20-%20Database/">More...</a>
-      
-      
-      <!-- 打賞 -->
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="https://nightcatv.github.io/2019/03/26/Flask%20-%20Database/" data-id="ckbafne9h0005hzac7j3zcwrg"
-        class="article-share-link">分享</a>
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/database/" rel="tag">database</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/migrate/" rel="tag">migrate</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sqlalchemy/" rel="tag">sqlalchemy</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sqlite/" rel="tag">sqlite</a></li></ul>
 
     </footer>
 

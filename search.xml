@@ -1,6 +1,987 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>OWASP API Security Top 10 (2019)</title>
+    <url>/2020/07/23/OWASP%20API%20Security%20Top%2010%20(2019)/</url>
+    <content><![CDATA[<ul>
+<li>REST API 跟 web applications 有相當多的相似點，但根本上還是有差別</li>
+<li><ins><strong>web application</strong></ins>
+<ul>
+<li>資料處理會在 server 端；網頁之後轉譯送到 client 瀏覽器</li>
+<li>商業網路的端點關聯性少、保護相當簡單（僅設置 WAF）
+<blockquote>
+<p>WAF = Web-Application Firewall</p>
+</blockquote>
+</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">                                    -Get&gt;    </span><br><span class="line">Users &lt;-----------&gt; Browser &lt;------------&gt; Server &lt;----------------&gt; Database</span><br><span class="line">                             &lt;HTML-</span><br></pre></td></tr></table></figure>
+</li>
+<li><ins><strong>API-based application</strong></ins>
+<ul>
+<li>UI 使用 API 從後端 server 收送資料，提供應用程式的 function</li>
+<li>client 自行轉意、維護該狀態</li>
+</ul>
+  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">                                --------&gt;</span><br><span class="line">                                -API Get&gt;</span><br><span class="line">                                --------&gt;</span><br><span class="line">Users &lt;-----------&gt; Browser &lt;------------&gt; Server &lt;----------------&gt; Database</span><br><span class="line">                             &lt;----</span><br><span class="line">                             &lt;Raw-</span><br><span class="line">                             &lt;----</span><br></pre></td></tr></table></figure>
+</li>
+<li>本質上，API 和 Personally Identifiable Information (PII) 揭露程式邏輯、機敏資料類似
+<ul>
+<li>也因此逐漸成了攻擊者的目標</li>
+<li>API 保護契約，但不包含足夠的方法確保契約的維護、背後服務的安全性</li>
+</ul>
+</li>
+<li>如此表示需要專屬 API security 的分支來了解、解決 API 獨特的漏洞和資安風險</li>
+</ul>
+<h2 id="more"><a class="header-anchor" href="#more"></a><a id="more"></a></h2>
+<h2 id="1-Broken-object-level-authorization"><a class="header-anchor" href="#1-Broken-object-level-authorization"></a><strong>1. Broken object level authorization</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>攻擊者替換物件的 ID 來取得其機敏資料<br/>這問題在 API 為背景的應用程式非常常見，因 server 通常會仰賴參數來確定 client 的權限</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>授權、存取控制機制在當今應用程式中較複雜且廣泛，開發者可能忘記在存取機敏物件時忘記附上授權確認</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>資料公開給未授權方、資料遺失、資料操控<br/>未授權存取物件可能取得帳戶全部資料</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>此攻擊在 web security 有另一個名稱 Insecure Direct Object Reference (IDOR)</p>
+</blockquote>
+<ul>
+<li>
+<p>「Object Level Authorization」是一種存取控制機制</p>
+<ul>
+<li>在使用者存取某個其可以存取的物件，code level 被驗證時執行</li>
+<li>每個 API 端點
+<ul>
+<li>接收物件的 ID</li>
+<li>表現物件所有的動作</li>
+<li>執行物件階段授權確認 =&gt; 應該驗證已登入使用者已存取來對請求物件做請求的動作</li>
+</ul>
+</li>
+<li>機制失敗影響：
+<ul>
+<li>未授權資訊公開、修改</li>
+<li>所有資料銷毀</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>E-commerce
+<ul>
+<li>攻擊者觀察到 API 端點以 <code>/shops/{shopName}/revenue_data.json</code> 的格式來取得資料</li>
+<li>只要知道商店名稱 =&gt; 替換 <code>{shopName}</code> 便能夠取得資料</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">               1. shops&#x2F;shop1&#x2F;revenue_data.json   |-|</span><br><span class="line">            &#x2F;----------------------------------&gt;  |S|</span><br><span class="line">           &#x2F; &lt;---------------------------------   |E|</span><br><span class="line">          &#x2F;   2. shop1 data                       |R|</span><br><span class="line">Attacker--                                        | |</span><br><span class="line">          \   4. shop2 data                       |V|</span><br><span class="line">           \&lt;----------------------------------   |E|</span><br><span class="line">            \----------------------------------&gt;  |R|</span><br><span class="line">               3. shops&#x2F;shop2&#x2F;revenue_data.json   |-|</span><br></pre></td></tr></table></figure>
+</li>
+<li>Monitoring the Network Traffic of a Wearable Device
+<ul>
+<li>攻擊者觀察到 HTTP PATCH 的 request 有個 <code>X-User-Id: 54796</code></li>
+<li>將其值改為 <code>X-User-Id: 54795</code> 也能收到成功的 response =&gt; 可以修改其他帳戶的帳戶</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">                    1. X-User-Id: 54796 request   |-|</span><br><span class="line">            &#x2F;----------------------------------&gt;  |S|</span><br><span class="line">           &#x2F; &lt;---------------------------------   |E|</span><br><span class="line">          &#x2F;   2. 200 response                     |R|</span><br><span class="line">Attacker--                                        | |</span><br><span class="line">          \   4. 200 response                     |V|</span><br><span class="line">           \&lt;----------------------------------   |E|</span><br><span class="line">            \----------------------------------&gt;  |R|</span><br><span class="line">                    3. X-User-Id: 54795 request   |-|</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>根據使用者政策、等第實施適當的授權機制</li>
+<li>用授權機制確認已登入使用者存取並表現請求的動作 =&gt; 每個 function 會從 client 取得輸入來存取資料庫的紀錄</li>
+<li>使用隨機值作為 GUID =&gt; 用以紀錄</li>
+<li>寫測試來評估授權機制</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Reference:</p>
+<ol>
+<li><a href="https://cwe.mitre.org/data/definitions/284.html" target="_blank" rel="noopener">CWE-284: Improper Access Control</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/285.html" target="_blank" rel="noopener">CWE-285: Improper Authorization</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/639.html" target="_blank" rel="noopener">CWE-639: Authorization Bypass Through User-Controlled Key</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="2-Broken-authentication"><a class="header-anchor" href="#2-Broken-authentication"></a><strong>2. Broken authentication</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>1. 在 API 的認證相當複雜且容易困惑 =&gt; 軟體與安全工程師經常混淆認證的邊界及實施的正確性<br/>2. 認證對攻擊者來說是很好的目標，因為對所有人開放</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>有兩個子議題：<br/>1. 缺乏保護機制 -&gt; 負責認證的 API 端點必須與其他端點不同處置，且需額外保護<br/>2. 機制功能的錯誤執行 -&gt; 執行中的機制並未考慮到攻擊向量或是有錯誤的 use case</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>攻擊者可以控制另一個使用者帳戶，讀取其個人資料、表現機敏行為（e.g. 金錢交易、傳送私人訊息）</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>認證端點和其流程都應該被保護，且「Forgot password」、「Reset password」兩個功能也應該視同認證機制</p>
+</li>
+<li>
+<p>API 可滲透的機會：</p>
+<ul>
+<li>允許 <a href="https://owasp.org/www-community/attacks/Credential_stuffing" target="_blank" rel="noopener">Credential Stuffing Attack</a> =&gt; 攻擊者藉此建立有效使用者帳密清單</li>
+<li>允許攻擊者在單一使用者帳戶進行 Brute Force Attack =&gt; 沒有 captcha 或 account lockout 機制</li>
+<li>允許弱密碼</li>
+<li>在 URL 中傳送機敏認證資料 (e.g. password, auth token)</li>
+<li>未驗證認證 token</li>
+<li>接受未簽章或弱簽章的 JWT token (e.g. <code>&quot;alg&quot;: &quot;none&quot;</code>)，或是未驗證有效期
+<blockquote>
+<p>JWT = Json Web Tokens</p>
+</blockquote>
+</li>
+<li>使用明文、未加密、弱 hash 的密碼</li>
+<li>使用弱加密金鑰</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>Credential Stuffing
+<ul>
+<li>利用 <a href="https://github.com/danielmiessler/SecLists" target="_blank" rel="noopener">lists of know usernames/passwords</a> 進行</li>
+<li>應用程式並未實施 Automated Threat / Credential Stuffing 保護 =&gt; 應用程式可以用以測試哪組帳密有效</li>
+</ul>
+</li>
+<li>Passwork Recovery Workflow
+<ul>
+<li>發布一個 POST request（包含使用者名稱）到 <code>/api/system/verification-codes</code></li>
+<li>SMS 的 token (6 bits) 會送到目標手機 =&gt; API 並未頻率上限政策，攻擊者可以用多執行緒腳本測試所有可能的組合</li>
+<li><code>/api/system/verification-codes/{smstoken}</code> 找到正確 token 僅需幾分鐘</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">               1. POST request </span><br><span class="line">                (with username)</span><br><span class="line">Attacker ----------------------&gt; Server(&#x2F;api&#x2F;system&#x2F;verification-codes)</span><br><span class="line">    \                              ^                    |</span><br><span class="line">     \----------------------------&#x2F;                     | 2.</span><br><span class="line">       3. Try on                                        | Send</span><br><span class="line">          &#x2F;api&#x2F;system&#x2F;verification-codes&#x2F;&#123;smsToken&#125;     | 6 bits</span><br><span class="line">                                                        | SMS Message</span><br><span class="line">                                                        |</span><br><span class="line">                                                        V</span><br><span class="line">                                                   Victim Phone</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>確認 API 所有可能的驗證流程（手機、網站、實施一鍵認證的深層連結…）</li>
+<li>詢問工程師可能缺漏的流程</li>
+<li>詳讀認證機制
+<blockquote>
+<p>OAuth 既非認證，也非 API 金鑰</p>
+</blockquote>
+</li>
+<li>不在認證、token 產生、密碼儲存創造 wheel，使用標準</li>
+<li>身份驗證恢復/忘記密碼端點必須與登入端點同等對待 =&gt; brute force / rate limiting / lockout 的保護</li>
+<li>使用 <a href="https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html" target="_blank" rel="noopener">OWASP Authentication Cheatsheet</a></li>
+<li>執行多重認證</li>
+<li>在認證端點執行反暴力破解機制來緩解 Credential Stuffing, Dictionary Attack, Brute Force Attack =&gt; 機制應該相較嚴苛</li>
+<li>執行 Account Lockout / Captcha 機制 =&gt; 預防 Brute Force、執行弱密碼偵測</li>
+<li>API 金鑰不應該使用使用者認證，但使用 <a href="https://cloud.google.com/endpoints/docs/openapi/when-why-api-key" target="_blank" rel="noopener">Client App/Project Authentication</a></li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Key_Management_Cheat_Sheet.html" target="_blank" rel="noopener">Key Management Cheat Sheet</a></li>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html" target="_blank" rel="noopener">Authentication Cheat Sheet</a></li>
+<li><a href="https://owasp.org/www-community/attacks/Credential_stuffing" target="_blank" rel="noopener">Credential stuffing</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/798.html" target="_blank" rel="noopener"> CWE-798: Use of Hard-coded Credentials</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="3-Excessive-data-exposure"><a class="header-anchor" href="#3-Excessive-data-exposure"></a><strong>3. Excessive data exposure</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>大都透過分析 API 回應來對流量進行 sniffing<br/>可以找到暴露的機敏資料</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>API 根據 client 來進行資料過濾 =&gt; API 通常作為資料來源，有時候開發不會思考到機敏資料暴露的可能<br/>自動化工具難以偵測 =&gt; 不好區分 API 回傳的資料是合理的還是機敏資料</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>機敏資料暴露</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>在設計上就有回傳機敏資料的缺失</p>
+<ul>
+<li>通常會被 client 端過濾掉</li>
+<li>攻擊者可以簡單以 sniffing 來查看機敏資料</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>Mobile Team
+<ul>
+<li>使用 <code>/api/articles/{articleId}/comments/{commentId}</code> 端點 =&gt; 在 article view 轉換 comment metadata</li>
+<li>Sniffing 手機應用程式的流量，攻擊者可以找到其他機敏資料（與 comment 作者有關）被一併回傳</li>
+<li>端點執行通用 <code>toJSON()</code> 在 <code>User</code> 的 model =&gt; 其中包含 PII 能序列化物件</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">        1. render comment metadata</span><br><span class="line">Server &lt;--------------------------------------- User </span><br><span class="line">                            ^                 ^    |</span><br><span class="line">                   sniffing |                &#x2F;     | toJSON() &#x3D;&gt; serialize</span><br><span class="line">                            |               &#x2F;------|</span><br><span class="line">                       Attacker</span><br></pre></td></tr></table></figure>
+</li>
+<li>IoT-based Surveillance System
+<ul>
+<li>允許管理者創立不同權限的使用者</li>
+<li>一個管理者創立使用者帳戶作為新的資安管理員 =&gt; 僅能存取特定網站架構
+<ul>
+<li>如果使用其手機應用程式 =&gt; API 會觸發 <code>/api/sites/111/cameras</code> 來接收有效監視器檔案並顯示在 dashboard</li>
+</ul>
+</li>
+<li>response 包含格式：<code>{&quot;id&quot;:&quot;xxx&quot;, &quot;live_access_token&quot;: &quot;xxxx-bbbbb&quot;, &quot;building_id&quot;:&quot;yyy&quot;}</code>
+<ul>
+<li>但 client GUI 僅顯現哪個資安管理員存取</li>
+</ul>
+</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">                </span><br><span class="line">Security Guard                                          GUI</span><br><span class="line">    |                                                    ^</span><br><span class="line">    | 1. trigger                                         | 3. Which</span><br><span class="line">    |    &#x2F;api&#x2F;sites&#x2F;111&#x2F;cameras                          |    Security</span><br><span class="line">    |                                                    |    Guard</span><br><span class="line">    V                                                    |    Accessed...</span><br><span class="line">  Server -------------------------------------------&gt; Client</span><br><span class="line">          2. response:</span><br><span class="line">              &#123;&quot;id&quot;:&quot;xxx&quot;, </span><br><span class="line">               &quot;live_access_token&quot;:&quot;xxxx-bbbbb&quot;, </span><br><span class="line">               &quot;building_id&quot;:&quot;yyy&quot;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>不依賴 client 端過濾機敏資料</li>
+<li>在 API 看 response 來確認其中不包含機敏資料</li>
+<li>後端工程師在釋出新的 API 端點應理解「資料的目標客戶」</li>
+<li>避免使用通用方法 (<code>to_json()</code>, <code>to_string()</code>) =&gt; 挑選特定屬性</li>
+<li>將機敏資料跟 PII (Peersonally Identifiable Information) 分類讓應用程式儲存和使用，回顧所有 API 呼叫 return 來確定 response 不含資安議題</li>
+<li>執行 schema-based response 驗證機制 =&gt; 其中定義並執行所有 API method 的資料回傳（包括錯誤訊息）</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://cwe.mitre.org/data/definitions/213.html" target="_blank" rel="noopener">CWE-213: Exposure of Sensitive Information Due to Incompatible Policies</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="4-Lack-of-resources-and-rate-limiting"><a class="header-anchor" href="#4-Lack-of-resources-and-rate-limiting"></a><strong>4. Lack of resources and rate limiting</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>需要 API request；無需認證<br/>同時的 request 便可以單一本機電腦或雲端運算資源呈現</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>在 API 很常看到未對執行效能設限，或沒有妥當設置</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>可能導致 DoS =&gt; API 無反應甚至無法運作</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>API 的 request 會消耗資源（網路、CPU、記憶體、儲存單位）=&gt; 其數量根據使用者輸入、端點商業邏輯來決定</p>
+<ul>
+<li>還需考慮到多個 API client 的 request 會搶資源</li>
+</ul>
+</li>
+<li>
+<p>API 可滲透的機會：（至少其中一點沒有設置或設置不妥）</p>
+<ul>
+<li>Execution timeouts</li>
+<li>Max allocable memory</li>
+<li>Number of file descriptors</li>
+<li>Number of processes</li>
+<li>Request payload size</li>
+<li>Number of request per client/resource</li>
+<li>Number of records per page to return in a single request response</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>Large Image
+<ul>
+<li>攻擊者上傳大圖片 =&gt; 用 POST 送 request 到 <code>/api/v1/images</code></li>
+<li>當上傳完成，API 也建立複數個不同尺寸的縮圖 =&gt; 記憶體會為了這些縮圖而造成 API 無法回應其他請求</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">          1. Upload Large Image</span><br><span class="line">Attacker ------------------------&gt; API &lt;--|</span><br><span class="line">                                    |     |</span><br><span class="line">                      2. Creating   |     |</span><br><span class="line">                         thumbnails |-----|</span><br><span class="line">                         to consume memory resource</span><br></pre></td></tr></table></figure>
+</li>
+<li>User List
+<ul>
+<li>在 UI 包含使用者清單（限 200 筆每頁）=&gt; 使用者清單透過 <code>/api/users?page=1&amp;size=100</code> 從 server 取回</li>
+<li>攻擊者改變 <code>size</code> 參數到 200,000 =&gt; API 無法回應，同時無法處理其他 client 更多 request (DoS)</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Attacker</span><br><span class="line">    |</span><br><span class="line">    | 1. &#x2F;api&#x2F;users?page&#x3D;1&amp;size&#x3D;200000</span><br><span class="line">    |</span><br><span class="line">    V</span><br><span class="line">   API X------------------------------- Client</span><br><span class="line">         2. &#x2F;api&#x2F;users?page&#x3D;1&amp;size&#x3D;100</span><br><span class="line">            can&#39;t get response</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>用 Docker 對 memory, CPU, number of restarts, file descriptor, processes 設限</li>
+<li>在定義的時間範圍內執行 client 能呼叫 API 的次數限制</li>
+<li>告知 client 超過限制次數和時間，限制會重置</li>
+<li>新增合適的 server 端對 query 和 request body 參數的驗證，特別是控制 response 中紀錄回傳數量</li>
+<li>定義並強制資料的最大尺寸（字串最大長度、Array 元素最大數量） =&gt; 對所有輸入的參數、payload</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://owasp.org/www-community/controls/Blocking_Brute_Force_Attacks" target="_blank" rel="noopener">Blocking Brute Force Attacks</a></li>
+<li><a href="https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/Docker_Security_Cheat_Sheet.md#rule-7---limit-resources-memory-cpu-file-descriptors-processes-restarts" target="_blank" rel="noopener">Docker Security Cheat Sheet - Limit resources (memory, CPU, file descriptors, processes, restarts)</a></li>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/REST_Assessment_Cheat_Sheet.html" target="_blank" rel="noopener">REST Assessment Cheat Sheet</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/307.html" target="_blank" rel="noopener">CWE-307: Improper Restriction of Excessive Authentication Attempts</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/770.html" target="_blank" rel="noopener">CWE-770: Allocation of Resources Without Limits or Throttling</a></li>
+<li><a href="https://csrc.nist.gov/publications/detail/sp/800-204/final" target="_blank" rel="noopener">Security Strategies for Microservices-based Application Systems</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="5-Broken-function-level-authorization"><a class="header-anchor" href="#5-Broken-function-level-authorization"></a><strong>5. Broken function level authorization</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>攻擊者送正常 API 呼叫到 API 端點，但其不應該被存取 =&gt; 可能會暴露匿名使用者或無特權使用者<br/>自從 API 結構化後很容易發現這個漏洞 =&gt; 存取的方法更容易被預測（e.g. 將 HTTP 的方法從 <code>GET</code> 改為 <code>PUT</code>、將 URL 中 <code>users</code> 改為 <code>admins</code>）</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>確認功能或來源的授權通常由 config 管理，有時候是 code level<br/>現代的應用程式包含許多角色、群組、複雜的使用者等級 =&gt; 很難確認</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>允許攻擊者存取未授權功能<br/>管理功能會是這類攻擊的關鍵目標</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>找到這類議題最好的方法：深入分析授權機制，注意使用者等級制度、不同角色或群組，思考幾個問題：</p>
+<ul>
+<li>常規使用者能存取管理端點否？</li>
+<li>使用者能透過改變 HTTP 方法 (e.g. <code>GET</code> -&gt; <code>DELETE</code>) 來進行機敏動作 (e.g. creation, modification, erasure) 否？</li>
+<li>使用者可以透過改變端點 URL 和參數 (e.g. <code>/api/v1/users/export_all</code>) 從群組 X 存取到群組 Y 才能存取的功能否？</li>
+</ul>
+</li>
+<li>
+<p>別從 URL 假設該 API 端點是常規的還是管理的</p>
+</li>
+<li>
+<p>開發者可能選擇在特定關聯的路徑暴露更多的管理端點 (e.g. <code>api/admins</code>) =&gt; 相當常見用來找管理端點</p>
+<ul>
+<li>其他像是 <code>api/users</code> 也是類似的意思</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>Invitation
+<ul>
+<li>在一個應用程式的註冊階段僅允許受邀使用者的加入</li>
+<li>手機應用程式觸發 API 呼叫 <code>GET  /api/invites/{invite_guid}</code> =&gt; response 包含 JSON，其中有邀請的細節（使用者角色、使用者 E-mail）</li>
+<li>攻擊者複製 request 並修改 HTTP 的方法和端點 <code>POST  /api/invites/new</code> =&gt; 此端點僅能由管理員透過管理終端存取，但卻沒有執行 function level authorization check</li>
+<li>攻擊者可以送管理帳號邀請給自己<code>POST  /api/inites/new</code> <code>{&quot;email&quot;:&quot;hugo@malicious.com&quot;, &quot;role&quot;:&quot;admin&quot;}</code></li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">                    4. Modify Request</span><br><span class="line">                       POST  &#x2F;api&#x2F;invites&#x2F;new</span><br><span class="line">          Attacker &lt;--------------------\</span><br><span class="line">             |                           \   5. Response</span><br><span class="line">             | 3. Copied                  \     &#123;&quot;email&quot;:&quot;hu&quot;&#125;</span><br><span class="line">             |    Request                  \</span><br><span class="line">             |                              \</span><br><span class="line">             V                               \</span><br><span class="line">      1. Request                              \</span><br><span class="line">         GET  &#x2F;api&#x2F;invites&#x2F;&#123;invite_guid&#125;       v</span><br><span class="line">User &lt;--------------------------------------&gt; API</span><br><span class="line">      2. Response</span><br><span class="line">         &#123;&quot;email&quot;:&quot;...&quot;, &quot;role&quot;:&quot;...&quot;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li>Administratiors’ Endpoint
+<ul>
+<li>API 包含僅有管理員看得到的端點 <code>GET  /api/admin/v1/users/all</code> =&gt; 會回傳所有應用程式使用者的資料、未執行 function-level authorization check</li>
+<li>攻擊者理解 API 架構後對端點進行猜測與管理存取 =&gt; 取得應用程式使用者機敏資料</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">          1. Guess</span><br><span class="line">             GET &#x2F;api&#x2F;admin&#x2F;v1&#x2F;users&#x2F;all</span><br><span class="line">Attacker &lt;--------------------------------&gt; API</span><br><span class="line">          2. Return all sensitive data</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>應用程式保持一貫性，授權模組相對簡單 =&gt; 引用其他商業功能</li>
+<li>保護機制應該提供一個以上應用程式的外部元件
+<ul>
+<li>執行機制預設拒絕所有存取，需要特定角色明確授權來存取每個功能</li>
+<li>回顧 API 端點比照 function level authorization 漏洞，尤其應用程式和群組等級的商業邏輯</li>
+<li>確定所有管理控制器繼承管理員概念控制器 =&gt; 執行使用者群組或角色的授權確認</li>
+<li>確定在常規控制器的管理功能執行使用者群組或決色的授權確認</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://owasp.org/www-community/attacks/Forced_browsing" target="_blank" rel="noopener">Forced browsing</a></li>
+<li><a href="https://owasp.org/www-pdf-archive/OWASP_Top_10_-_2013.pdf" target="_blank" rel="noopener">OWASP Top 10 2013-A7-Missing Function Level Access Control</a></li>
+<li><a href="https://github.com/OWASP/DevGuide/blob/382fe2bc834beaf9dd50fc195e09329be6f7116f/DevGuide2.0/Authorization.doc" target="_blank" rel="noopener">OWASP Development Guide: Authorization</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/285.html" target="_blank" rel="noopener">CWE-285: Improper Authorization</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="6-Mass-assignment"><a class="header-anchor" href="#6-Mass-assignment"></a><strong>6. Mass assignment</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>需要了解商業邏輯、物件關聯、API 架構<br/>在 API 中較容易做到 =&gt; 從設計上揭露潛在的應用程式執行的屬性名稱</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>當今的框架鼓勵開發者使用功能 =&gt; 自動從 client 的變數、內部物件輸入<br/>攻擊者可以利用這個方法來 update 或 overwrite 機敏物件屬性</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>提權 (privilege escalation)、資料損害 (data tampering)、安全機制繞過 (bypass of security mechanism)等等</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>在現代應用程式的物件可能包含許多屬性</p>
+<ul>
+<li>有些可以直接從 client 進行 update (e.g. <code>user.first_name</code>、<code>user.address</code>)</li>
+<li>有些不應該如此 (e.g. <code>user.is_vip</code>)</li>
+</ul>
+</li>
+<li>
+<p>API 的端點若自動改變 client 內部屬性參數（未考慮到機敏性與揭露的層級）=&gt; 攻擊者可以更新物件屬性，比如幾個機敏屬性：</p>
+<ul>
+<li>Permission-related properties
+<ul>
+<li><code>user.is_admin</code>、<code>user.is_vip</code></li>
+<li>應該僅由 admin 設置</li>
+</ul>
+</li>
+<li>Process-dependent properties
+<ul>
+<li><code>user.cash</code></li>
+<li>應該僅在交易認證後內部設置</li>
+</ul>
+</li>
+<li>internal properties
+<ul>
+<li><code>article.created_time</code></li>
+<li>應該僅由應用程式內部設置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>Edit Profile
+<ul>
+<li>在共乘應用程式中提供使用者編輯個人基本資料</li>
+<li>在此程序中，呼叫 API =&gt; <code>PUT  /api/v1/users/me</code> 加上接續的 JSON 物件 <code>{&quot;user_name&quot;:&quot;inons&quot;, &quot;age&quot;:24}</code></li>
+<li>request 包含額外的 <code>credit_balance</code> 屬性 =&gt; <code>GET  /api/v1/users/me</code>、<code>{&quot;user_name&quot;: &quot;inons&quot;, &quot;age&quot;:24, &quot;credit_balance&quot;:10}</code></li>
+<li>攻擊者重送 request，並改成 payload =&gt; <code>{&quot;user_name&quot;:&quot;attacker&quot;, &quot;age&quot;:60, &quot;credit_balance&quot;:99999}</code></li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">          1. GET  &#x2F;api&#x2F;v1&#x2F;users&#x2F;me</span><br><span class="line">             &#123;&quot;user_name&quot;:inons&quot;, &quot;age&quot;:24, &quot;credit_balance&quot;: 10&#125;</span><br><span class="line">Attacker &lt;------------------------------------------------------------&gt; API</span><br><span class="line">          2. Credit &#x3D; 10</span><br><span class="line">          </span><br><span class="line">          3. GET  &#x2F;api&#x2F;v1&#x2F;users&#x2F;me</span><br><span class="line">             &#123;&quot;user_name&quot;:inons&quot;, &quot;age&quot;:24, &quot;credit_balance&quot;: 99999&#125;</span><br><span class="line">Attacker &lt;------------------------------------------------------------&gt; API</span><br><span class="line">          4. Credit &#x3D; 99999</span><br></pre></td></tr></table></figure>
+</li>
+<li>New Property
+<ul>
+<li>影音共享網頁允許使用者以不同格式上傳、下載</li>
+<li>攻擊者發現在 API 端點 <code>GET  /api/v1/videos/{video_id}/meta_data</code> 會回傳 JSON 物件（含影片屬性）
+<ul>
+<li>其中一個屬性 <code>&quot;mp4_conversion_params&quot;:&quot;-v codec h264&quot;</code> =&gt; 標明應用程式使用 shell command 來轉換影片</li>
+</ul>
+</li>
+<li>攻擊者同樣發現 <code>POST  /api/v1/videos/new</code> 可以 mass assignment 滲透、允許 client 設置任何屬性到影片物件
+<ul>
+<li>攻擊者設置 <code>&quot;mp4_conversion_params&quot;:&quot;-v codec h264 &amp;&amp; format C:/&quot;</code> =&gt; 只要攻擊者下載影片就會觸發 shell command injection</li>
+</ul>
+</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">          1. Download Video</span><br><span class="line">             GET &#x2F;api&#x2F;v1&#x2F;videos&#x2F;&#123;video_id&#125;&#x2F;meta_data</span><br><span class="line">Attacker ----------------------------------------------------&gt; API</span><br><span class="line">    |  ^                                                        ^</span><br><span class="line">    |   \   4. Download Video cause Shell Command Injection     |</span><br><span class="line">    |    \------------------------------------------------------|</span><br><span class="line">    |       3. Send Payload</span><br><span class="line">    |          POST  &#x2F;api&#x2F;v1&#x2F;videos&#x2F;new</span><br><span class="line">    |          &#123;..., &quot;mp4_conversion_params&quot;:&quot;-v codec h264 &amp;&amp; format C:&#x2F;&quot;&#125;</span><br><span class="line">    V</span><br><span class="line">2. Video Analysis</span><br><span class="line">    &#123;..., &quot;mp4_conversion_params&quot;:&quot;-v codec h264&quot;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>避免自動 bind client 的輸入到程式變數或內部物件</li>
+<li>設置屬性白名單 =&gt; client 可以更新</li>
+<li>使用內建屬性黑名單 =&gt; client 不可存取</li>
+<li>針對輸入資料的 payload 明確定義並執行 schema</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://cwe.mitre.org/data/definitions/915.html" target="_blank" rel="noopener">CWE-915: Improperly Controlled Modification of Dynamically-Determined Object Attributes</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="7-Security-misconfiguration"><a class="header-anchor" href="#7-Security-misconfiguration"></a><strong>7. Security misconfiguration</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>攻擊者會嘗試找到未修補的漏洞、常見的端點、未保護的檔案和指標 =&gt; 增加授權或去熟悉該系統</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>發生在 API stack 的任何階層<br/>自動化工具能夠偵測、滲透這些非必要服務或資產</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>能造成機敏使用者資料暴露、系統資訊外洩導致伺服器損害</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>幾個滲透的可能：</p>
+<ul>
+<li>合適的安全強化在應用程式任何一個部分遺失，或在雲端服務有不合適的權限設置</li>
+<li>未安裝最近的安全修補程式，或系統過於陳舊</li>
+<li>開了非必要的功能 (e.g. HTTP verbs)</li>
+<li>未使用 Transport Layer Security (TLS)</li>
+<li>安全指令未送到 client (e.g. <a href="https://owasp.org/www-project-secure-headers/" target="_blank" rel="noopener">Security Headers</a>)</li>
+<li>未使用 Cross-Origin Resource Sharing (CORS) 或設置不當</li>
+<li>錯誤訊息包含 stack 痕跡，或其他機敏資訊暴露</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>
+<p>File with Command</p>
+<ul>
+<li>攻擊者在伺服器 root 目錄中找到 <code>.bash_history</code> 檔案 =&gt; 包含 DevOps 團隊存取 API 時的指令<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -X GET <span class="string">'https://api.server/enpoint/'</span> -H <span class="string">'authorization: Basic Zm9vOmJhcg=='</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>同時也找到 API 上僅被 DevOpts 團隊使用的新的節點，且不在文件上</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">          1. Found .bash_history</span><br><span class="line">Attacker ---------------------------------------&gt; Server</span><br><span class="line">    |</span><br><span class="line">    |    |----------------------------------------------|</span><br><span class="line">    |    | #.bash_history                               |</span><br><span class="line">    |    | ...                                          |</span><br><span class="line">    |    | curl -X GET &#39;https:&#x2F;&#x2F;api.server&#x2F;endpoint&#39;... |</span><br><span class="line">    |    | ...                                          |</span><br><span class="line">    |    |----------------------------------------------|</span><br><span class="line">    |</span><br><span class="line">    | 2. Find Endpoint</span><br><span class="line">    v</span><br><span class="line">  API Endpoint</span><br><span class="line">(only for DevOps Team)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>Default Configuration</p>
+<ul>
+<li>針對特定的服務，攻擊者利用搜尋引擎找能夠直接透過網路存取的電腦</li>
+<li>攻擊者找正在跑主流資料庫管理系統的機器、監聽其預設埠號</li>
+<li>主機使用預設配置（預設關閉認證） =&gt; 攻擊者新增存取 PII、個人偏好、認證資料</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">          1. Search</span><br><span class="line">Attacker -----------------&gt; Host</span><br><span class="line">      \                      |</span><br><span class="line">       \  2. Gain Access     |</span><br><span class="line">        \    (PII, etc.)     |</span><br><span class="line">         \                   |</span><br><span class="line">          v                  v</span><br><span class="line">          Default Configuration</span><br><span class="line">         (Disabled authentication)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<ul>
+<li>攻擊者在檢視手機應用程式的流量時發現不是所有 HTTP 流量都有安全協定 (e.g. TLS)
+<ul>
+<li>尤其在下載圖片檔時</li>
+</ul>
+</li>
+<li>使用者的互動是以二進位 =&gt; 雖然 API 的流量是走安全協定，攻擊者找到 API response 的模式
+<ul>
+<li>可透過轉譯的內容 (e.g. profile images) 用來追蹤使用者習慣</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>API 生命週期 (API life cycle) 應包含：
+<ul>
+<li>重複的強化來更快、更簡單的部署</li>
+<li>回顧、更新所有 API stack 的配置，回顧應包括：
+<ul>
+<li>orchestration files</li>
+<li>API components</li>
+<li>cloud services (e.g. S3 bucket permission)</li>
+</ul>
+</li>
+<li>給所有 API 與靜態資產互動的安全通訊通道</li>
+<li>自動的程序來持續地評估所有環境的配置與設定有效性</li>
+</ul>
+</li>
+<li>更多：
+<ul>
+<li>預防從攻擊者送的 exception 追蹤和其他有漏洞資訊，若適用則定義並執行在所有 API response payload schemas（包括錯誤回應）</li>
+<li>確定 API 僅能被特定的 HTTP verbs 存取，其他則不行 (e.g. HEAD)</li>
+<li>API 預期從 browser-based client 存取 (e.g. WebApp front-end) =&gt; 執行合適的 CORS 政策</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://owasp.org/www-project-secure-headers/" target="_blank" rel="noopener">OWASP Secure Headers Project</a></li>
+<li><a href="https://owasp.org/www-project-web-security-testing-guide/" target="_blank" rel="noopener">OWASP Testing Guide</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/2.html" target="_blank" rel="noopener">CWE CATEGORY: 7PK - Environment</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/16.html" target="_blank" rel="noopener">CWE CATEGORY: Configuration</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/388.html" target="_blank" rel="noopener">CWE CATEGORY: 7PK - Errors</a></li>
+<li><a href="https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-123.pdf" target="_blank" rel="noopener">Guide to General Server Security</a></li>
+<li><a href="https://letsencrypt.org/zh-tw/" target="_blank" rel="noopener">Let’s Encrypt: a free, automated and open Certificate Authority</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="8-Injection"><a class="header-anchor" href="#8-Injection"></a><strong>8. Injection</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>攻擊者會透過各種可能的注入方式餵有害資料給 API =&gt; 預期讓它轉譯出來</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>注入漏洞非常常見 =&gt; 大都在<br/>1. SQL query<br/>2. LDAP query<br/>3. NoSQL query<br/>4. OS commands<br/>5. XML parser<br/>6. ORM<br/>可以使用 scanner 或 fuzzer 找到注入點</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>可能會導致資訊公開、資料損失、DoS、取得主機掌控</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>滲透的可能性：</p>
+<ul>
+<li>Client 提供的資料未認證、過濾、淨化</li>
+<li>Client 提供的資料直接使用或間接接到 SQL / NoSQL / LDAP query、OS command、XML parser、Object Relational Mapping (ORM) / Object Document Mapping (ODM)</li>
+<li>來自外部系統的資料未認證、過濾、淨化</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>Vulnerable Firmware
+<ul>
+<li>源控制裝置的韌體提供端點 <code>/api/CONFIG/restore</code> =&gt; 將 appId 分成很多部分的參數送出去</li>
+<li>使用 decompliler =&gt; 攻擊者發現 appId 直接送到系統呼叫（沒有任何過濾）  <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">snprintf(cmd, <span class="number">128</span>, <span class="string">"%srestore_backup.sh /tmp/postfile.bin %s %d"</span>, <span class="string">"/mnt/shares/usr/bin/scripts/"</span>, appid, <span class="number">66</span>);</span><br><span class="line">system(cmd);</span><br></pre></td></tr></table></figure>
+</li>
+<li>改為下列 payload 便可以關掉任何有相同漏洞韌體的設備  <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ curl -k <span class="string">"https://<span class="variable">$&#123;deviceIP&#125;</span>:4567/api/CONFIG/restore"</span> -F <span class="string">'appid=$(/etc/pod/power_down.sh)'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">         1. curl -k &quot;https:&#x2F;&#x2F;$&#123;deviceIP&#125;:4567&#x2F;api&#x2F;CONFIG&#x2F;restore&quot;</span><br><span class="line">                 -F &#39;appid&#x3D;$(&#x2F;etc&#x2F;pod&#x2F;power_down.sh)&#39;</span><br><span class="line">Attacker --------------------------------------------------------&gt; API</span><br><span class="line">                                                                    |</span><br><span class="line">                                                                    v</span><br><span class="line">     |-----------------------------------------------------------------|</span><br><span class="line">     | &#x2F;&#x2F;...                                                           |</span><br><span class="line">     | snprintf(cmd, 128, &quot;...&quot;, &quot;...&quot;, &quot;&#x2F;etc&#x2F;pod&#x2F;power_down.sh&quot;, 66); |</span><br><span class="line">     | system(cmd);                                                    |</span><br><span class="line">     | &#x2F;&#x2F;...                                                           |</span><br><span class="line">     |-----------------------------------------------------------------|</span><br><span class="line">                                                                    |</span><br><span class="line">                                              2. device shutdown &lt;--|</span><br></pre></td></tr></table></figure>
+</li>
+<li>Remove booking
+<ul>
+<li>有個基礎 CRUD 功能運算的訂房系統應用程式</li>
+<li>攻擊者發現 NoSQL 注入可能可以透過 <code>bookingId</code> 來刪掉訂房請求 =&gt; <code>DELETE  /api/bookings?bookingId=678</code></li>
+<li>API 伺服器用下列功能來處理刪除請求  <figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">router.delete(<span class="string">'/bookings'</span>, <span class="keyword">async</span> <span class="function"><span class="keyword">function</span>(<span class="params">req, res, next</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        <span class="keyword">const</span> deletedBooking = <span class="keyword">await</span> Bookings.findOneAndRemove(&#123;_id<span class="string">' : req.query.bookingId&#125;);</span></span><br><span class="line"><span class="string">        res.status(200);</span></span><br><span class="line"><span class="string">    &#125; catch(err)&#123;</span></span><br><span class="line"><span class="string">        res.status(400).json(&#123;</span></span><br><span class="line"><span class="string">            error: '</span>Unexpected error occured <span class="keyword">while</span> processing a request<span class="string">'</span></span><br><span class="line"><span class="string">        &#125;);</span></span><br><span class="line"><span class="string">    &#125;</span></span><br><span class="line"><span class="string">&#125;);</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>攻擊者攔截 request 並更改 <code>bookingId</code> 的參數 =&gt; 能刪除其他使用者的訂房  <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">DELETE &#x2F;api&#x2F;bookings?bookingId[$ne]&#x3D;678</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">          1. DELETE &#x2F;api&#x2F;bookings?bookingId[$ne] &#x3D; 678</span><br><span class="line">Attacker ---------------------------------------------&gt; API</span><br><span class="line">                                                         |</span><br><span class="line">                                                         v</span><br><span class="line">                                                2. Delete other</span><br><span class="line">                                                    users&#39; booking</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>資料認證使用單一、可信任、仍在維護的 library</li>
+<li>認證、過濾、淨化所有 client 提供的資料或其他外部系統資料</li>
+<li>特數字元應該避免使用</li>
+<li>偏好安全 API =&gt; 提供參數化介面</li>
+<li>限制回傳資料的數量 =&gt; 避免在 injection 中引發 mass disclosure</li>
+<li>認證輸入的資料 =&gt; 足夠的過濾器來取每個輸入參數中有效的值</li>
+<li>定義資料類型、限制字串參數的方式</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://owasp.org/www-community/Injection_Flaws" target="_blank" rel="noopener">Injection Flaws</a></li>
+<li><a href="https://owasp.org/www-community/attacks/SQL_Injection" target="_blank" rel="noopener">SQL Injection</a></li>
+<li><a href="https://owasp.org/www-pdf-archive/GOD16-NOSQL.pdf" target="_blank" rel="noopener">NoSQL Injection Fun with objects and Arrays</a></li>
+<li><a href="https://owasp.org/www-community/attacks/Command_Injection" target="_blank" rel="noopener">Command Injection</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/77.html" target="_blank" rel="noopener">CWE-77: Improper Neutralization of Special Elements used in a Command (‘Command Injection’)</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/89.html" target="_blank" rel="noopener">CWE-89: Improper Neutralization of Special Elements used in an SQL Command (‘SQL Injection’)</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="9-Improper-assets-management"><a class="header-anchor" href="#9-Improper-assets-management"></a><strong>9. Improper assets management</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>舊的 API 版本經常修正 =&gt; 容易對沒有更新安全機制的系統造成損害<br/>其更新過的安全機制可能保護最近的 API 版本</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>舊的文件使其難以找到和/或修補漏洞<br/>沒有資產清單、不在使用的策略 =&gt; 還在運作的未修補系統，進而造成機敏資料洩漏<br/>為了方便部署和獨立系統 =&gt; 常找到非必要公開的 API host</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>增加機敏資料存取、透過過時而為修補的 API 版本（連到相同資料庫）取得系統掌控</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>API 被滲透的可能：</p>
+<ul>
+<li>API host 不乾淨原因，表示有未能明確回答的幾個問題：
+<ul>
+<li>哪個環境的 API 正在跑 (e.g. production, staging, test, development)？</li>
+<li>誰能存取 API 的網路 (e.g. public, internal, partners)？</li>
+<li>哪個 API 版本在運行？</li>
+<li>哪些資料被 API 搜集並處理 (e.g. PII)？</li>
+<li>資料的流程是什麼？</li>
+</ul>
+</li>
+<li>沒有文件 / 存在的文件未更新</li>
+<li>沒有針對 API 版本汰換的企劃</li>
+<li>主機的清單消失或過舊</li>
+<li>合併的服務清單 (first- / third-pary) 消失或過舊</li>
+<li>舊的 API 版本仍在運行，但並未修補</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>Old Version API
+<ul>
+<li>在重設計應用程式後，本地搜尋服務留下了一個舊的 API 版本 =&gt; <code>api.someservice.com/v1</code> 還在運行（能存取使用者資料庫）</li>
+<li>針對其中一個最近的應用程式，攻擊者發現其位址為 <code>api.someservice.com/v2</code> =&gt; 將 <code>v2</code> 替換成 <code>v1</code> 存取到舊的、未保護的 API
+<ul>
+<li>Personal Indentifiable Information (PII) 的洩漏</li>
+</ul>
+</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">          1. api.service.com&#x2F;v2</span><br><span class="line">Attacker ------------------------------&gt; New Version API</span><br><span class="line">    \</span><br><span class="line">     \</span><br><span class="line">      \ 2. api.service.com&#x2F;v1</span><br><span class="line">       \</span><br><span class="line">        v</span><br><span class="line">    Old Version API --------------------&gt; User Database</span><br><span class="line">                     3. Expose PII</span><br></pre></td></tr></table></figure>
+</li>
+<li>Beta Version API
+<ul>
+<li>社交網路執行 rate-limiting 機制 =&gt; 阻擋攻擊者使用 brute-force 來猜測重設密碼 token
+<ul>
+<li>此機制不會作為 API 一部分執行，但作為獨立的部分（在 client 跟 official API 間）=&gt; <code>www.socialnetwork.com</code></li>
+</ul>
+</li>
+<li>有找到 beta API 主機 =&gt; <code>www.mbasic.beta.socialnetwork.com</code>
+<ul>
+<li>跑在相同的 API，包含重設密碼機制，但沒有 rate-limiting 機制</li>
+</ul>
+</li>
+<li>如此可以重設任何使用者的密碼 =&gt; 利用 brute-force 來破 6-bit token</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">          1. www.socialnetwork.com</span><br><span class="line">Attacker -------------------------------------&gt; New Version API</span><br><span class="line">    \                                                |</span><br><span class="line">     \                                               | 2. Reset</span><br><span class="line">      \ 3. www.mbasic.beta.socialnetwork.com         |</span><br><span class="line">       \                                          (rate-limiting)</span><br><span class="line">        v                                            v</span><br><span class="line">    Beta Version API --------------------------&gt; Reset Password</span><br><span class="line">                      4. brute-force 6-bit token</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>列所有 API 主幾清單，紀錄每個 API 重要部分，尤其
+<ul>
+<li>API 環境 (e.g. production, staging, test, development)</li>
+<li>誰能存取 (e.g. public, internal, partners)</li>
+<li>API 版本</li>
+</ul>
+</li>
+<li>列融合的服務，紀錄其在系統中的角色、資料如何交換、其機敏性</li>
+<li>紀錄所有 API 各部分的
+<ul>
+<li>authentication</li>
+<li>error</li>
+<li>redirect</li>
+<li>rate limiting</li>
+<li>cross-origin resource share (CORS) policy</li>
+<li>endpoint<br>
+包括 parameter, request, response</li>
+</ul>
+</li>
+<li>自動產生文件 =&gt; 把文件建在 CI / CD pineline</li>
+<li>製作 API 文件並授權給各個 API 使用</li>
+<li>使用外部保護方法 =&gt; API security firewall 保護所有公開的 API</li>
+<li>避免透過非產品的 API 來使用攢品資料，若無法避免則端點應該與非公開端點有相同的保護機制</li>
+<li>新版本 API（包含安全更新）出來後，應該對舊版本做威脅分析</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://cwe.mitre.org/data/definitions/1059.html" target="_blank" rel="noopener">CWE-1059: Incomplete Documentation</a></li>
+<li><a href="https://www.openapis.org/" target="_blank" rel="noopener">OpenAPI Initiative</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="10-Insufficient-logging-and-monitoring"><a class="header-anchor" href="#10-Insufficient-logging-and-monitoring"></a><strong>10. Insufficient logging and monitoring</strong></h2>
+<table>
+<thead>
+<tr>
+<th>Aspect</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Attack Vectors</td>
+<td>攻擊者在缺乏紀錄、監控的系統能不被發現的濫用系統</td>
+</tr>
+<tr>
+<td>Security Weakness</td>
+<td>沒有或不充足的紀錄、監控 =&gt; 基本上不可能追溯可疑的活動並即時做出反應</td>
+</tr>
+<tr>
+<td>Impacts</td>
+<td>再看不到有害活動的狀況下，攻擊者有大把時間損害系統</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>API 滲透的可能：</p>
+<ul>
+<li>並未產生任何的 log / 並未正確設置 log 的層級 / log 訊息並未包含細部內容</li>
+<li>log 完整性無法保證</li>
+<li>log 並非連續監控</li>
+<li>API 的基礎架構並沒有連續監控</li>
+</ul>
+</li>
+<li>
+<p>Scenario</p>
+<ol>
+<li>Public Access Key
+<ul>
+<li>管理性 API 的存取金鑰被放到公開的 repository
+<ul>
+<li>其擁有者被 email 提醒，但並未在 48 小時內應對</li>
+</ul>
+</li>
+<li>存取金鑰可能被用來存取機敏資料 =&gt; 因不充分的紀錄，無法評估什麼資料被存取</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Public Repository </span><br><span class="line">(with access key) ----------- API</span><br><span class="line">     ^                         ^</span><br><span class="line">     |                        &#x2F;</span><br><span class="line">     | 1. Get Access Key     &#x2F;</span><br><span class="line">     |                      &#x2F;</span><br><span class="line">     |                     &#x2F;</span><br><span class="line">  Attacker ---------------&#x2F;</span><br><span class="line">             2. Get Sensitive data</span><br></pre></td></tr></table></figure>
+</li>
+<li>Credential Stuffing Attack
+<ul>
+<li>影音分享平台被大規模 credential stuffing attack</li>
+<li>儘管 login 失敗會被紀錄，但在攻擊時沒有觸發告警 =&gt; 直到使用者反應才會分析 API 的 log</li>
+<li>公司發公告請使用者重設密碼，並回報管理部門授權</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">                   3. Complaint</span><br><span class="line">         Platform &lt;-------------------------&gt; User</span><br><span class="line">            ^      4. Make Announcement</span><br><span class="line">            |</span><br><span class="line">2. Get      | 1. Credential</span><br><span class="line">  Sensitive |    Stuffing</span><br><span class="line">   Data     |    Attack</span><br><span class="line">            |</span><br><span class="line">            V</span><br><span class="line">        Attacker</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li>
+<p>Prevention</p>
+<ul>
+<li>紀錄所有：
+<ul>
+<li>failed authentication attempts</li>
+<li>denied access</li>
+<li>input validation error</li>
+</ul>
+</li>
+<li>應該使用適合紀錄管理方案的格式來進行紀錄，應該包含能辨識有害使用者的細節</li>
+<li>紀錄應能掌握機敏資料，其完整性應該受保證</li>
+<li>配置監控系統來持續的監控整個架構、網路、API 功能</li>
+<li>利用 Security Information and Event Management (SIEM) 系統來統合管理所有 API stack 跟 host 的紀錄</li>
+<li>配置客製的 dashboard 與 alert =&gt; 能更早偵測並回應可疑活動</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>References:</p>
+<ol>
+<li><a href="https://cheatsheetseries.owasp.org/cheatsheets/Logging_Cheat_Sheet.html" target="_blank" rel="noopener">Logging Cheat Sheet</a></li>
+<li><a href="https://owasp.org/www-project-proactive-controls/" target="_blank" rel="noopener">OWASP Proactive Controls</a></li>
+<li><a href="https://owasp.org/www-project-application-security-verification-standard/" target="_blank" rel="noopener">OWASP Application Security Verification Standard V7</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/223.html" target="_blank" rel="noopener">CWE-223: Omission of Security-relevant Information</a></li>
+<li><a href="https://cwe.mitre.org/data/definitions/778.html" target="_blank" rel="noopener">CWE-778: Insufficient Logging</a><br>
+[color=#E6CAFF]</li>
+</ol>
+</blockquote>
+<hr>
+<p><mark><strong>References</strong></mark></p>
+<ol>
+<li><a href="https://apisecurity.io/encyclopedia/content/owasp/owasp-api-security-top-10.htm" target="_blank" rel="noopener">APIsecurity.io - OPWAS API Security Top 10</a></li>
+<li><a href="https://owasp.org/www-project-api-security/" target="_blank" rel="noopener">OWASP API Security - Top 10 | OWASP</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>Cyber Security</category>
+        <category>API Security</category>
+      </categories>
+      <tags>
+        <tag>cyber security</tag>
+        <tag>api security</tag>
+        <tag>owasp</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MathJax 語法補帖</title>
     <url>/2020/06/05/MathJax%20%E8%AA%9E%E6%B3%95%E8%A3%9C%E5%B8%96/</url>
     <content><![CDATA[<h1 id="MathJax-語法補帖"><a class="header-anchor" href="#MathJax-語法補帖"></a><em><strong>MathJax 語法補帖</strong></em></h1>
