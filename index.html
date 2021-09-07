@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-TW, en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一介凡人做的，平凡的隨筆部落格..." />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title> Night Vestige</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css"
+      />
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <script src="https://cdn.jsdelivr.net/npm/mermaid@8.9.2/dist/mermaid.min.js"></script>
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      
+<section class="cover">
+    
+  <div class="cover-frame">
+    <div class="bg-box">
+      <img src="/images/Hacker_peaking.png" alt="image frame" />
+    </div>
+    <div class="cover-inner text-center text-white">
+      <h1><a href="/">Night Vestige</a></h1>
+      <div id="subtitle-box">
+        
+        <span id="subtitle"></span>
+        
+      </div>
+      <div>
+        
+      </div>
+    </div>
+  </div>
+  <div class="cover-learn-more">
+    <a href="javascript:void(0)" class="anchor"><i class="ri-arrow-down-line"></i></a>
+  </div>
+</section>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js"></script>
+
+
+<!-- Subtitle -->
+
+  <script>
+    try {
+      var typed = new Typed("#subtitle", {
+        strings: ['Stay at Night', 'Seek the Vestige', 'You Will See'],
+        startDelay: 0,
+        typeSpeed: 200,
+        loop: true,
+        backSpeed: 100,
+        showCursor: true
+      });
+    } catch (err) {
+      console.log(err)
+    }
+  </script>
+  
+<div id="main">
+  <section class="outer">
+  
+  
+  <article class="articles">
+    
+    
+    
+    
+    <article
+  id="post-Buffer Overflow Lab"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2021/01/23/Buffer%20Overflow%20Lab/"
+    >Buffer Overflow Lab</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/01/23/Buffer%20Overflow%20Lab/" class="article-date">
+  <time datetime="2021-01-23T02:33:00.000Z" itemprop="datePublished">2021-01-23</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="Details"><a href="#Details" class="headerlink" title="Details"></a><strong>Details</strong></h2><blockquote>
+<p>Please use C language.</p>
+</blockquote>
+<ol>
+<li>define <code>ADMINUID</code> as 0x61646D696E</li>
+<li>write a structure <code>USER</code> with username in 8 bits buffer and uid<ul>
+<li>variables: username, password(11-bit), uid(5-bit)</li>
+</ul>
+</li>
+<li>write a <code>login</code> function using <code>gets</code> to get the user data<ul>
+<li>if there isn’t the username, then create a new user and random the uid.</li>
+</ul>
+</li>
+<li>write a <code>menu</code> which design 4 options and 1 of them can show only for admin<ul>
+<li>options:   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1. edit</span><br><span class="line">2. execute</span><br><span class="line">3. exit</span><br><span class="line">7963. flag  (only for admin)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>write a <code>options</code> function which deal with user’s input. 
+      <a class="article-more-link" href="/2021/01/23/Buffer%20Overflow%20Lab/"
+        >More...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/buffer-overflow/" rel="tag">buffer overflow</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/" rel="tag">c</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/lab/" rel="tag">lab</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
+  id="post-Shodan Pentesting"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/09/08/Shodan%20Pentesting/"
+    >Shodan Pentesting</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/09/08/Shodan%20Pentesting/" class="article-date">
+  <time datetime="2020-09-08T11:44:00.000Z" itemprop="datePublished">2020-09-08</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a> / <a class="article-category-link" href="/categories/Cyber-Security/Attack/">Attack</a> / <a class="article-category-link" href="/categories/Cyber-Security/Attack/Reconnaissance/">Reconnaissance</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="What-is-Shodan"><a href="#What-is-Shodan" class="headerlink" title="What is Shodan?"></a><strong>What is Shodan?</strong></h2><ul>
+<li>Shodan 是個針對網路連接設備的搜尋引擎</li>
+<li>可以探查整個網路，其中功能大概有<ul>
+<li>找到有連接在網路上的設備，或者是網路服務</li>
+<li>監控網路安全</li>
+<li>做出全球統計 … 等等</li>
+</ul>
+</li>
+<li>主要的應用在幾個領域：<ul>
+<li>Network Security</li>
+<li>Market Research</li>
+<li>Cyber Risk</li>
+<li>Scanning IoT Devices</li>
+<li>Tracking Ransomware</li>
+</ul>
+</li>
+<li>Shodan 的網站、資料庫都是大範圍網路埠號掃描的結果 
+      <a class="article-more-link" href="/2020/09/08/Shodan%20Pentesting/"
+        >More...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/penetration-testing/" rel="tag">penetration testing</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/reconnaissance/" rel="tag">reconnaissance</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shodan/" rel="tag">shodan</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
+  id="post-MathJax 語法補帖"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/06/05/MathJax%20%E8%AA%9E%E6%B3%95%E8%A3%9C%E5%B8%96/"
+    >MathJax 語法補帖</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/06/05/MathJax%20%E8%AA%9E%E6%B3%95%E8%A3%9C%E5%B8%96/" class="article-date">
+  <time datetime="2020-06-05T11:00:00.000Z" itemprop="datePublished">2020-06-05</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Others/">Others</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h1 id="MathJax-語法補帖"><a href="#MathJax-語法補帖" class="headerlink" title="MathJax 語法補帖"></a><em><strong>MathJax 語法補帖</strong></em></h1><h2 id="MathJax-簡介"><a href="#MathJax-簡介" class="headerlink" title="MathJax 簡介"></a><strong>MathJax 簡介</strong></h2><p>可以直接使用 LaTeX、MathML 或 AsciiMath 的語法把數學式子寫進網頁中，它會自動幫你排版並產生 HTML、SVG 或是 MathML 的方程式，讓各種瀏覽器都可以看，效果幾乎跟傳統上的 LaTeX 一樣。</p> 
+      <a class="article-more-link" href="/2020/06/05/MathJax%20%E8%AA%9E%E6%B3%95%E8%A3%9C%E5%B8%96/"
+        >More...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/markdown/" rel="tag">markdown</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mathjax/" rel="tag">mathjax</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
+  id="post-What is The Cyber Kill Chain"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2020/03/06/What%20is%20The%20Cyber%20Kill%20Chain/"
+    >What is The Cyber Kill Chain?</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2020/03/06/What%20is%20The%20Cyber%20Kill%20Chain/" class="article-date">
+  <time datetime="2020-03-06T04:19:00.000Z" itemprop="datePublished">2020-03-06</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <ul>
+<li>一般的 Cyber Kill Chain (資安攻擊鏈) 會有幾個核心的階段，所有常見的攻擊向量都會引發攻擊鏈中的其中一環</li>
+<li>Kill Chain 這個概念類似軍事的模型，主要定義資安攻擊的步驟，最初的定義是在2011年的時候出現，而後便有許許多多的版本陸續出現<br><img src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Intrusion_Kill_Chain_-_v2.png"> 
+      <a class="article-more-link" href="/2020/03/06/What%20is%20The%20Cyber%20Kill%20Chain/"
+        >More...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/apt/" rel="tag">apt</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kill-chain/" rel="tag">kill chain</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
+  id="post-用Python編譯簡單UDP DoS工具"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/"
+    >用 Python 編譯簡單 UDP DoS 工具</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/" class="article-date">
+  <time datetime="2019-10-28T12:50:00.000Z" itemprop="datePublished">2019-10-28</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a> / <a class="article-category-link" href="/categories/Cyber-Security/Tool/">Tool</a> / <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="UDP-DoS-Attack"><a href="#UDP-DoS-Attack" class="headerlink" title="UDP? DoS Attack?"></a><strong>UDP? DoS Attack?</strong></h2><h3 id="What-is-UDP"><a href="#What-is-UDP" class="headerlink" title="What is UDP?"></a><em>What is UDP?</em></h3><ul>
+<li>UDP，User Datagram Protocal，主要位在OSI傳輸層</li>
+<li>在TCP/IP模型中在網路層上、應用層下提供簡單的介面，只提供資料的不可靠傳遞</li>
+<li>因缺乏可靠性，且屬於無連接協定 =&gt; 應用程式必須容許一些<strong>遺失</strong>、<strong>錯誤</strong>、<strong>重複</strong>的封包</li>
+<li>有些應用程式不大需要可靠性機制，甚至可能因為引入可靠性而降低效能，故而使用此類協定<ul>
+<li>e.g. 串流媒體、即時多人遊戲、IP語音</li>
+</ul>
+</li>
+<li>因為UDP傳送端無法檢測壅塞，所以像使用queue、丟棄技術路由器之類的網路基礎裝置會用於降低UDP過大流量<ul>
+<li>DCCP(資料壅塞控制協定) =&gt; 通過在諸如串流媒體類型的高速UDP流中增加主機壅塞控制，來減小此潛在問題</li>
+</ul>
+</li>
+<li>主要應用：<ul>
+<li>DNS (Domain Name Server)</li>
+<li>DHCP (Dynamic Host Configuration Protocol)</li>
+<li>SNMP (Simple Network Management Protocol)</li>
+<li>RIP (Router Information Protocol) 
+      <a class="article-more-link" href="/2019/10/28/%E7%94%A8Python%E7%B7%A8%E8%AD%AF%E7%B0%A1%E5%96%AEUDP%20DoS%E5%B7%A5%E5%85%B7/"
+        >More...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/dos/" rel="tag">dos</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tool/" rel="tag">tool</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/udp/" rel="tag">udp</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
+  id="post-Learn Blockchain by Building One"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2019/05/28/Learn%20Blockchain%20by%20Building%20One/"
+    >Learn Blockchain by Building One</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2019/05/28/Learn%20Blockchain%20by%20Building%20One/" class="article-date">
+  <time datetime="2019-05-28T13:50:00.000Z" itemprop="datePublished">2019-05-28</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Blockchain/">Blockchain</a> / <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="Before-we-get-started…"><a href="#Before-we-get-started…" class="headerlink" title="Before we get started…"></a><strong>Before we get started…</strong></h2><ul>
+<li>所謂的區塊鏈：<strong>不可變動</strong>、<strong>連續</strong>紀錄鏈結 (區塊)<ul>
+<li>其中可包含 <u>交易</u>、<u>檔案</u>、任何資料</li>
+<li>這些都透過<strong>hash</strong>做鏈結</li>
+</ul>
+</li>
+<li>工具：<ul>
+<li>Python 3.6+<ul>
+<li>venv (recommend)</li>
+<li>Flask</li>
+<li>requests</li>
+<li>hashlib</li>
+<li>json</li>
+<li>time 
+      <a class="article-more-link" href="/2019/05/28/Learn%20Blockchain%20by%20Building%20One/"
+        >More...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/blockchain/" rel="tag">blockchain</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flask/" rel="tag">flask</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+    <article
+  id="post-Web-crawler in Python"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/2018/09/07/Web-crawler%20in%20Python/"
+    >Web-crawler in Python</a> 
+</h2>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2018/09/07/Web-crawler%20in%20Python/" class="article-date">
+  <time datetime="2018-09-07T04:10:00.000Z" itemprop="datePublished">2018-09-07</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Python/">Python</a>
+  </div>
+   
+    </div>
+      
+    <div class="article-entry" itemprop="articleBody">
+       
+  <h2 id="What-is-Web-crawler"><a href="#What-is-Web-crawler" class="headerlink" title="What is Web-crawler?"></a><strong>What is Web-crawler?</strong></h2><ul>
+<li>一種機器人，自動爬取目標網頁並依需求蒐集目標資料</li>
+<li>步驟：<ol>
+<li>取得指定網域下的HTML資料</li>
+<li>解析這些資料以取得目標資料</li>
+<li>Loop</li>
+</ol>
+</li>
+<li>套件簡介：<ul>
+<li><code>requests</code>       =&gt; 用來對目標網頁的server發出request，底層為urllib</li>
+<li><code>BeautifulSoup</code>  =&gt; 用來解析html，底層為re</li>
+<li><code>pandas</code>         =&gt; 爬取表格</li>
+<li><code>selenium</code>       =&gt; 網頁測試工具，用來應付較麻煩的JavaScript</li>
+<li><code>re</code>             =&gt; 正則表達式，用以取技術性較高的文字段落 
+      <a class="article-more-link" href="/2018/09/07/Web-crawler%20in%20Python/"
+        >More...</a
+      >
+       
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/" rel="tag">python</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web-crawler/" rel="tag">web-crawler</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+    
+</article>
+
+    
+  </article>
+  
+
+  
+</section>
+</div>
+
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2021
+        <i class="ri-heart-fill heart_icon"></i> NIghTcAt
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Night Vestige"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">文章</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>請我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+</body>
+
+</html>
